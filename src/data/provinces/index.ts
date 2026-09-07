@@ -630,7 +630,11 @@ const PRIMARY_COUNTRY_CONTINENTS: Record<string, string> = {
   'São Tomé and Príncipe': 'Africa',
   'Tanzania': 'Africa',
   'The Gambia': 'Africa',
-  'Togo': 'Africa'
+  'Togo': 'Africa',
+  'Tunisia': 'Africa',
+  'Uganda': 'Africa',
+  'Zambia': 'Africa',
+  'Zimbabwe': 'Africa'
 };
 
 export const PROVINCE_COUNTRY_CONTINENT_MAP = PROVINCES_AND_TERRITORIES_FLAGS.reduce((acc, flag) => {

@@ -1,19 +1,65 @@
 import { createProvinceFlags } from './utils';
 
 export const ZIMBABWE_PROVINCES = createProvinceFlags('Zimbabwe', [
-
-
   {
-    name: 'Harare (Capital City Flag)',
+    name: 'Bulawayo Province',
+    code: 'zw-bu',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bulawayo.svg',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Harare Province',
     code: 'zw-ha',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Harare.svg',
     tags: [],
     status: ""
   },
   {
-    name: 'Bulawayo (City Flag)',
-    code: 'zw-bu',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bulawayo.svg',
+    name: 'Manicaland Province',
+    code: 'zw-ma',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Mashonaland Central Province',
+    code: 'zw-mc',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Mashonaland East Province',
+    code: 'zw-me',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Mashonaland West Province',
+    code: 'zw-mw',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Masvingo Province',
+    code: 'zw-mv',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Matabeleland North Province',
+    code: 'zw-mn',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Matabeleland South Province',
+    code: 'zw-ms',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Midlands Province',
+    code: 'zw-mi',
     tags: [],
     status: ""
   },
