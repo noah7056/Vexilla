@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { PROVINCE_COUNTRIES  } from '../data/flags';
 import { useFlags } from '../contexts/FlagsContext';
+import { useAdmin } from '../contexts/AdminContext';
 import { FICTIONAL_MEDIA_TYPES } from '../data/fictional';
 import {
   Flag,
@@ -77,6 +78,7 @@ type ItemsPerPage = 12 | 25 | 50 | 100 | 'All';
 
 export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const { flags: FLAGS, trash, isFirestoreConnected } = useFlags();
+  const { isAdmin } = useAdmin();
   const { favoritesSet, toggleFavorite } = useFavorites();
   const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState<string[]>([]);
@@ -420,6 +422,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         {/* Counter Badge & Compare Toggle */}
         <div className="flex items-center gap-2 self-start md:self-auto">
           {/* Trash Bin Icon Button */}
+          {isAdmin && (
           <button
             id="open-trash-bin-btn"
             onClick={() => setIsTrashOpen(true)}
@@ -442,9 +445,10 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
               </span>
             )}
           </button>
+          )}
 
           {/* Cloud Database Sync Status */}
-          {isFirestoreConnected && (
+          {isAdmin && isFirestoreConnected && (
             <div
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs"
               title="Connected to Google Firebase Firestore Cloud Database. All changes are saved automatically."
@@ -454,6 +458,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             </div>
           )}
 
+          {isAdmin && (
           <button
             onClick={() => { setFlagToEdit(null); setIsEditorOpen(true); }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
@@ -461,6 +466,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Add Flag</span>
           </button>
+          )}
+          {isAdmin && (
           <button
             onClick={() => setIsImportExportOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
@@ -469,6 +476,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             <FileJson className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
             <span className="hidden sm:inline">Backup / Import</span>
           </button>
+          )}
           <button
             id="toggle-compare-mode-btn"
             onClick={() => {
@@ -497,7 +505,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       </div>
 
       {/* Sync Local Flags Banner (visible only when local changes exist in browser storage) */}
-      <SyncLocalFlagsBanner />
+      {isAdmin && <SyncLocalFlagsBanner />}
 
       {/* Filter & Search Toolbar */}
       <div className="bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm space-y-4 mb-6">

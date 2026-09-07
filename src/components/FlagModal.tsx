@@ -33,6 +33,7 @@ import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCollections } from '../hooks/useCollections';
+import { useAdmin } from '../contexts/AdminContext';
 
 import { CreateCollectionModal } from './CreateCollectionModal';
 
@@ -57,6 +58,7 @@ export function FlagModal({
 }: FlagModalProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { collections, toggleFlagInCollection, createCollection } = useCollections();
+  const { isAdmin } = useAdmin();
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -299,7 +301,7 @@ export function FlagModal({
                 </button>
               )}
               
-              {onEdit && (
+              {onEdit && isAdmin && (
                 <button
                   id="flag-modal-edit-btn"
                   onClick={() => onEdit(flag)}
