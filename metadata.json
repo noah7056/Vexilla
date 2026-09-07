@@ -1,0 +1,6 @@
+{
+  "name": "Vexilla",
+  "description": "Learn flags of the world, including sovereign states, territories, and regional flags through flashcards and quizzes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

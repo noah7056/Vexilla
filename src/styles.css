@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer utilities {
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
+/* Theme Midnight Abyss (True Dark / OLED) */
+.theme-midnight,
+.theme-midnight.dark {
+  --color-zinc-50: #ffffff;
+  --color-zinc-100: #fafafc;
+  --color-zinc-200: #f0f0f6;
+  --color-zinc-300: #dedee8;
+  --color-zinc-400: #b0b0c2;
+  --color-zinc-500: #808094;
+  --color-zinc-600: #464658;
+  --color-zinc-700: #2d2d3d;
+  --color-zinc-800: #1a1a26;
+  --color-zinc-900: #000000;
+  --color-zinc-950: #000000;
+
+  --color-indigo-300: #c7d2fe;
+  --color-indigo-400: #a5b4fc;
+  --color-indigo-500: #818cf8;
+  --color-indigo-600: #6366f1;
+}
+
+/* Theme Ocean Breeze */
+.theme-ocean {
+  --color-zinc-50: var(--color-slate-50);
+  --color-zinc-100: var(--color-slate-100);
+  --color-zinc-200: var(--color-slate-200);
+  --color-zinc-300: var(--color-slate-300);
+  --color-zinc-400: var(--color-slate-400);
+  --color-zinc-500: var(--color-slate-500);
+  --color-zinc-600: var(--color-slate-600);
+  --color-zinc-700: var(--color-slate-700);
+  --color-zinc-800: var(--color-slate-800);
+  --color-zinc-900: var(--color-slate-900);
+  --color-zinc-950: var(--color-slate-950);
+
+  --color-indigo-50: var(--color-sky-50);
+  --color-indigo-100: var(--color-sky-100);
+  --color-indigo-200: var(--color-sky-200);
+  --color-indigo-300: var(--color-sky-300);
+  --color-indigo-400: var(--color-sky-400);
+  --color-indigo-500: var(--color-sky-500);
+  --color-indigo-600: var(--color-sky-600);
+  --color-indigo-700: var(--color-sky-700);
+  --color-indigo-800: var(--color-sky-800);
+  --color-indigo-900: var(--color-sky-900);
+  --color-indigo-950: var(--color-sky-950);
+}
+
+/* Theme Whispering Pines */
+.theme-forest {
+  --color-zinc-50: var(--color-stone-50);
+  --color-zinc-100: var(--color-stone-100);
+  --color-zinc-200: var(--color-stone-200);
+  --color-zinc-300: var(--color-stone-300);
+  --color-zinc-400: var(--color-stone-400);
+  --color-zinc-500: var(--color-stone-500);
+  --color-zinc-600: var(--color-stone-600);
+  --color-zinc-700: var(--color-stone-700);
+  --color-zinc-800: var(--color-stone-800);
+  --color-zinc-900: var(--color-stone-900);
+  --color-zinc-950: var(--color-stone-950);
+
+  --color-indigo-50: var(--color-emerald-50);
+  --color-indigo-100: var(--color-emerald-100);
+  --color-indigo-200: var(--color-emerald-200);
+  --color-indigo-300: var(--color-emerald-300);
+  --color-indigo-400: var(--color-emerald-400);
+  --color-indigo-500: var(--color-emerald-500);
+  --color-indigo-600: var(--color-emerald-600);
+  --color-indigo-700: var(--color-emerald-700);
+  --color-indigo-800: var(--color-emerald-800);
+  --color-indigo-900: var(--color-emerald-900);
+  --color-indigo-950: var(--color-emerald-950);
+}
+
+/* Theme Autumn Embers - Gentle warm spiced amber & warm clay, soft and eye-friendly */
+.theme-sunset {
+  --color-zinc-50: #fdfaf6;
+  --color-zinc-100: #f7f1eb;
+  --color-zinc-200: #eee2d7;
+  --color-zinc-300: #dfccbe;
+  --color-zinc-400: #bca08d;
+  --color-zinc-500: #93735f;
+  --color-zinc-600: #745643;
+  --color-zinc-700: #573f30;
+  --color-zinc-800: #3e2c21;
+  --color-zinc-900: #291c15;
+  --color-zinc-950: #1b120c;
+  
+  --color-indigo-50: #fdf6f2;
+  --color-indigo-100: #faebd9;
+  --color-indigo-200: #f4d3b6;
+  --color-indigo-300: #eab48a;
+  --color-indigo-400: #dc8c58;
+  --color-indigo-500: #c86835;
+  --color-indigo-600: #af4f24;
+  --color-indigo-700: #8d3a19;
+  --color-indigo-800: #6f2e16;
+  --color-indigo-900: #582613;
+  --color-indigo-950: #331307;
+}
+
+/* Theme Lavender Haze - Soft muted lavender mist & calming slate-violet, pleasant and easy on the eyes */
+.theme-lavender {
+  --color-zinc-50: #faf9fd;
+  --color-zinc-100: #f2eff9;
+  --color-zinc-200: #e5e0f1;
+  --color-zinc-300: #d3cbe5;
+  --color-zinc-400: #aea2cc;
+  --color-zinc-500: #887aa8;
+  --color-zinc-600: #6a5d89;
+  --color-zinc-700: #50446b;
+  --color-zinc-800: #39304f;
+  --color-zinc-900: #231c34;
+  --color-zinc-950: #161122;
+
+  --color-indigo-50: #f7f5fe;
+  --color-indigo-100: #eeeafc;
+  --color-indigo-200: #ded5fa;
+  --color-indigo-300: #c5b4f4;
+  --color-indigo-400: #a58bea;
+  --color-indigo-500: #8865dc;
+  --color-indigo-600: #744ec4;
+  --color-indigo-700: #5f3da5;
+  --color-indigo-800: #4c3184;
+  --color-indigo-900: #3d276b;
+  --color-indigo-950: #251646;
+}

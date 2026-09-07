@@ -1,0 +1,48 @@
+{
+  "entities": {
+    "Flag": {
+      "title": "Custom Flag",
+      "description": "Represents a user-created or edited custom flag definition.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the flag" },
+        "name": { "type": "string", "description": "Display name of the flag" },
+        "code": { "type": "string", "description": "Country or flag code" },
+        "category": { "type": "string", "description": "Category name, e.g. Sovereign, Provinces & Territories, etc." },
+        "continent": { "type": "string", "description": "Continent location if applicable" },
+        "country": { "type": "string", "description": "Parent country if applicable" },
+        "ratio": { "type": "string", "description": "Flag aspect ratio, e.g. 2:3" },
+        "svgUrl": { "type": "string", "description": "URL or data string for the flag image" },
+        "description": { "type": "string", "description": "Detailed description or history of the flag" },
+        "adopted": { "type": "string", "description": "Date or year adopted" },
+        "trivia": { "type": "string", "description": "Interesting facts or trivia" }
+      },
+      "required": ["id", "name", "category"]
+    },
+    "TrashItem": {
+      "title": "Trash Flag Item",
+      "description": "Represents a flag placed in the trash bin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Flag ID" },
+        "deletedAt": { "type": "number", "description": "Timestamp when deleted" },
+        "isCustom": { "type": "boolean", "description": "Whether flag was custom" }
+      },
+      "required": ["id"]
+    }
+  },
+  "firestore": {
+    "/custom_flags/{flagId}": {
+      "schema": "Flag",
+      "description": "Collection storing custom and overridden flag definitions."
+    },
+    "/trash_flags/{flagId}": {
+      "schema": "TrashItem",
+      "description": "Collection storing flags currently in the trash bin."
+    },
+    "/deleted_flag_ids/{docId}": {
+      "schema": "TrashItem",
+      "description": "Collection tracking permanently hidden built-in flag IDs."
+    }
+  }
+}

@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Allow read and write for app custom flags and trash sync
+    match /custom_flags/{flagId} {
+      allow read, write: if true;
+    }
+
+    match /trash_flags/{flagId} {
+      allow read, write: if true;
+    }
+
+    match /deleted_flag_ids/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
