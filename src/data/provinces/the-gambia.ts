@@ -1,8 +1,47 @@
 import { createProvinceFlags } from './utils';
 
 export const THE_GAMBIA_PROVINCES = createProvinceFlags('The Gambia', [
-
-
+  {
+    name: 'Banjul',
+    code: 'gm-bj',
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Central River Division',
+    code: 'gm-cr',
+    aliases: ['CRD'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Lower River Division',
+    code: 'gm-lr',
+    aliases: ['LRD'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'North Bank Division',
+    code: 'gm-nb',
+    aliases: ['NBD'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Upper River Division',
+    code: 'gm-ur',
+    aliases: ['URD'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'West Coast Division',
+    code: 'gm-wc',
+    aliases: ['WCD'],
+    tags: [],
+    status: ""
+  },
   {
     name: 'British Gambia (Historic 1889–1965)',
     code: 'gm-col',

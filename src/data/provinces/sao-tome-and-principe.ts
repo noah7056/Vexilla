@@ -1,8 +1,48 @@
 import { createProvinceFlags } from './utils';
 
 export const SAO_TOME_AND_PRINCIPE_PROVINCES = createProvinceFlags('São Tomé and Príncipe', [
-
-
+  {
+    name: 'Água Grande District',
+    code: 'st-ag',
+    aliases: ['Água Grande'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Cantagalo District',
+    code: 'st-ca',
+    aliases: ['Cantagalo'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Caué District',
+    code: 'st-cu',
+    aliases: ['Caué'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Lembá District',
+    code: 'st-le',
+    aliases: ['Lembá'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Lobata District',
+    code: 'st-lo',
+    aliases: ['Lobata'],
+    tags: [],
+    status: ""
+  },
+  {
+    name: 'Mé-Zóchi District',
+    code: 'st-mz',
+    aliases: ['Mé-Zóchi'],
+    tags: [],
+    status: ""
+  },
   {
     name: 'Autonomous Region of Príncipe',
     code: 'st-pr',

@@ -626,7 +626,11 @@ const PRIMARY_COUNTRY_CONTINENTS: Record<string, string> = {
   'Rwanda': 'Africa',
   'Senegal': 'Africa',
   'Seychelles': 'Africa',
-  'Sierra Leone': 'Africa'
+  'Sierra Leone': 'Africa',
+  'São Tomé and Príncipe': 'Africa',
+  'Tanzania': 'Africa',
+  'The Gambia': 'Africa',
+  'Togo': 'Africa'
 };
 
 export const PROVINCE_COUNTRY_CONTINENT_MAP = PROVINCES_AND_TERRITORIES_FLAGS.reduce((acc, flag) => {
