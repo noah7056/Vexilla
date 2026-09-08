@@ -6,6 +6,37 @@ import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 
+const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
+  'Provinces & Territories': 'Country',
+  'Indigenous & Cultural Populations': 'Country / Region',
+  'Fictional': 'Universe / Franchise',
+  'LGBTQI+': 'Subcategory',
+  'Languages': 'Language Group',
+  'Pirate Flags': 'Group',
+  'Organizations': 'Scope',
+};
+
+const ORG_SCOPES = ['Global', 'Africa', 'Asia', 'Europe', 'Americas', 'Oceania'];
+
+const CATEGORIES_WITH_SUBS: Category[] = [
+  'Provinces & Territories',
+  'Indigenous & Cultural Populations',
+  'Fictional',
+  'LGBTQI+',
+  'Languages',
+  'Pirate Flags',
+  'Organizations',
+];
+
+const CATEGORIES_WITH_CONTINENT: Category[] = [
+  'Sovereign States',
+  'Non-Sovereign & Unrecognized',
+  'US States',
+  'Provinces & Territories',
+  'Indigenous & Cultural Populations',
+  'Organizations',
+];
+
 const LAST_SELECTIONS_KEY = 'vexillo_last_added_flag_selections';
 
 interface LastAddedSelections {
@@ -112,14 +143,30 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
-  // Collect unique countries for auto-suggest
-  const existingCountries = useMemo(() => {
+  const handleCategoryChange = (newCat: Category) => {
+    setCategory(newCat);
+    setCountry('');
+    if (!CATEGORIES_WITH_CONTINENT.includes(newCat)) {
+      setContinent('');
+    }
+    if (newCat === 'Organizations' && !continent) {
+      setContinent('Global');
+    }
+  };
+
+  // Derive sub-options per category from existing flags
+  const subOptions = useMemo(() => {
+    if (category === 'Organizations') return ORG_SCOPES;
     const c = new Set<string>();
     FLAGS.forEach(f => {
-      if (f.country) c.add(f.country);
+      if (f.category === category && f.country) c.add(f.country);
     });
     return Array.from(c).sort();
-  }, [FLAGS]);
+  }, [category, FLAGS]);
+
+  const hasSubOptions = CATEGORIES_WITH_SUBS.includes(category);
+  const hasContinent = CATEGORIES_WITH_CONTINENT.includes(category);
+  const subLabel = CATEGORY_SUB_LABELS[category] || 'Country Association';
 
   const handleSave = () => {
     setError('');
@@ -316,7 +363,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                   </label>
                   <select
                     value={category}
-                    onChange={e => setCategory(e.target.value as Category)}
+                    onChange={e => handleCategoryChange(e.target.value as Category)}
                     className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                   >
                     {ALL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -329,9 +376,11 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                   <select
                     value={continent}
                     onChange={e => setContinent(e.target.value as Continent | '')}
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                    disabled={!hasContinent}
+                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <option value="">(None)</option>
+                    {category === 'Organizations' && <option value="Global">Global</option>}
                     {ALL_CONTINENTS.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
@@ -340,19 +389,29 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                    Country Association
+                    {subLabel}
                   </label>
-                  <input
-                    type="text"
-                    list="country-suggestions"
-                    value={country}
-                    onChange={e => setCountry(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
-                    placeholder="e.g. Canada (for provinces)"
-                  />
-                  <datalist id="country-suggestions">
-                    {existingCountries.map(c => <option key={c} value={c} />)}
-                  </datalist>
+                  {hasSubOptions ? (
+                    <select
+                      value={country}
+                      onChange={e => setCountry(e.target.value)}
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                    >
+                      <option value="">(None)</option>
+                      {subOptions.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={country}
+                      onChange={e => setCountry(e.target.value)}
+                      disabled
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
+                      placeholder="N/A for this category"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
