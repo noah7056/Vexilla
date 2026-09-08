@@ -2,23 +2,12 @@ import { createOrganizationFlags } from './utils';
 
 export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North America', [
   {
-    id: 'org-oas-region',
-    name: 'Organization of American States (Regional)',
-    image: 'Flag_of_the_Organization_of_American_States.svg',
-    continent: 'North America',
-    country: 'Americas',
-    aliases: ['OAS', 'Organization of American States'],
-    tags: ['green', 'white', 'emblem'],
-    status: 'official',
-  },
-  {
-    id: 'org-caricom-region',
-    name: 'Caribbean Community (Regional)',
+    id: 'org-caricom',
+    name: 'Caribbean Community',
     image: 'Flag_of_the_Caribbean_Community.svg',
     continent: 'North America',
     country: 'Americas',
-    aliases: ['CARICOM', 'Caribbean Community'],
-    tags: ['blue', 'gold', 'emblem'],
+    aliases: ['CARICOM', 'Caribbean Community', 'Communauté caribéenne'],
     status: 'official',
   },
   {
@@ -28,7 +17,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'South America',
     country: 'Americas',
     aliases: ['Mercosur', 'Mercosul', 'Southern Common Market'],
-    tags: ['blue', 'white', 'sun', 'emblem'],
     status: 'official',
   },
   {
@@ -38,7 +26,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'South America',
     country: 'Americas',
     aliases: ['CAN', 'Andean Community', 'Comunidad Andina'],
-    tags: ['red', 'yellow', 'emblem'],
     status: 'official',
   },
   {
@@ -48,17 +35,15 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'South America',
     country: 'Americas',
     aliases: ['SELA', 'Latin American and Caribbean Economic System', 'Sistema Económico Latinoamericano y del Caribe'],
-    tags: ['blue', 'emblem'],
     status: 'official',
   },
   {
-    id: 'org-tica',
+    id: 'org-sica',
     name: 'Central American Integration System',
     image: 'Flag_of_SICA.svg',
     continent: 'North America',
     country: 'Americas',
     aliases: ['SICA', 'Central American Integration System', 'Sistema de la Integración Centroamericana'],
-    tags: ['blue', 'white', 'triangle'],
     status: 'official',
   },
   {
@@ -68,7 +53,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'North America',
     country: 'Americas',
     aliases: ['Petrocaribe', 'Petrocaribe Energy Cooperation'],
-    tags: ['blue', 'white', 'emblem'],
     status: 'official',
   },
   {
@@ -78,7 +62,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'North America',
     country: 'Americas',
     aliases: ['ALBA', 'Bolivarian Alliance for the Peoples of Our America', 'Alianza Bolivariana para los Pueblos de Nuestra América'],
-    tags: ['red', 'blue', 'emblem'],
     status: 'official',
   },
   {
@@ -88,7 +71,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'South America',
     country: 'Americas',
     aliases: ['UNASUR', 'UNASUL', 'Union of South American Nations', 'Unión de Naciones Suramericanas'],
-    tags: ['blue', 'green', 'emblem'],
     status: 'official',
   },
   {
@@ -98,7 +80,6 @@ export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North Ame
     continent: 'South America',
     country: 'Americas',
     aliases: ['PROSUR', 'Forum for the Progress and Development of South America'],
-    tags: ['blue', 'emblem'],
     status: 'official',
   },
 ]);

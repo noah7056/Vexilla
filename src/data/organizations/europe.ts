@@ -2,33 +2,21 @@ import { createOrganizationFlags } from './utils';
 
 export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
   {
-    id: 'org-eu-region',
-    name: 'European Union (Regional)',
+    id: 'org-eu',
+    name: 'European Union',
     image: 'Flag_of_Europe.svg',
     continent: 'Europe',
     country: 'Europe',
     aliases: ['EU', 'European Union'],
-    tags: ['blue', 'gold', 'circle', 'stars'],
     status: 'official',
   },
   {
-    id: 'org-coe-region',
-    name: 'Council of Europe (Regional)',
+    id: 'org-coe',
+    name: 'Council of Europe',
     image: 'Flag_of_the_Council_of_Europe.svg',
     continent: 'Europe',
     country: 'Europe',
-    aliases: ['CoE', 'Council of Europe'],
-    tags: ['blue', 'gold', 'circle', 'stars'],
-    status: 'official',
-  },
-  {
-    id: 'org-nato-region',
-    name: 'North Atlantic Treaty Organization (Regional)',
-    image: 'Flag_of_NATO.svg',
-    continent: 'Europe',
-    country: 'Europe',
-    aliases: ['NATO', 'North Atlantic Treaty Organization'],
-    tags: ['blue', 'white', 'compass', 'star'],
+    aliases: ['CoE', 'CdE', 'Council of Europe'],
     status: 'official',
   },
   {
@@ -38,7 +26,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['OSCE', 'Organization for Security and Co-operation in Europe', 'Organisation pour la sécurité et la coopération en Europe'],
-    tags: ['blue', 'white', 'emblem'],
     status: 'official',
   },
   {
@@ -48,7 +35,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['EFTA', 'European Free Trade Association', 'Association européenne de libre-échange'],
-    tags: ['blue', 'yellow', 'emblem'],
     status: 'official',
   },
   {
@@ -58,7 +44,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['CEFTA', 'Central European Free Trade Agreement'],
-    tags: ['blue', 'emblem'],
     status: 'official',
   },
   {
@@ -68,7 +53,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['CBSS', 'Council of the Baltic Sea States'],
-    tags: ['blue', 'white', 'emblem'],
     status: 'official',
   },
   {
@@ -78,7 +62,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['Nordic Council', 'Nordiska rådet'],
-    tags: ['blue', 'white', 'emblem'],
     status: 'official',
   },
   {
@@ -88,27 +71,15 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['Benelux', 'Benelux Union', 'Union benelux'],
-    tags: ['red', 'white', 'blue', 'emblem'],
     status: 'official',
   },
   {
-    id: 'org-selecpa',
-    name: 'Central American Integration System (European)',
-    image: 'Flag_of_SICA.svg',
-    continent: 'Europe',
-    country: 'Europe',
-    aliases: ['SICA', 'Central American Integration System'],
-    tags: ['blue', 'white', 'triangle'],
-    status: 'official',
-  },
-  {
-    id: 'org-bsp',
+    id: 'org-bsec',
     name: 'Black Sea Economic Cooperation',
     image: 'Flag_of_the_Black_Sea_Economic_Cooperation.svg',
     continent: 'Europe',
     country: 'Europe',
     aliases: ['BSEC', 'Black Sea Economic Cooperation'],
-    tags: ['blue', 'emblem'],
     status: 'official',
   },
   {
@@ -118,7 +89,6 @@ export const EUROPE_ORG_FLAGS = createOrganizationFlags('Europe', 'Europe', [
     continent: 'Europe',
     country: 'Europe',
     aliases: ['GUAM', 'Organization for Democracy and Economic Development'],
-    tags: ['blue', 'green', 'emblem'],
     status: 'official',
   },
 ]);
