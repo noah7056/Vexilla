@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink } from 'lucide-react';
+import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Flag, Category, Continent, FlagStatus, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES } from '../types';
 import { useFlags } from '../contexts/FlagsContext';
@@ -142,15 +142,28 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
   const [error, setError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [addingCustom, setAddingCustom] = useState(false);
+  const [customValue, setCustomValue] = useState('');
 
   const handleCategoryChange = (newCat: Category) => {
     setCategory(newCat);
     setCountry('');
+    setAddingCustom(false);
+    setCustomValue('');
     if (!CATEGORIES_WITH_CONTINENT.includes(newCat)) {
       setContinent('');
     }
     if (newCat === 'Organizations' && !continent) {
       setContinent('Global');
+    }
+  };
+
+  const confirmCustom = () => {
+    const trimmed = customValue.trim();
+    if (trimmed) {
+      setCountry(trimmed);
+      setAddingCustom(false);
+      setCustomValue('');
     }
   };
 
@@ -392,16 +405,57 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                     {subLabel}
                   </label>
                   {hasSubOptions ? (
-                    <select
-                      value={country}
-                      onChange={e => setCountry(e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
-                    >
-                      <option value="">(None)</option>
-                      {subOptions.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
+                    addingCustom ? (
+                      <div className="flex gap-1.5">
+                        <input
+                          type="text"
+                          value={customValue}
+                          onChange={e => setCustomValue(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); confirmCustom(); } if (e.key === 'Escape') { setAddingCustom(false); setCustomValue(''); } }}
+                          autoFocus
+                          className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                          placeholder={`New ${subLabel.toLowerCase()} name`}
+                        />
+                        <button
+                          type="button"
+                          onClick={confirmCustom}
+                          className="px-2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors flex items-center justify-center"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setAddingCustom(false); setCustomValue(''); }}
+                          className="px-2 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-1.5">
+                        <select
+                          value={country}
+                          onChange={e => setCountry(e.target.value)}
+                          className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                        >
+                          <option value="">(None)</option>
+                          {subOptions.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                          {country && !subOptions.includes(country) && (
+                            <option value={country}>{country}</option>
+                          )}
+                        </select>
+                        <button
+                          type="button"
+                          title={`Add new ${subLabel.toLowerCase()}`}
+                          onClick={() => setAddingCustom(true)}
+                          className="px-2 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-600 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center flex-shrink-0"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )
                   ) : (
                     <input
                       type="text"
