@@ -268,24 +268,6 @@ function AppInner() {
               <span className="text-[10px] font-medium">{item.label}</span>
             </button>
           ))}
-          <button
-            onClick={() => {
-              if (isAdmin) {
-                lock();
-              } else {
-                setIsPasskeyModalOpen(true);
-              }
-            }}
-            className={`flex flex-col items-center gap-1 p-2 rounded-lg min-w-[64px] transition-colors ${
-              isAdmin
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-            }`}
-            title={isAdmin ? 'Admin Mode Active' : 'Admin Mode Locked'}
-          >
-            {isAdmin ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
-            <span className="text-[10px] font-medium">{isAdmin ? 'Admin' : 'Locked'}</span>
-          </button>
           <div ref={mobileThemeRef} className="relative">
             {isThemeMenuOpen && (
               <div className="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg z-50 overflow-hidden py-1">
