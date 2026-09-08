@@ -3,7 +3,8 @@ import { GLOBAL_ORG_FLAGS } from './international';
 import { AFRICA_ORG_FLAGS } from './africa';
 import { ASIA_ORG_FLAGS } from './asia';
 import { EUROPE_ORG_FLAGS } from './europe';
-import { AMERICAS_ORG_FLAGS } from './americas';
+import { NORTH_AMERICA_ORG_FLAGS } from './north-america';
+import { SOUTH_AMERICA_ORG_FLAGS } from './south-america';
 import { OCEANIA_ORG_FLAGS } from './oceania';
 
 export {
@@ -11,7 +12,8 @@ export {
   AFRICA_ORG_FLAGS,
   ASIA_ORG_FLAGS,
   EUROPE_ORG_FLAGS,
-  AMERICAS_ORG_FLAGS,
+  NORTH_AMERICA_ORG_FLAGS,
+  SOUTH_AMERICA_ORG_FLAGS,
   OCEANIA_ORG_FLAGS
 };
 
@@ -20,7 +22,8 @@ export const ORGANIZATION_FLAGS: Flag[] = [
   ...AFRICA_ORG_FLAGS,
   ...ASIA_ORG_FLAGS,
   ...EUROPE_ORG_FLAGS,
-  ...AMERICAS_ORG_FLAGS,
+  ...NORTH_AMERICA_ORG_FLAGS,
+  ...SOUTH_AMERICA_ORG_FLAGS,
   ...OCEANIA_ORG_FLAGS
 ];
 
@@ -33,7 +36,8 @@ const PRIMARY_ORG_CONTINENTS: Record<string, Continent> = {
   'Africa': 'Africa',
   'Asia': 'Asia',
   'Europe': 'Europe',
-  'Americas': 'North America',
+  'North America': 'North America',
+  'South America': 'South America',
   'Oceania': 'Oceania'
 };
 

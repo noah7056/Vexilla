@@ -347,42 +347,36 @@ export function CategoryFilterChips({
                         }
 
                         if (cat === 'Organizations') {
-                          const ORG_PRIMARY_CONTINENTS: Record<string, string> = {
-                            'Global': 'Global',
+                          const ORG_SECTION_MAP: Record<string, string> = {
+                            'Global': 'Others',
                             'Africa': 'Africa',
                             'Asia': 'Asia',
                             'Europe': 'Europe',
-                            'Americas': 'Americas',
+                            'North America': 'Others',
+                            'South America': 'Others',
                             'Oceania': 'Oceania'
                           };
 
-                          const orgCountryToContinentMap: Record<string, string> = {};
+                          const orgCountryToSectionMap: Record<string, string> = {};
                           availableFlags.forEach((f) => {
-                            if (f.country && !orgCountryToContinentMap[f.country]) {
-                              if (ORG_PRIMARY_CONTINENTS[f.country]) {
-                                orgCountryToContinentMap[f.country] = ORG_PRIMARY_CONTINENTS[f.country];
-                              } else {
-                                orgCountryToContinentMap[f.country] = f.continent || 'Other';
-                              }
+                            if (f.country && !orgCountryToSectionMap[f.country]) {
+                              orgCountryToSectionMap[f.country] = ORG_SECTION_MAP[f.country] || f.continent || 'Other';
                             }
                           });
 
                           const orgGrouped: Record<string, Set<string>> = {};
-                          Object.entries(orgCountryToContinentMap).forEach(([country, cont]) => {
-                            if (!orgGrouped[cont]) orgGrouped[cont] = new Set();
-                            orgGrouped[cont].add(country);
+                          Object.entries(orgCountryToSectionMap).forEach(([country, section]) => {
+                            if (!orgGrouped[section]) orgGrouped[section] = new Set();
+                            orgGrouped[section].add(country);
                           });
 
-                          const orgSortedContinents = Object.keys(orgGrouped).sort((a, b) => {
-                            const order = ['Global', 'Africa', 'Asia', 'Europe', 'Americas', 'Oceania'];
-                            const ai = order.indexOf(a);
-                            const bi = order.indexOf(b);
-                            return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-                          });
-                          const orgFilteredGroups = orgSortedContinents
-                            .map((cont) => ({
-                              continent: cont,
-                              options: Array.from(orgGrouped[cont])
+                          const orgSortedSections = ['Africa', 'Asia', 'Europe', 'Oceania', 'Others'].filter(
+                            s => orgGrouped[s] && orgGrouped[s].size > 0
+                          );
+                          const orgFilteredGroups = orgSortedSections
+                            .map((section) => ({
+                              section,
+                              options: Array.from(orgGrouped[section])
                                 .filter(Boolean)
                                 .sort()
                                 .filter((opt: any) => opt && opt.toLowerCase().includes(submenuSearch.toLowerCase())),
@@ -394,10 +388,10 @@ export function CategoryFilterChips({
                           }
 
                           return orgFilteredGroups.map((group) => (
-                            <div key={group.continent} className="flex flex-col gap-2 mb-3 last:mb-0">
-                              {orgSortedContinents.length > 1 && (
+                            <div key={group.section} className="flex flex-col gap-2 mb-3 last:mb-0">
+                              {orgSortedSections.length > 1 && (
                                 <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-700/60 pb-1 w-full">
-                                  {group.continent}
+                                  {group.section}
                                 </div>
                               )}
                               <div className="flex flex-wrap gap-1.5">
