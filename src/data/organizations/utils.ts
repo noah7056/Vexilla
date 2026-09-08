@@ -32,8 +32,8 @@ export function createOrganizationFlags(
     }
 
     const rawId = flag.id || flag.code || flag.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const finalId = rawId.startsWith('org-') ? rawId : `org-${rawId}`;
-    const finalCode = flag.code || flag.id || rawId.replace(/^org-/, '');
+    const finalId = flag.id || (rawId.startsWith('org-') ? rawId : `org-${rawId}`);
+    const finalCode = flag.code || (flag.id ? flag.id.replace(/^custom-/, '') : rawId.replace(/^org-/, ''));
 
     let finalAliases: string[] | undefined = undefined;
     if (flag.aliases) {
