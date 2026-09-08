@@ -32,7 +32,7 @@ export type Continent =
   | 'Oceania'
   | 'Antarctica'
   | 'Fictional Universes'
-  | 'International';
+  | 'Global';
 
 export const ALL_CONTINENTS: Continent[] = [
   'Africa',

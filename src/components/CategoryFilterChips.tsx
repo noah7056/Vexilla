@@ -348,7 +348,7 @@ export function CategoryFilterChips({
 
                         if (cat === 'Organizations') {
                           const ORG_PRIMARY_CONTINENTS: Record<string, string> = {
-                            'International': 'International',
+                            'Global': 'Global',
                             'Africa': 'Africa',
                             'Asia': 'Asia',
                             'Europe': 'Europe',
@@ -374,7 +374,7 @@ export function CategoryFilterChips({
                           });
 
                           const orgSortedContinents = Object.keys(orgGrouped).sort((a, b) => {
-                            const order = ['International', 'Africa', 'Asia', 'Europe', 'Americas', 'Oceania'];
+                            const order = ['Global', 'Africa', 'Asia', 'Europe', 'Americas', 'Oceania'];
                             const ai = order.indexOf(a);
                             const bi = order.indexOf(b);
                             return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);

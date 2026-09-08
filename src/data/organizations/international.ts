@@ -1,6 +1,6 @@
 import { createOrganizationFlags } from './utils';
 
-export const INTERNATIONAL_ORG_FLAGS = createOrganizationFlags('International', 'International', [
+export const GLOBAL_ORG_FLAGS = createOrganizationFlags('Global', 'Global', [
   {
     id: 'org-un',
     name: 'United Nations',
@@ -16,24 +16,10 @@ export const INTERNATIONAL_ORG_FLAGS = createOrganizationFlags('International', 
     status: 'official',
   },
   {
-    id: 'org-au',
-    name: 'African Union',
-    image: 'Flag_of_the_African_Union.svg',
-    aliases: ['AU', 'Union Africaine', 'UA'],
-    status: 'official',
-  },
-  {
     id: 'org-arab-league',
     name: 'Arab League',
     image: 'Flag_of_the_Arab_League.svg',
     aliases: ['League of Arab States', 'AL', 'Jami\'at al-Duwal al-Arabiyya'],
-    status: 'official',
-  },
-  {
-    id: 'org-oas',
-    name: 'Organization of American States',
-    image: 'Flag_of_the_Organization_of_American_States.svg',
-    aliases: ['OAS', 'Organization of American States', 'Organización de los Estados Americanos'],
     status: 'official',
   },
   {
@@ -48,34 +34,6 @@ export const INTERNATIONAL_ORG_FLAGS = createOrganizationFlags('International', 
     name: 'Organisation internationale de la Francophonie',
     image: 'Flag_of_La_Francophonie.svg',
     aliases: ['OIF', 'La Francophonie', 'International Organisation of La Francophonie'],
-    status: 'official',
-  },
-  {
-    id: 'org-cis',
-    name: 'Commonwealth of Independent States',
-    image: 'Flag_of_the_CIS.svg',
-    aliases: ['CIS', 'Commonwealth of Independent States', 'Sodruzhestvo Nezavisimykh Gosudarstv'],
-    status: 'official',
-  },
-  {
-    id: 'org-turkic-states',
-    name: 'Organization of Turkic States',
-    image: 'Flag_of_the_Organization_of_Turkic_States.svg',
-    aliases: ['OTS', 'Organization of Turkic States', 'Turkic Council', 'Conseil turcique'],
-    status: 'official',
-  },
-  {
-    id: 'org-cst',
-    name: 'Collective Security Treaty Organization',
-    image: 'Flag_of_the_Collective_Security_Treaty_Organization.svg',
-    aliases: ['CSTO', 'Collective Security Treaty Organization', 'ODKB'],
-    status: 'official',
-  },
-  {
-    id: 'org-sco',
-    name: 'Shanghai Cooperation Organisation',
-    image: 'Flag_of_the_Shanghai_Cooperation_Organisation.svg',
-    aliases: ['SCO', 'Shanghai Cooperation Organisation', 'Shanghai Cooperation Organization'],
     status: 'official',
   },
   {

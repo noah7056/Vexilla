@@ -2,6 +2,15 @@ import { createOrganizationFlags } from './utils';
 
 export const AFRICA_ORG_FLAGS = createOrganizationFlags('Africa', 'Africa', [
   {
+    id: 'org-au',
+    name: 'African Union',
+    image: 'Flag_of_the_African_Union.svg',
+    continent: 'Africa',
+    country: 'Africa',
+    aliases: ['AU', 'Union Africaine', 'UA'],
+    status: 'official',
+  },
+  {
     id: 'org-ecowas',
     name: 'Economic Community of West African States',
     image: 'Flag_of_ECOMOG.svg',

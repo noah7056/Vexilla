@@ -2,6 +2,15 @@ import { createOrganizationFlags } from './utils';
 
 export const AMERICAS_ORG_FLAGS = createOrganizationFlags('Americas', 'North America', [
   {
+    id: 'org-oas',
+    name: 'Organization of American States',
+    image: 'Flag_of_the_Organization_of_American_States.svg',
+    continent: 'North America',
+    country: 'Americas',
+    aliases: ['OAS', 'Organization of American States', 'Organización de los Estados Americanos'],
+    status: 'official',
+  },
+  {
     id: 'org-caricom',
     name: 'Caribbean Community',
     image: 'Flag_of_the_Caribbean_Community.svg',

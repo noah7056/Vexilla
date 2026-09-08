@@ -1,5 +1,5 @@
 import { Flag, Continent } from '../../types';
-import { INTERNATIONAL_ORG_FLAGS } from './international';
+import { GLOBAL_ORG_FLAGS } from './international';
 import { AFRICA_ORG_FLAGS } from './africa';
 import { ASIA_ORG_FLAGS } from './asia';
 import { EUROPE_ORG_FLAGS } from './europe';
@@ -7,7 +7,7 @@ import { AMERICAS_ORG_FLAGS } from './americas';
 import { OCEANIA_ORG_FLAGS } from './oceania';
 
 export {
-  INTERNATIONAL_ORG_FLAGS,
+  GLOBAL_ORG_FLAGS,
   AFRICA_ORG_FLAGS,
   ASIA_ORG_FLAGS,
   EUROPE_ORG_FLAGS,
@@ -16,7 +16,7 @@ export {
 };
 
 export const ORGANIZATION_FLAGS: Flag[] = [
-  ...INTERNATIONAL_ORG_FLAGS,
+  ...GLOBAL_ORG_FLAGS,
   ...AFRICA_ORG_FLAGS,
   ...ASIA_ORG_FLAGS,
   ...EUROPE_ORG_FLAGS,
@@ -29,7 +29,7 @@ export const ORGANIZATION_COUNTRIES: string[] = Array.from(
 ).sort();
 
 const PRIMARY_ORG_CONTINENTS: Record<string, Continent> = {
-  'International': 'International',
+  'Global': 'Global',
   'Africa': 'Africa',
   'Asia': 'Asia',
   'Europe': 'Europe',
@@ -67,7 +67,7 @@ export const ORGANIZATION_COUNTRIES_BY_CONTINENT: Record<Continent, string[]> = 
     'Oceania': [],
     'Antarctica': [],
     'Fictional Universes': [],
-    'International': []
+    'Global': []
   } as Record<Continent, string[]>
 );
 
