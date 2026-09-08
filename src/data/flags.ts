@@ -25,6 +25,13 @@ import {
 import { LGBTQ_FLAGS } from './lgbtq';
 import { LANGUAGE_FLAGS } from './languages';
 import { PIRATE_FLAGS } from './pirates';
+import {
+  ORGANIZATION_FLAGS,
+  ORGANIZATION_COUNTRIES,
+  ORGANIZATION_COUNTRY_CONTINENT_MAP,
+  ORGANIZATION_COUNTRIES_BY_CONTINENT,
+  ORGANIZATION_CONTINENTS
+} from './organizations';
 import { BUILTIN_CUSTOM_FLAGS, BUILTIN_DELETED_FLAG_IDS } from './customFlagsData';
 
 const ALL_PROVINCES = [
@@ -67,6 +74,11 @@ export {
   LGBTQ_FLAGS,
   LANGUAGE_FLAGS,
   PIRATE_FLAGS,
+  ORGANIZATION_FLAGS,
+  ORGANIZATION_COUNTRIES,
+  ORGANIZATION_COUNTRY_CONTINENT_MAP,
+  ORGANIZATION_COUNTRIES_BY_CONTINENT,
+  ORGANIZATION_CONTINENTS,
   BUILTIN_CUSTOM_FLAGS,
   BUILTIN_DELETED_FLAG_IDS
 };
@@ -80,7 +92,8 @@ export const BASE_FLAGS: Flag[] = [
   ...INDIGENOUS_FLAGS,
   ...LGBTQ_FLAGS,
   ...LANGUAGE_FLAGS,
-  ...PIRATE_FLAGS
+  ...PIRATE_FLAGS,
+  ...ORGANIZATION_FLAGS
 ];
 
 // Combine base flags with baked custom flags, allowing custom flags to add new entries or override existing ones

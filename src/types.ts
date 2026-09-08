@@ -7,7 +7,8 @@ export type Category =
   | 'Indigenous & Cultural Populations'
   | 'LGBTQI+'
   | 'Languages'
-  | 'Pirate Flags';
+  | 'Pirate Flags'
+  | 'Organizations';
 
 export const ALL_CATEGORIES: Category[] = [
   'Sovereign States',
@@ -18,7 +19,8 @@ export const ALL_CATEGORIES: Category[] = [
   'Indigenous & Cultural Populations',
   'LGBTQI+',
   'Languages',
-  'Pirate Flags'
+  'Pirate Flags',
+  'Organizations'
 ];
 
 export type Continent =
@@ -29,7 +31,8 @@ export type Continent =
   | 'South America'
   | 'Oceania'
   | 'Antarctica'
-  | 'Fictional Universes';
+  | 'Fictional Universes'
+  | 'International';
 
 export const ALL_CONTINENTS: Continent[] = [
   'Africa',

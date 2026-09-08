@@ -75,7 +75,7 @@ export function Quiz({ onAnswer }: QuizProps) {
         return false;
       }
 
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
         const activeSub = config.selectedSubOptions?.[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {
@@ -98,7 +98,7 @@ export function Quiz({ onAnswer }: QuizProps) {
       }
 
       // 2. Sub-options
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
         const activeSub = config.selectedSubOptions?.[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {
@@ -112,7 +112,8 @@ export function Quiz({ onAnswer }: QuizProps) {
         flag.category === 'Fictional' ||
         flag.category === 'LGBTQI+' ||
         flag.category === 'Languages' ||
-        flag.category === 'Pirate Flags';
+        flag.category === 'Pirate Flags' ||
+        flag.category === 'Organizations';
       if (!isGlobalCat) {
         const isAllCont = config.continents.includes('All' as any) || config.continents.length === ALL_CONTINENTS.length;
         if (!isAllCont && flag.continent && !config.continents.includes(flag.continent)) {
@@ -1079,7 +1080,7 @@ export function Quiz({ onAnswer }: QuizProps) {
 
                         {/* Name hint when answer is revealed or if always show in options */}
                         {(() => {
-                          const isSubCategory = ['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations', 'Pirate Flags'].includes(option.category);
+                          const isSubCategory = ['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations', 'Pirate Flags', 'Organizations'].includes(option.category);
                           const shouldShowCountry = isSubCategory && option.country && (config.showCountryInOptions || (selectedAnswer && (config.showCountryHintAfterAnswer ?? true) && (isCorrect || isSelected)));
                           
                           const showBox = selectedAnswer || (config.showCountryInOptions && shouldShowCountry);

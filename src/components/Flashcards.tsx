@@ -173,7 +173,7 @@ export function Flashcards() {
       const matchesCat = selectedCategories.includes('All') || selectedCategories.includes(flag.category);
       if (!matchesCat) return false;
 
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
         const activeSub = selectedSubOptions[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {
@@ -192,7 +192,7 @@ export function Flashcards() {
       if (!matchesCat) return false;
 
       // 2. Sub-options
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
         const activeSub = selectedSubOptions[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {
@@ -206,7 +206,8 @@ export function Flashcards() {
         flag.category === 'Fictional' ||
         flag.category === 'LGBTQI+' ||
         flag.category === 'Languages' ||
-        flag.category === 'Pirate Flags';
+        flag.category === 'Pirate Flags' ||
+        flag.category === 'Organizations';
       const matchesCont =
         selectedContinents.includes('All') ||
         isGlobalCat ||
