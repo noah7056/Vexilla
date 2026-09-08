@@ -347,30 +347,17 @@ export function CategoryFilterChips({
                         }
 
                         if (cat === 'Organizations') {
-                          const ORG_SECTION_MAP: Record<string, string> = {
-                            'Global': 'Others',
-                            'Africa': 'Africa',
-                            'Asia': 'Asia',
-                            'Europe': 'Europe',
-                            'North America': 'Others',
-                            'South America': 'Others',
-                            'Oceania': 'Oceania'
-                          };
-
-                          const orgCountryToSectionMap: Record<string, string> = {};
-                          availableFlags.forEach((f) => {
-                            if (f.country && !orgCountryToSectionMap[f.country]) {
-                              orgCountryToSectionMap[f.country] = ORG_SECTION_MAP[f.country] || f.continent || 'Other';
-                            }
-                          });
+                          const SECTION_ORDER = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania', 'Others'];
 
                           const orgGrouped: Record<string, Set<string>> = {};
-                          Object.entries(orgCountryToSectionMap).forEach(([country, section]) => {
+                          availableFlags.forEach((f) => {
+                            if (!f.country) return;
+                            const section = f.continent === 'Global' ? 'Others' : (f.continent || 'Others');
                             if (!orgGrouped[section]) orgGrouped[section] = new Set();
-                            orgGrouped[section].add(country);
+                            orgGrouped[section].add(f.country);
                           });
 
-                          const orgSortedSections = ['Africa', 'Asia', 'Europe', 'Oceania', 'Others'].filter(
+                          const orgSortedSections = SECTION_ORDER.filter(
                             s => orgGrouped[s] && orgGrouped[s].size > 0
                           );
                           const orgFilteredGroups = orgSortedSections
