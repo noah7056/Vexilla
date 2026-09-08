@@ -1,3 +1,60 @@
 import { createOrganizationFlags } from './utils';
 
-export const SOUTH_AMERICA_ORG_FLAGS = createOrganizationFlags('South America', 'South America', []);
+export const SOUTH_AMERICA_ORG_FLAGS = createOrganizationFlags('South America', 'South America', [
+  {
+    id: 'org-mercosur',
+    name: 'Mercado Común del Sur',
+    image: 'Flag_of_Mercosur.svg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['Mercosur', 'Mercosul', 'Southern Common Market'],
+    status: 'official',
+  },
+  {
+    id: 'org-can',
+    name: 'Andean Community',
+    image: 'Flag_of_the_Andean_Community.svg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['CAN', 'Andean Community', 'Comunidad Andina'],
+    status: 'official',
+  },
+  {
+    id: 'org-sela',
+    name: 'Latin American and Caribbean Economic System',
+    image: 'Bandera_SELA.jpg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['SELA', 'Latin American and Caribbean Economic System', 'Sistema Económico Latinoamericano y del Caribe'],
+    status: 'official',
+  },
+  {
+    id: 'org-unasur',
+    name: 'Union of South American Nations',
+    image: 'Flag_of_UNASUR.svg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['UNASUR', 'UNASUL', 'Union of South American Nations', 'Unión de Naciones Suramericanas'],
+    status: 'official',
+  },
+  {
+    id: 'org-prosur',
+    name: 'Forum for the Progress and Development of South America',
+    image: 'Flag_of_PROSUR.svg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['PROSUR', 'Forum for the Progress and Development of South America', 'Forum for the Progress and Integration of South America'],
+    status: 'official',
+  },
+  {
+    id: 'custom-org-lap-1788871349481',
+    code: 'org-lap',
+    name: 'Latin American Parliament',
+    image: 'Flag_of_Latin_American_Parliament.svg',
+    continent: 'South America',
+    country: 'South America',
+    aliases: ['Parlatino', 'Latin American Parliament', 'Parlamento Latinoamericano'],
+    status: 'official',
+  },
+]);
+

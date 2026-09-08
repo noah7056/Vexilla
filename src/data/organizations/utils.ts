@@ -11,6 +11,8 @@ export interface OrganizationFlagInput {
   aliases?: string[] | string;
   tags?: string[] | string;
   status?: FlagStatus | '';
+  creator?: string;
+  sourceUrl?: string;
 }
 
 export function createOrganizationFlags(
@@ -63,7 +65,9 @@ export function createOrganizationFlags(
       imageUrl: finalImageUrl,
       ...(status ? { status } : {}),
       ...(finalAliases && finalAliases.length > 0 ? { aliases: finalAliases } : {}),
-      tags: finalTags
+      tags: finalTags,
+      ...(flag.creator ? { creator: flag.creator } : {}),
+      ...(flag.sourceUrl ? { sourceUrl: flag.sourceUrl } : {})
     };
   });
 }

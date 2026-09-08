@@ -169,8 +169,11 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
 
   // Derive sub-options per category from existing flags
   const subOptions = useMemo(() => {
-    if (category === 'Organizations') return ORG_SCOPES;
     const c = new Set<string>();
+    if (category === 'Organizations') {
+      ORG_SCOPES.forEach(s => c.add(s));
+      c.add('Americas');
+    }
     FLAGS.forEach(f => {
       if (f.category === category && f.country) c.add(f.country);
     });
