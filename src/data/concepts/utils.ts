@@ -1,10 +1,12 @@
-import { Flag, FlagStatus } from '../../types';
+import { Continent, Flag, FlagStatus } from '../../types';
 
 export interface ConceptFlagInput {
   id?: string;
   name: string;
   code: string;
   country?: string;
+  /** Sub-section this flag belongs to (Concepts, Experiments, Community, Personal). */
+  continent?: Continent | string;
   image?: string;
   imageUrl?: string;
   aliases?: string[] | string;
@@ -53,6 +55,7 @@ export function createConceptFlags(
       name: flag.name,
       code: cleanCode,
       category: 'Concepts' as const,
+      continent: (flag.continent || subgroup) as Continent,
       country: flag.country || subgroup,
       imageUrl: finalImageUrl,
       ...(status ? { status } : {}),

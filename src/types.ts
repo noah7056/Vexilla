@@ -34,7 +34,14 @@ export type Continent =
   | 'Oceania'
   | 'Antarctica'
   | 'Fictional Universes'
-  | 'Global';
+  | 'Global'
+  // Section-grouping values stored in `continent` for the Concepts category
+  // (precedent: 'Global' and 'Fictional Universes' are also non-geographic).
+  // Kept out of ALL_CONTINENTS so continent pickers stay geographic-only.
+  | 'Concepts'
+  | 'Experiments'
+  | 'Community'
+  | 'Personal';
 
 export const ALL_CONTINENTS: Continent[] = [
   'Africa',

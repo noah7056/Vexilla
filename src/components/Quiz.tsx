@@ -75,7 +75,7 @@ export function Quiz({ onAnswer }: QuizProps) {
         return false;
       }
 
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations', 'Concepts'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Organizations', 'Concepts'].includes(flag.category)) {
         const activeSub = config.selectedSubOptions?.[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {
@@ -98,7 +98,7 @@ export function Quiz({ onAnswer }: QuizProps) {
       }
 
       // 2. Sub-options
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations', 'Concepts'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Organizations', 'Concepts'].includes(flag.category)) {
         const activeSub = config.selectedSubOptions?.[flag.category];
         if (activeSub && activeSub.length > 0) {
           if (!flag.country || !activeSub.includes(flag.country)) {

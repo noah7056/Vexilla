@@ -6,6 +6,7 @@ import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 import { FICTIONAL_MEDIA_TYPES } from '../data/fictional';
+import { CONCEPT_SECTIONS } from '../data/concepts';
 
 // Bottom-left field (underneath the category dropdown) always shows sub-categories.
 const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
@@ -30,6 +31,7 @@ const CATEGORY_SECTION_LABELS: Partial<Record<Category, string>> = {
   'Organizations': 'Scope',
   'Languages': 'Continent',
   'Fictional': 'Section',
+  'Concepts': 'Section',
 };
 
 const FICTIONAL_SECTIONS = ['Franchises / Universes', 'Media'] as const;
@@ -55,10 +57,22 @@ const CATEGORIES_WITH_SECTION: Category[] = [
   'Organizations',
   'Languages',
   'Fictional',
+  'Concepts',
 ];
 
 function getFictionalSectionForUniverse(universe: string): Exclude<FictionalSection, ''> {
   return (FICTIONAL_MEDIA_TYPES as string[]).includes(universe) ? 'Media' : 'Franchises / Universes';
+}
+
+const CONCEPT_SECTION_LIST = CONCEPT_SECTIONS as unknown as string[];
+
+function getConceptSectionForSubcategory(subcategory: string, flags: Flag[]): string {
+  const owner = flags.find(f => f.category === 'Concepts' && f.country === subcategory);
+  if (owner?.continent && CONCEPT_SECTION_LIST.includes(owner.continent)) {
+    return owner.continent;
+  }
+  if (CONCEPT_SECTION_LIST.includes(subcategory)) return subcategory;
+  return '';
 }
 
 const LAST_SELECTIONS_KEY = 'vexillo_last_added_flag_selections';
@@ -192,18 +206,25 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
       // Switching between two sub-category categories still resets the stale value.
       setCountry('');
     }
-    // Sub-sections live to the right of the category dropdown.
+    // Sub-sections live to the right of the category dropdown. Drop stale values
+    // that are not valid for the new category (e.g. a continent kept when
+    // switching to Concepts, or a concept section kept when switching away).
     if (!CATEGORIES_WITH_SECTION.includes(newCat)) {
       setContinent('');
+    } else if (newCat === 'Concepts') {
+      setContinent(prev => (CONCEPT_SECTION_LIST.includes(prev) ? prev : ''));
+    } else if (newCat === 'Organizations') {
+      setContinent(prev =>
+        prev === 'Global' || (ALL_CONTINENTS as string[]).includes(prev) ? prev : 'Global'
+      );
+    } else if (newCat !== 'Fictional') {
+      setContinent(prev => ((ALL_CONTINENTS as string[]).includes(prev) ? prev : ''));
     }
     if (newCat === 'Fictional') {
       setContinent('');
       setFictionalSection('');
     } else {
       setFictionalSection('');
-    }
-    if (newCat === 'Organizations') {
-      setContinent(prev => prev || 'Global');
     }
   };
 
@@ -229,13 +250,19 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
   }, [category, FLAGS]);
 
   // Fictional sub-sections (Franchise vs Media) only filter which universes are shown.
+  // Concepts sub-sections likewise filter which sub-categories are shown.
   const subOptions = useMemo(() => {
-    if (category !== 'Fictional' || !fictionalSection) return allSubOptions;
-    if (fictionalSection === 'Media') {
-      return allSubOptions.filter(u => (FICTIONAL_MEDIA_TYPES as string[]).includes(u));
+    if (category === 'Fictional' && fictionalSection) {
+      if (fictionalSection === 'Media') {
+        return allSubOptions.filter(u => (FICTIONAL_MEDIA_TYPES as string[]).includes(u));
+      }
+      return allSubOptions.filter(u => !(FICTIONAL_MEDIA_TYPES as string[]).includes(u));
     }
-    return allSubOptions.filter(u => !(FICTIONAL_MEDIA_TYPES as string[]).includes(u));
-  }, [category, fictionalSection, allSubOptions]);
+    if (category === 'Concepts' && continent) {
+      return allSubOptions.filter(u => getConceptSectionForSubcategory(u, FLAGS) === continent);
+    }
+    return allSubOptions;
+  }, [category, fictionalSection, continent, allSubOptions, FLAGS]);
 
   const hasSection = CATEGORIES_WITH_SECTION.includes(category);
   const hasSub = CATEGORIES_WITH_SUBS.includes(category);
@@ -471,6 +498,26 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
+                  ) : category === 'Concepts' ? (
+                    <select
+                      value={continent}
+                      onChange={e => {
+                        const next = e.target.value as Continent | '';
+                        setContinent(next);
+                        // Keep the sub-category consistent with the chosen section.
+                        if (next && country && getConceptSectionForSubcategory(country, FLAGS) !== next) {
+                          setCountry('');
+                        }
+                        setAddingCustom(false);
+                        setCustomValue('');
+                      }}
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                    >
+                      <option value="">(None)</option>
+                      {CONCEPT_SECTION_LIST.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
                   ) : hasSection ? (
                     <select
                       value={continent}
@@ -534,6 +581,10 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                             setCountry(next);
                             if (category === 'Fictional' && next) {
                               setFictionalSection(getFictionalSectionForUniverse(next));
+                            }
+                            if (category === 'Concepts' && next) {
+                              const section = getConceptSectionForSubcategory(next, FLAGS);
+                              if (section) setContinent(section as Continent);
                             }
                           }}
                           className="min-w-0 w-full flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"

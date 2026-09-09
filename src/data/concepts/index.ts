@@ -18,6 +18,10 @@ export const CONCEPT_CATEGORY_FLAGS: Flag[] = [
   ...PERSONAL_FLAGS
 ];
 
+/** Canonical sub-sections of the Concepts category. Always shown even when empty. */
+export const CONCEPT_SECTIONS = ['Concepts', 'Experiments', 'Community', 'Personal'] as const;
+export type ConceptSection = (typeof CONCEPT_SECTIONS)[number];
+
 export const CONCEPT_COUNTRIES = Array.from(
   new Set(CONCEPT_CATEGORY_FLAGS.map(f => f.country || 'Unknown'))
 ).sort();
