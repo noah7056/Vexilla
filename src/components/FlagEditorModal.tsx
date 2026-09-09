@@ -5,6 +5,7 @@ import { Flag, Category, Continent, FlagStatus, ALL_CATEGORIES, ALL_CONTINENTS, 
 import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
+import { FICTIONAL_UNIVERSES } from '../data/fictional';
 
 const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'Provinces & Territories': 'Country',
@@ -15,6 +16,22 @@ const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'Pirate Flags': 'Group',
   'Organizations': 'Scope',
   'Concepts': 'Subcategory',
+};
+
+const CATEGORY_CONTINENT_LABELS: Partial<Record<Category, string>> = {
+  'Fictional': 'Universe / Franchise',
+  'LGBTQI+': 'Subcategory',
+  'Languages': 'Language Group',
+  'Pirate Flags': 'Group',
+  'Concepts': 'Subcategory',
+};
+
+const CATEGORY_CONTINENT_OPTIONS: Partial<Record<Category, string[]>> = {
+  'Fictional': FICTIONAL_UNIVERSES,
+  'LGBTQI+': ['Sexualities & Romantic Spectrum', 'Gender Identities & Trans Spectrum', 'Community & Subcultures'],
+  'Languages': ['Constructed Languages', 'International Organizations', 'Regional Languages'],
+  'Pirate Flags': ['Historical', 'Regional'],
+  'Concepts': ['Concepts', 'Experiments', 'Community', 'Personal'],
 };
 
 const ORG_SCOPES = ['Global', 'Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
@@ -152,7 +169,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     setCountry('');
     setAddingCustom(false);
     setCustomValue('');
-    if (!CATEGORIES_WITH_CONTINENT.includes(newCat)) {
+    if (!CATEGORIES_WITH_CONTINENT.includes(newCat) && !(newCat in CATEGORY_CONTINENT_OPTIONS)) {
       setContinent('');
     }
     if (newCat === 'Organizations' && !continent) {
@@ -184,6 +201,10 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
 
   const hasSubOptions = CATEGORIES_WITH_SUBS.includes(category);
   const hasContinent = CATEGORIES_WITH_CONTINENT.includes(category);
+  const hasContinentOverride = category in CATEGORY_CONTINENT_OPTIONS;
+  const showSubCategoryDropdown = hasSubOptions && !hasContinentOverride;
+  const continentLabel = CATEGORY_CONTINENT_LABELS[category] || 'Continent';
+  const continentOptions = CATEGORY_CONTINENT_OPTIONS[category] || [];
   const subLabel = CATEGORY_SUB_LABELS[category] || 'Country Association';
 
   const handleSave = () => {
@@ -214,8 +235,8 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
       name: trimmedName,
       code: trimmedCode,
       category,
-      continent: continent || undefined,
-      country: country.trim() || undefined,
+      continent: hasContinentOverride ? undefined : (continent || undefined),
+      country: hasContinentOverride ? (continent || country.trim() || undefined) : (country.trim() || undefined),
       imageUrl: imageUrl.trim() || undefined,
       aliases: aliases.length > 0 ? aliases : undefined,
       tags: tags.length > 0 ? tags : undefined,
@@ -389,18 +410,34 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                    Continent
+                    {hasContinentOverride ? continentLabel : 'Continent'}
                   </label>
-                  <select
-                    value={continent}
-                    onChange={e => setContinent(e.target.value as Continent | '')}
-                    disabled={!hasContinent}
-                    className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <option value="">(None)</option>
-                    {category === 'Organizations' && <option value="Global">Global</option>}
-                    {ALL_CONTINENTS.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  {hasContinentOverride ? (
+                    <select
+                      value={continent}
+                      onChange={e => setContinent(e.target.value)}
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                    >
+                      <option value="">(None)</option>
+                      {continentOptions.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                      {continent && !continentOptions.includes(continent) && (
+                        <option value={continent}>{continent}</option>
+                      )}
+                    </select>
+                  ) : (
+                    <select
+                      value={continent}
+                      onChange={e => setContinent(e.target.value as Continent | '')}
+                      disabled={!hasContinent}
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <option value="">(None)</option>
+                      {category === 'Organizations' && <option value="Global">Global</option>}
+                      {ALL_CONTINENTS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  )}
                 </div>
               </div>
 
@@ -409,7 +446,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                     {subLabel}
                   </label>
-                  {hasSubOptions ? (
+                  {showSubCategoryDropdown ? (
                     addingCustom ? (
                       <div className="flex gap-1.5">
                         <input
