@@ -32,6 +32,10 @@ import {
   ORGANIZATION_COUNTRIES_BY_CONTINENT,
   ORGANIZATION_CONTINENTS
 } from './organizations';
+import {
+  CONCEPT_CATEGORY_FLAGS,
+  CONCEPT_COUNTRIES
+} from './concepts';
 import { BUILTIN_CUSTOM_FLAGS, BUILTIN_DELETED_FLAG_IDS } from './customFlagsData';
 
 const ALL_PROVINCES = [
@@ -79,6 +83,8 @@ export {
   ORGANIZATION_COUNTRY_CONTINENT_MAP,
   ORGANIZATION_COUNTRIES_BY_CONTINENT,
   ORGANIZATION_CONTINENTS,
+  CONCEPT_CATEGORY_FLAGS,
+  CONCEPT_COUNTRIES,
   BUILTIN_CUSTOM_FLAGS,
   BUILTIN_DELETED_FLAG_IDS
 };
@@ -93,7 +99,8 @@ export const BASE_FLAGS: Flag[] = [
   ...LGBTQ_FLAGS,
   ...LANGUAGE_FLAGS,
   ...PIRATE_FLAGS,
-  ...ORGANIZATION_FLAGS
+  ...ORGANIZATION_FLAGS,
+  ...CONCEPT_CATEGORY_FLAGS
 ];
 
 // Combine base flags with baked custom flags, allowing custom flags to add new entries or override existing ones

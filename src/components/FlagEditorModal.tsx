@@ -14,6 +14,7 @@ const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'Languages': 'Language Group',
   'Pirate Flags': 'Group',
   'Organizations': 'Scope',
+  'Concepts': 'Subcategory',
 };
 
 const ORG_SCOPES = ['Global', 'Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
@@ -26,6 +27,7 @@ const CATEGORIES_WITH_SUBS: Category[] = [
   'Languages',
   'Pirate Flags',
   'Organizations',
+  'Concepts',
 ];
 
 const CATEGORIES_WITH_CONTINENT: Category[] = [

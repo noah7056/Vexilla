@@ -8,7 +8,8 @@ export type Category =
   | 'LGBTQI+'
   | 'Languages'
   | 'Pirate Flags'
-  | 'Organizations';
+  | 'Organizations'
+  | 'Concepts';
 
 export const ALL_CATEGORIES: Category[] = [
   'Sovereign States',
@@ -20,7 +21,8 @@ export const ALL_CATEGORIES: Category[] = [
   'LGBTQI+',
   'Languages',
   'Pirate Flags',
-  'Organizations'
+  'Organizations',
+  'Concepts'
 ];
 
 export type Continent =

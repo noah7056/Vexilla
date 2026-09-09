@@ -314,7 +314,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       const matchesCat = selectedCategories.includes('All') || selectedCategories.includes(flag.category);
       if (!matchesCat) return false;
 
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations', 'Concepts'].includes(flag.category)) {
         const activeSubOptions = selectedSubOptions[flag.category] || [];
         if (activeSubOptions.length > 0) {
           if (!flag.country || !activeSubOptions.includes(flag.country)) {
@@ -359,7 +359,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         });
 
       const matchesCat = selectedCategories.includes('All') || selectedCategories.includes(flag.category);
-      const isGlobalCat = flag.category === 'Fictional' || flag.category === 'LGBTQI+' || flag.category === 'Languages' || flag.category === 'Pirate Flags' || flag.category === 'Organizations';
+      const isGlobalCat = flag.category === 'Fictional' || flag.category === 'LGBTQI+' || flag.category === 'Languages' || flag.category === 'Pirate Flags' || flag.category === 'Organizations' || flag.category === 'Concepts';
       const matchesCont = selectedContinents.includes('All') || isGlobalCat || (flag.continent ? selectedContinents.includes(flag.continent) : false);
 
       // Status Filter
@@ -370,7 +370,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         (!flag.status && selectedStatuses.includes('unspecified'));
 
       // Sub-options filtering for specific categories
-      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations'].includes(flag.category)) {
+      if (['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Organizations', 'Concepts'].includes(flag.category)) {
         const activeSubOptions = selectedSubOptions[flag.category] || [];
         if (activeSubOptions.length > 0) {
           if (!flag.country || !activeSubOptions.includes(flag.country)) {
