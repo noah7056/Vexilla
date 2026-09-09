@@ -5,8 +5,9 @@ import { Flag, Category, Continent, FlagStatus, ALL_CATEGORIES, ALL_CONTINENTS, 
 import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
-import { FICTIONAL_UNIVERSES } from '../data/fictional';
+import { FICTIONAL_MEDIA_TYPES } from '../data/fictional';
 
+// Bottom-left field (underneath the category dropdown) always shows sub-categories.
 const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'Provinces & Territories': 'Country',
   'Indigenous & Cultural Populations': 'Country / Region',
@@ -14,27 +15,25 @@ const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'LGBTQI+': 'Subcategory',
   'Languages': 'Language Group',
   'Pirate Flags': 'Group',
+  'Organizations': 'Group',
+  'Concepts': 'Subcategory',
+};
+
+// Top-right field (to the right of the category dropdown) always shows sub-sections.
+// Categories missing here have no sub-sections, so the top-right field is grayed out.
+const CATEGORY_SECTION_LABELS: Partial<Record<Category, string>> = {
+  'Sovereign States': 'Continent',
+  'Non-Sovereign & Unrecognized': 'Continent',
+  'US States': 'Continent',
+  'Provinces & Territories': 'Continent',
+  'Indigenous & Cultural Populations': 'Continent',
   'Organizations': 'Scope',
-  'Concepts': 'Subcategory',
+  'Languages': 'Continent',
+  'Fictional': 'Section',
 };
 
-const CATEGORY_CONTINENT_LABELS: Partial<Record<Category, string>> = {
-  'Fictional': 'Universe / Franchise',
-  'LGBTQI+': 'Subcategory',
-  'Languages': 'Language Group',
-  'Pirate Flags': 'Group',
-  'Concepts': 'Subcategory',
-};
-
-const CATEGORY_CONTINENT_OPTIONS: Partial<Record<Category, string[]>> = {
-  'Fictional': FICTIONAL_UNIVERSES,
-  'LGBTQI+': ['Sexualities & Romantic Spectrum', 'Gender Identities & Trans Spectrum', 'Community & Subcultures'],
-  'Languages': ['Constructed Languages', 'International Organizations', 'Regional Languages'],
-  'Pirate Flags': ['Historical', 'Regional'],
-  'Concepts': ['Concepts', 'Experiments', 'Community', 'Personal'],
-};
-
-const ORG_SCOPES = ['Global', 'Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+const FICTIONAL_SECTIONS = ['Franchises / Universes', 'Media'] as const;
+type FictionalSection = (typeof FICTIONAL_SECTIONS)[number] | '';
 
 const CATEGORIES_WITH_SUBS: Category[] = [
   'Provinces & Territories',
@@ -47,14 +46,20 @@ const CATEGORIES_WITH_SUBS: Category[] = [
   'Concepts',
 ];
 
-const CATEGORIES_WITH_CONTINENT: Category[] = [
+const CATEGORIES_WITH_SECTION: Category[] = [
   'Sovereign States',
   'Non-Sovereign & Unrecognized',
   'US States',
   'Provinces & Territories',
   'Indigenous & Cultural Populations',
   'Organizations',
+  'Languages',
+  'Fictional',
 ];
+
+function getFictionalSectionForUniverse(universe: string): Exclude<FictionalSection, ''> {
+  return (FICTIONAL_MEDIA_TYPES as string[]).includes(universe) ? 'Media' : 'Franchises / Universes';
+}
 
 const LAST_SELECTIONS_KEY = 'vexillo_last_added_flag_selections';
 
@@ -121,7 +126,11 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
   });
 
   const [continent, setContinent] = useState<Continent | ''>(() => {
-    if (liveFlag) return liveFlag.continent || '';
+    if (liveFlag) {
+      // Fictional stores a constant continent; its visible sub-section lives in fictionalSection state.
+      if (liveFlag.category === 'Fictional') return '';
+      return liveFlag.continent || '';
+    }
     const last = getLastAddedSelections();
     return last?.continent !== undefined ? last.continent : '';
   });
@@ -130,6 +139,13 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     if (liveFlag) return liveFlag.country || '';
     const last = getLastAddedSelections();
     return last?.country !== undefined ? last.country : '';
+  });
+
+  const [fictionalSection, setFictionalSection] = useState<FictionalSection>(() => {
+    if (liveFlag?.category === 'Fictional' && liveFlag.country) {
+      return getFictionalSectionForUniverse(liveFlag.country);
+    }
+    return '';
   });
 
   const [imageUrl, setImageUrl] = useState(liveFlag?.imageUrl || '');
@@ -166,14 +182,28 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
 
   const handleCategoryChange = (newCat: Category) => {
     setCategory(newCat);
-    setCountry('');
     setAddingCustom(false);
     setCustomValue('');
-    if (!CATEGORIES_WITH_CONTINENT.includes(newCat) && !(newCat in CATEGORY_CONTINENT_OPTIONS)) {
+    // Sub-categories live underneath the category dropdown; clear them unless the
+    // new category supports them.
+    if (!CATEGORIES_WITH_SUBS.includes(newCat)) {
+      setCountry('');
+    } else if (newCat !== category) {
+      // Switching between two sub-category categories still resets the stale value.
+      setCountry('');
+    }
+    // Sub-sections live to the right of the category dropdown.
+    if (!CATEGORIES_WITH_SECTION.includes(newCat)) {
       setContinent('');
     }
-    if (newCat === 'Organizations' && !continent) {
-      setContinent('Global');
+    if (newCat === 'Fictional') {
+      setContinent('');
+      setFictionalSection('');
+    } else {
+      setFictionalSection('');
+    }
+    if (newCat === 'Organizations') {
+      setContinent(prev => prev || 'Global');
     }
   };
 
@@ -181,31 +211,40 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     const trimmed = customValue.trim();
     if (trimmed) {
       setCountry(trimmed);
+      if (category === 'Fictional') {
+        setFictionalSection(getFictionalSectionForUniverse(trimmed));
+      }
       setAddingCustom(false);
       setCustomValue('');
     }
   };
 
-  // Derive sub-options per category from existing flags
-  const subOptions = useMemo(() => {
+  // Derive sub-category options per category from existing flags (country field).
+  const allSubOptions = useMemo(() => {
     const c = new Set<string>();
-    if (category === 'Organizations') {
-      ORG_SCOPES.forEach(s => c.add(s));
-      c.add('Americas');
-    }
     FLAGS.forEach(f => {
       if (f.category === category && f.country) c.add(f.country);
     });
     return Array.from(c).sort();
   }, [category, FLAGS]);
 
-  const hasSubOptions = CATEGORIES_WITH_SUBS.includes(category);
-  const hasContinent = CATEGORIES_WITH_CONTINENT.includes(category);
-  const hasContinentOverride = category in CATEGORY_CONTINENT_OPTIONS;
-  const showSubCategoryDropdown = hasSubOptions && !hasContinentOverride;
-  const continentLabel = CATEGORY_CONTINENT_LABELS[category] || 'Continent';
-  const continentOptions = CATEGORY_CONTINENT_OPTIONS[category] || [];
-  const subLabel = CATEGORY_SUB_LABELS[category] || 'Country Association';
+  // Fictional sub-sections (Franchise vs Media) only filter which universes are shown.
+  const subOptions = useMemo(() => {
+    if (category !== 'Fictional' || !fictionalSection) return allSubOptions;
+    if (fictionalSection === 'Media') {
+      return allSubOptions.filter(u => (FICTIONAL_MEDIA_TYPES as string[]).includes(u));
+    }
+    return allSubOptions.filter(u => !(FICTIONAL_MEDIA_TYPES as string[]).includes(u));
+  }, [category, fictionalSection, allSubOptions]);
+
+  const hasSection = CATEGORIES_WITH_SECTION.includes(category);
+  const hasSub = CATEGORIES_WITH_SUBS.includes(category);
+  const sectionLabel = CATEGORY_SECTION_LABELS[category] || 'Sub-section';
+  const subLabel = CATEGORY_SUB_LABELS[category] || 'Sub-category';
+
+  const effectiveContinent: Continent | undefined =
+    category === 'Fictional' ? 'Fictional Universes' : (hasSection ? (continent || undefined) : undefined);
+  const effectiveCountry: string | undefined = hasSub ? (country.trim() || undefined) : undefined;
 
   const handleSave = () => {
     setError('');
@@ -235,8 +274,8 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
       name: trimmedName,
       code: trimmedCode,
       category,
-      continent: hasContinentOverride ? undefined : (continent || undefined),
-      country: hasContinentOverride ? (continent || country.trim() || undefined) : (country.trim() || undefined),
+      continent: effectiveContinent,
+      country: effectiveCountry,
       imageUrl: imageUrl.trim() || undefined,
       aliases: aliases.length > 0 ? aliases : undefined,
       tags: tags.length > 0 ? tags : undefined,
@@ -278,8 +317,8 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     name: name || 'Preview',
     code: code.trim() || 'un',
     category,
-    continent: continent || undefined,
-    country: country.trim() || undefined,
+    continent: effectiveContinent,
+    country: effectiveCountry,
     imageUrl: imageUrl.trim() || undefined,
     status: status || undefined,
     creator: creator.trim() || undefined,
@@ -396,7 +435,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                     Category <span className="text-red-500">*</span>
                   </label>
@@ -408,45 +447,58 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                     {ALL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                    {hasContinentOverride ? continentLabel : 'Continent'}
+                    {sectionLabel}
                   </label>
-                  {hasContinentOverride ? (
+                  {category === 'Fictional' ? (
                     <select
-                      value={continent}
-                      onChange={e => setContinent(e.target.value)}
+                      value={fictionalSection}
+                      onChange={e => {
+                        const next = e.target.value as FictionalSection;
+                        setFictionalSection(next);
+                        // Keep the sub-category consistent with the chosen section.
+                        if (next && country && getFictionalSectionForUniverse(country) !== next) {
+                          setCountry('');
+                        }
+                        setAddingCustom(false);
+                        setCustomValue('');
+                      }}
                       className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                     >
                       <option value="">(None)</option>
-                      {continentOptions.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
+                      {FICTIONAL_SECTIONS.map(s => (
+                        <option key={s} value={s}>{s}</option>
                       ))}
-                      {continent && !continentOptions.includes(continent) && (
-                        <option value={continent}>{continent}</option>
-                      )}
                     </select>
-                  ) : (
+                  ) : hasSection ? (
                     <select
                       value={continent}
                       onChange={e => setContinent(e.target.value as Continent | '')}
-                      disabled={!hasContinent}
-                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                     >
                       <option value="">(None)</option>
                       {category === 'Organizations' && <option value="Global">Global</option>}
                       {ALL_CONTINENTS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  ) : (
+                    <select
+                      value=""
+                      disabled
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
+                    >
+                      <option value="">N/A for this category</option>
                     </select>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                     {subLabel}
                   </label>
-                  {showSubCategoryDropdown ? (
+                  {hasSub ? (
                     addingCustom ? (
                       <div className="flex gap-1.5">
                         <input
@@ -455,20 +507,20 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                           onChange={e => setCustomValue(e.target.value)}
                           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); confirmCustom(); } if (e.key === 'Escape') { setAddingCustom(false); setCustomValue(''); } }}
                           autoFocus
-                          className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                          className="min-w-0 w-full flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                           placeholder={`New ${subLabel.toLowerCase()} name`}
                         />
                         <button
                           type="button"
                           onClick={confirmCustom}
-                          className="px-2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors flex items-center justify-center"
+                          className="w-9 shrink-0 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors flex items-center justify-center"
                         >
                           <Check className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => { setAddingCustom(false); setCustomValue(''); }}
-                          className="px-2 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center"
+                          className="w-9 shrink-0 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -477,14 +529,20 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                       <div className="flex gap-1.5">
                         <select
                           value={country}
-                          onChange={e => setCountry(e.target.value)}
-                          className="flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                          onChange={e => {
+                            const next = e.target.value;
+                            setCountry(next);
+                            if (category === 'Fictional' && next) {
+                              setFictionalSection(getFictionalSectionForUniverse(next));
+                            }
+                          }}
+                          className="min-w-0 w-full flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                         >
                           <option value="">(None)</option>
                           {subOptions.map(opt => (
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
-                          {country && !subOptions.includes(country) && (
+                          {country && !subOptions.includes(country) && !allSubOptions.includes(country) && (
                             <option value={country}>{country}</option>
                           )}
                         </select>
@@ -492,7 +550,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                           type="button"
                           title={`Add new ${subLabel.toLowerCase()}`}
                           onClick={() => setAddingCustom(true)}
-                          className="px-2 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-600 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center flex-shrink-0"
+                          className="w-9 shrink-0 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-600 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -501,10 +559,9 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                   ) : (
                     <input
                       type="text"
-                      value={country}
-                      onChange={e => setCountry(e.target.value)}
+                      value=""
                       disabled
-                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
                       placeholder="N/A for this category"
                     />
                   )}
