@@ -362,10 +362,12 @@ function FlagZoomCanvas({ flag, slotNumber, progress = {}, onChangeFlag }: FlagZ
       {/* Pane Footer: Metadata Pills */}
       <div className="px-3 py-2 bg-zinc-900 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-1.5 shrink-0 text-xs">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 text-[11px] font-medium flex items-center gap-1">
-            <Globe2 className="w-3 h-3 text-indigo-400" />
-            {flag.continent}
-          </span>
+          {flag.continent && (
+            <span className="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 text-[11px] font-medium flex items-center gap-1">
+              <Globe2 className="w-3 h-3 text-indigo-400" />
+              {flag.continent}
+            </span>
+          )}
           <span className="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 text-[11px] font-medium flex items-center gap-1">
             <Layers className="w-3 h-3 text-zinc-400" />
             {flag.category}

@@ -877,11 +877,13 @@ export function Quiz({ onAnswer }: QuizProps) {
           </div>
 
           {/* Tags */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60">
-              {currentFlag.continent}
-            </span>
-          </div>
+          {currentFlag.continent && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60">
+                {currentFlag.continent}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Linear Progress Bar */}
@@ -1005,7 +1007,7 @@ export function Quiz({ onAnswer }: QuizProps) {
                   </h3>
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700">
-                      {currentFlag.continent} • {currentFlag.category}
+                      {[currentFlag.continent, currentFlag.category].filter(Boolean).join(' • ')}
                       {config.showCountryInQuestion && ['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(currentFlag.category) && currentFlag.country && ` • ${currentFlag.country}`}
                     </span>
                   </div>
@@ -1218,7 +1220,7 @@ export function Quiz({ onAnswer }: QuizProps) {
                         {item.flag.name}
                       </div>
                       <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                        {item.flag.continent} • {item.flag.category}
+                        {[item.flag.continent, item.flag.category].filter(Boolean).join(' • ')}
                         {['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(item.flag.category) && item.flag.country && ` • ${item.flag.country}`}
                       </div>
                     </div>

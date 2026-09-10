@@ -505,10 +505,12 @@ export function FlagModal({
           <div className="p-3.5 sm:px-6 sm:py-4 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
             {/* Territory Tags */}
             <div className="flex flex-wrap items-center gap-2 min-w-0">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60 text-xs font-semibold">
-                <Globe2 className="w-3.5 h-3.5" />
-                <span>{flag.continent}</span>
-              </div>
+              {flag.continent && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60 text-xs font-semibold">
+                  <Globe2 className="w-3.5 h-3.5" />
+                  <span>{flag.continent}</span>
+                </div>
+              )}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700 text-xs font-semibold">
                 <Layers className="w-3.5 h-3.5" />
                 <span>{flag.category}</span>

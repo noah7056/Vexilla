@@ -55,7 +55,8 @@ export function createPirateFlags(
       id: cleanId,
       name: flag.name,
       code: flag.code || cleanId, // Defaults to id so there is no redundancy
-      continent: flag.continent || 'North America',
+      // Pirate flags have no sub-sections, so no continent attribute.
+      ...(flag.continent ? { continent: flag.continent } : {}),
       category: 'Pirate Flags',
       country: flag.country || defaultGroup,
       imageUrl: finalImageUrl,

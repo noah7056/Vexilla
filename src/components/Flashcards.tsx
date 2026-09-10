@@ -361,9 +361,11 @@ export function Flashcards() {
                   </p>
                 )}
                 <div className="flex flex-wrap items-center justify-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60 font-medium text-xs">
-                    {currentFlag.continent}
-                  </span>
+                  {currentFlag.continent && (
+                    <span className="px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60 font-medium text-xs">
+                      {currentFlag.continent}
+                    </span>
+                  )}
                   <span className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium text-xs">
                     {currentFlag.category}
                   </span>
