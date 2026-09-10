@@ -100,7 +100,7 @@ export function CategoryFilterChips({
         )}
 
         {allCats.map((cat) => {
-          const hasSubOptions = ['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Organizations', 'Concepts'].includes(cat) || !['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States', 'LGBTQI+', 'Pirate Flags'].includes(cat);
+          const hasSubOptions = ['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Pirate Flags', 'Organizations', 'Concepts'].includes(cat) || !['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States', 'LGBTQI+'].includes(cat);
           const activeSubOptions = selectedSubOptions[cat] || [];
           const hasActiveSub = activeSubOptions.length > 0;
           const isCategorySelected = !selectedCategories.includes('All') && selectedCategories.includes(cat as Category);
@@ -334,7 +334,7 @@ export function CategoryFilterChips({
                           );
                         }
 
-                        if (cat === 'LGBTQI+') {
+                        if (cat === 'Pirate Flags' || cat === 'LGBTQI+') {
                           const options = getMergedOptions(cat)
                             .filter((opt: any) => opt.toLowerCase().includes(submenuSearch.toLowerCase()));
 
