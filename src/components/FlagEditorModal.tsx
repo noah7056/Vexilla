@@ -118,6 +118,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     resetFlagToDefault,
     isCustomFlag,
     isModifiedBuiltIn,
+    getSubCategories,
   } = useFlags();
 
   // Resolve freshest flag data from store if editing
@@ -240,14 +241,19 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     }
   };
 
-  // Derive sub-category options per category from existing flags (country field).
+  // Derive sub-category options per category from existing flags (country field)
+  // plus admin-created empty sub-categories (via Sub-category Manager).
   const allSubOptions = useMemo(() => {
-    const c = new Set<string>();
-    FLAGS.forEach(f => {
-      if (f.category === category && f.country) c.add(f.country);
-    });
-    return Array.from(c).sort();
-  }, [category, FLAGS]);
+    try {
+      return getSubCategories(category);
+    } catch {
+      const c = new Set<string>();
+      FLAGS.forEach(f => {
+        if (f.category === category && f.country) c.add(f.country);
+      });
+      return Array.from(c).sort();
+    }
+  }, [category, FLAGS, getSubCategories]);
 
   // Fictional sub-sections (Franchise vs Media) only filter which universes are shown.
   // Concepts sub-sections likewise filter which sub-categories are shown.

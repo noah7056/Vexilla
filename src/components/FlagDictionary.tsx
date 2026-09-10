@@ -19,7 +19,8 @@ import {
   RotateCcw,
   Trash2,
   FileJson,
-  Cloud
+  Cloud,
+  FolderCog
 } from 'lucide-react';
 import { PROVINCE_COUNTRIES  } from '../data/flags';
 import { useFlags } from '../contexts/FlagsContext';
@@ -40,6 +41,7 @@ import { FlagImage } from './FlagImage';
 import { FlagModal } from './FlagModal';
 import { FlagCompareModal } from './FlagCompareModal';
 import { FlagEditorModal } from './FlagEditorModal';
+import { SubCategoryManagerModal } from './SubCategoryManagerModal';
 import { TrashBinModal } from './TrashBinModal';
 import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
@@ -97,6 +99,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const [flagToEdit, setFlagToEdit] = useState<Flag | null>(null);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
+  const [isSubManagerOpen, setIsSubManagerOpen] = useState(false);
   
   const [itemsPerPage, setItemsPerPage] = useState<ItemsPerPage>(12);
   const [displayedCount, setDisplayedCount] = useState<number>(12);
@@ -466,6 +469,16 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Add Flag</span>
+          </button>
+          )}
+          {isAdmin && (
+          <button
+            onClick={() => setIsSubManagerOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800/50 hover:bg-violet-100 dark:hover:bg-violet-900/50"
+            title="Add, rename, or delete sub-categories (outside the flag editor)"
+          >
+            <FolderCog className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Sub-categories</span>
           </button>
           )}
           {isAdmin && (
@@ -983,6 +996,16 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         isOpen={isImportExportOpen}
         onClose={() => setIsImportExportOpen(false)}
       />
+
+      {/* Sub-category Manager (admin, outside flag editor) */}
+      <AnimatePresence>
+        {isSubManagerOpen && (
+          <SubCategoryManagerModal
+            isOpen={isSubManagerOpen}
+            onClose={() => setIsSubManagerOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

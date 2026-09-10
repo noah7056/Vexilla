@@ -12,6 +12,22 @@ const STORAGE_KEY = 'vexillo_custom_flags';
 const TRASH_KEY = 'vexillo_trash_flags';
 const PERMANENT_DELETED_KEY = 'vexillo_permanently_deleted_ids';
 const LEGACY_DELETED_KEY = 'vexillo_deleted_flag_ids';
+const SUBCATEGORIES_KEY = 'vexillo_custom_subcategories';
+
+export const CATEGORIES_WITH_SUBCATEGORIES = [
+  'Provinces & Territories',
+  'Indigenous & Cultural Populations',
+  'Fictional',
+  'LGBTQI+',
+  'Languages',
+  'Pirate Flags',
+  'Organizations',
+  'Concepts',
+] as const;
+
+export type SubCategoryParent = (typeof CATEGORIES_WITH_SUBCATEGORIES)[number] | string;
+
+export type DeleteSubCategoryMode = 'delete-flags' | 'move-flags';
 
 interface FlagsContextType {
   flags: Flag[];
@@ -19,6 +35,12 @@ interface FlagsContextType {
   trash: TrashItem[];
   deletedFlagIds: string[];
   permanentlyDeletedIds: string[];
+  customSubCategories: Record<string, string[]>;
+  getSubCategories: (category: string) => string[];
+  getSubCategoryFlagCount: (category: string, sub: string) => number;
+  addSubCategory: (category: string, name: string) => { success: boolean; error?: string };
+  renameSubCategory: (category: string, oldName: string, newName: string) => { success: boolean; error?: string; updatedCount?: number };
+  deleteSubCategory: (category: string, name: string, action: { mode: DeleteSubCategoryMode; moveTo?: string }) => { success: boolean; error?: string; affectedCount?: number };
   addCustomFlag: (flag: Flag) => void;
   editCustomFlag: (flag: Flag) => void;
   deleteFlag: (id: string) => void;
@@ -89,6 +111,26 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
+  const [customSubCategories, setCustomSubCategories] = useState<Record<string, string[]>>(() => {
+    try {
+      const saved = localStorage.getItem(SUBCATEGORIES_KEY);
+      if (!saved) return {};
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const cleaned: Record<string, string[]> = {};
+        Object.entries(parsed).forEach(([k, v]) => {
+          if (Array.isArray(v)) {
+            cleaned[k] = (v as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+          }
+        });
+        return cleaned;
+      }
+      return {};
+    } catch {
+      return {};
+    }
+  });
+
   // Test connection on boot
   useEffect(() => {
     testFirestoreConnection();
@@ -99,6 +141,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     let unsubCustom: (() => void) | null = null;
     let unsubTrash: (() => void) | null = null;
     let unsubDeleted: (() => void) | null = null;
+    let unsubSubs: (() => void) | null = null;
 
     try {
       // 1. Custom Flags Listener
@@ -184,6 +227,39 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
           console.warn('Firestore deleted_flag_ids snapshot error:', error);
         }
       );
+
+      // 4. Custom Sub-categories Listener (one doc per parent category)
+      const subsCol = collection(db, 'custom_subcategories');
+      unsubSubs = onSnapshot(
+        subsCol,
+        (snapshot) => {
+          if (snapshot.empty) return;
+          setCustomSubCategories((prev) => {
+            const merged: Record<string, string[]> = { ...prev };
+            let changed = false;
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as { category?: string; values?: string[] };
+              const cat = data.category || docSnap.id;
+              const vals = Array.isArray(data.values)
+                ? data.values.filter(v => typeof v === 'string').map(v => v.trim()).filter(Boolean)
+                : [];
+              const prevSet = new Set(merged[cat] || []);
+              const nextSet = new Set([...prevSet, ...vals]);
+              const nextArr = Array.from(nextSet);
+              if (nextArr.length !== (merged[cat] || []).length) changed = true;
+              merged[cat] = nextArr;
+            });
+            if (!changed) return prev;
+            try {
+              localStorage.setItem(SUBCATEGORIES_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        },
+        (error) => {
+          console.warn('Firestore custom_subcategories snapshot error:', error);
+        }
+      );
     } catch (err) {
       console.warn('Failed to attach Firestore listeners:', err);
     }
@@ -192,6 +268,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       if (unsubCustom) unsubCustom();
       if (unsubTrash) unsubTrash();
       if (unsubDeleted) unsubDeleted();
+      if (unsubSubs) unsubSubs();
     };
   }, []);
 
@@ -217,6 +294,13 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     permanentlyDeletedIds.forEach((id) => {
       setDoc(doc(db, 'deleted_flag_ids', id), { id, deletedAt: Date.now() }).catch((err) =>
         console.warn('Failed to sync deleted ID to Firestore:', id, err)
+      );
+    });
+
+    // Push local custom sub-categories to Firestore
+    Object.entries(customSubCategories).forEach(([cat, values]) => {
+      setDoc(doc(db, 'custom_subcategories', cat), { category: cat, values }).catch((err) =>
+        console.warn('Failed to sync sub-category to Firestore:', cat, err)
       );
     });
   }, [isFirestoreConnected]);
@@ -452,7 +536,169 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     return combined.filter(f => !trashIds.has(f.id) && !permIds.has(f.id));
   }, [effectiveBuiltInFlags, customFlags, trash, permanentlyDeletedIds]);
 
-  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0;
+  // ---- Sub-category management (stored in flag.country per parent category) ----
+  const saveSubCategories = (next: Record<string, string[]>) => {
+    setCustomSubCategories(next);
+    try {
+      localStorage.setItem(SUBCATEGORIES_KEY, JSON.stringify(next));
+    } catch {}
+    Object.entries(next).forEach(([cat, values]) => {
+      setDoc(doc(db, 'custom_subcategories', cat), { category: cat, values }).catch(() => {});
+    });
+  };
+
+  const getSubCategories = (category: string): string[] => {
+    const derived = new Set<string>();
+    effectiveBuiltInFlags.forEach(f => {
+      if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
+    });
+    customFlags.forEach(f => {
+      if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
+    });
+    // Visible flags already include overrides, but also scan merged flags for safety
+    flags.forEach(f => {
+      if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
+    });
+    (customSubCategories[category] || []).forEach(v => {
+      const t = v.trim();
+      if (t) derived.add(t);
+    });
+    return Array.from(derived).sort((a, b) => a.localeCompare(b));
+  };
+
+  const getSubCategoryFlagCount = (category: string, sub: string): number => {
+    return flags.filter(f => f.category === category && f.country === sub).length;
+  };
+
+  const normalizeName = (s: string) => s.trim();
+
+  const addSubCategory = (category: string, name: string): { success: boolean; error?: string } => {
+    const trimmed = normalizeName(name);
+    if (!trimmed) return { success: false, error: 'Name is required.' };
+    const existing = getSubCategories(category);
+    if (existing.some(e => e.toLowerCase() === trimmed.toLowerCase())) {
+      return { success: false, error: `Sub-category "${trimmed}" already exists.` };
+    }
+    const next = {
+      ...customSubCategories,
+      [category]: [...(customSubCategories[category] || []), trimmed],
+    };
+    saveSubCategories(next);
+    return { success: true };
+  };
+
+  const renameSubCategory = (category: string, oldName: string, newName: string): { success: boolean; error?: string; updatedCount?: number } => {
+    const from = normalizeName(oldName);
+    const to = normalizeName(newName);
+    if (!from || !to) return { success: false, error: 'Both names are required.' };
+    if (from.toLowerCase() === to.toLowerCase()) {
+      // Case-only rename: allow, still update flags + custom list
+      if (from === to) return { success: false, error: 'New name is the same as the old name.' };
+    } else {
+      const existing = getSubCategories(category);
+      if (!existing.includes(from)) return { success: false, error: `Sub-category "${from}" not found.` };
+      if (existing.some(e => e.toLowerCase() === to.toLowerCase())) {
+        return { success: false, error: `Sub-category "${to}" already exists. Delete or merge instead.` };
+      }
+    }
+
+    const affected = flags.filter(f => f.category === category && f.country === from);
+    // Bulk-update: build new customFlags overrides for every affected flag
+    const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+    affected.forEach(orig => {
+      const updated: Flag = { ...orig, country: to };
+      customMap.set(orig.id, updated);
+      setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+    });
+    const mergedCustom = Array.from(customMap.values());
+    setCustomFlags(mergedCustom);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom));
+    } catch {}
+
+    // Update custom sub-category registry: drop old, keep registry tidy (new name comes from flags)
+    const currentList = customSubCategories[category] || [];
+    const withoutOld = currentList.filter(v => v !== from);
+    // If the renamed sub had zero flags (pure custom entry), ensure new name persists
+    const next: Record<string, string[]> = { ...customSubCategories };
+    if (affected.length === 0 && currentList.includes(from)) {
+      next[category] = [...withoutOld, to];
+    } else if (withoutOld.length !== currentList.length) {
+      next[category] = withoutOld;
+    }
+    if (next[category] !== customSubCategories[category]) {
+      saveSubCategories(next);
+    }
+
+    return { success: true, updatedCount: affected.length };
+  };
+
+  const deleteSubCategory = (
+    category: string,
+    name: string,
+    action: { mode: DeleteSubCategoryMode; moveTo?: string }
+  ): { success: boolean; error?: string; affectedCount?: number } => {
+    const target = normalizeName(name);
+    if (!target) return { success: false, error: 'Sub-category name is required.' };
+    const existing = getSubCategories(category);
+    if (!existing.includes(target)) return { success: false, error: `Sub-category "${target}" not found.` };
+
+    const affected = flags.filter(f => f.category === category && f.country === target);
+
+    if (action.mode === 'move-flags') {
+      const dest = normalizeName(action.moveTo || '');
+      if (!dest) return { success: false, error: 'Choose a destination sub-category.' };
+      if (dest === target) return { success: false, error: 'Destination must be different.' };
+      if (!existing.includes(dest)) return { success: false, error: `Destination "${dest}" not found.` };
+
+      const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+      affected.forEach(orig => {
+        const updated: Flag = { ...orig, country: dest };
+        customMap.set(orig.id, updated);
+        setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+      });
+      const mergedCustom = Array.from(customMap.values());
+      setCustomFlags(mergedCustom);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom));
+      } catch {}
+    } else {
+      // delete-flags: move every flag in the sub-category to trash (recoverable)
+      if (affected.length > 0) {
+        const affectedIds = new Set(affected.map(f => f.id));
+        const remainingCustom = customFlags.filter(f => !affectedIds.has(f.id));
+        setCustomFlags(remainingCustom);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(remainingCustom));
+        } catch {}
+        affected.forEach(f => {
+          deleteDoc(doc(db, 'custom_flags', f.id)).catch(() => {});
+        });
+
+        const newItems: TrashItem[] = affected.map(flag => ({
+          flag,
+          deletedAt: Date.now(),
+          isCustom: !effectiveBuiltInFlags.some(f => f.id === flag.id),
+        }));
+        const mergedTrash = [...newItems, ...trash.filter(t => !affectedIds.has(t.flag.id))];
+        saveTrash(mergedTrash);
+        newItems.forEach(item => {
+          setDoc(doc(db, 'trash_flags', item.flag.id), cleanObject(item)).catch(() => {});
+        });
+      }
+    }
+
+    // Drop deleted name from custom registry
+    const currentList = customSubCategories[category] || [];
+    if (currentList.includes(target)) {
+      const next = { ...customSubCategories, [category]: currentList.filter(v => v !== target) };
+      saveSubCategories(next);
+    }
+
+    return { success: true, affectedCount: affected.length };
+  };
+
+  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0 || (Object.values(customSubCategories) as string[][]).some(a => a.length > 0);
 
   const clearLocalFlagsStorageOnly = () => {
     try {
@@ -460,9 +706,11 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(TRASH_KEY);
       localStorage.removeItem(PERMANENT_DELETED_KEY);
       localStorage.removeItem(LEGACY_DELETED_KEY);
+      localStorage.removeItem(SUBCATEGORIES_KEY);
       setCustomFlags([]);
       setTrash([]);
       setPermanentlyDeletedIds([]);
+      setCustomSubCategories({});
     } catch (e) {
       console.error('Failed to clear flag storage', e);
     }
@@ -531,7 +779,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     return {
       customFlags,
       trash,
-      permanentlyDeletedIds
+      permanentlyDeletedIds,
+      customSubCategories
     };
   };
 
@@ -544,6 +793,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       let importedFlags: Flag[] = [];
       let importedTrash: TrashItem[] = [];
       let importedPermIds: string[] = [];
+      let importedSubs: Record<string, string[]> = {};
 
       if (Array.isArray(data)) {
         importedFlags = data.filter(f => f && typeof f.id === 'string' && typeof f.name === 'string');
@@ -561,9 +811,17 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         if (Array.isArray(data.permanentlyDeletedIds)) {
           importedPermIds = data.permanentlyDeletedIds.filter((id: any) => typeof id === 'string');
         }
+
+        if (data.customSubCategories && typeof data.customSubCategories === 'object') {
+          Object.entries(data.customSubCategories).forEach(([k, v]) => {
+            if (Array.isArray(v)) {
+              importedSubs[k] = (v as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+            }
+          });
+        }
       }
 
-      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0) {
+      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0 && Object.keys(importedSubs).length === 0) {
         return { success: false, importedCount: 0, error: 'No valid flag data found in JSON' };
       }
 
@@ -593,6 +851,15 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         savePermanentlyDeleted(permList);
       }
 
+      if (Object.keys(importedSubs).length > 0) {
+        const mergedSubs: Record<string, string[]> = { ...customSubCategories };
+        Object.entries(importedSubs).forEach(([cat, vals]) => {
+          const set = new Set([...(mergedSubs[cat] || []), ...vals]);
+          mergedSubs[cat] = Array.from(set);
+        });
+        saveSubCategories(mergedSubs);
+      }
+
       return {
         success: true,
         importedCount: importedFlags.length
@@ -610,6 +877,12 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         trash,
         deletedFlagIds,
         permanentlyDeletedIds,
+        customSubCategories,
+        getSubCategories,
+        getSubCategoryFlagCount,
+        addSubCategory,
+        renameSubCategory,
+        deleteSubCategory,
         addCustomFlag,
         editCustomFlag,
         deleteFlag,

@@ -30,8 +30,26 @@ export function CategoryFilterChips({
   rightAction,
   flagsPool: initialFlagsPool,
 }: CategoryFilterChipsProps) {
-  const { flags: FLAGS } = useFlags();
+  const { flags: FLAGS, getSubCategories } = useFlags();
   const flagsPool = initialFlagsPool || FLAGS;
+
+  const getMergedOptions = (cat: string): string[] => {
+    try {
+      const fromFlags = new Set<string>();
+      flagsPool.forEach(f => {
+        if (f.category === cat && f.country) fromFlags.add(f.country);
+      });
+      const merged = new Set<string>(fromFlags);
+      getSubCategories(cat).forEach(v => merged.add(v));
+      return Array.from(merged).sort();
+    } catch {
+      const s = new Set<string>();
+      flagsPool.forEach(f => {
+        if (f.category === cat && f.country) s.add(f.country);
+      });
+      return Array.from(s).sort();
+    }
+  };
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [submenuSearch, setSubmenuSearch] = useState('');
 
@@ -193,7 +211,7 @@ export function CategoryFilterChips({
                         const availableFlags = flagsPool.filter((f) => f.category === cat && f.country);
 
                         if (cat === 'Fictional') {
-                          const allOptions = Array.from(new Set(availableFlags.map((f) => f.country as string))).filter(Boolean);
+                          const allOptions = getMergedOptions(cat);
                           const searchFiltered = allOptions.filter((opt: any) =>
                             opt.toLowerCase().includes(submenuSearch.toLowerCase())
                           );
@@ -310,9 +328,7 @@ export function CategoryFilterChips({
                         }
 
                         if (cat === 'LGBTQI+') {
-                          const options = Array.from(new Set(availableFlags.map((f) => f.country as string)))
-                            .filter(Boolean)
-                            .sort()
+                          const options = getMergedOptions(cat)
                             .filter((opt: any) => opt.toLowerCase().includes(submenuSearch.toLowerCase()));
 
                           if (options.length === 0) {
@@ -348,7 +364,7 @@ export function CategoryFilterChips({
                         }
 
                         if (cat === 'Concepts') {
-                          const allOptions = Array.from(new Set(availableFlags.map((f) => f.country as string))).filter(Boolean);
+                          const allOptions = getMergedOptions(cat);
                           const sections = CONCEPT_SECTIONS as unknown as string[];
 
                           // Resolve which sub-section an option belongs to: the flag's
@@ -431,6 +447,14 @@ export function CategoryFilterChips({
                             const section = f.continent === 'Global' ? 'Others' : (f.continent || 'Others');
                             if (!orgGrouped[section]) orgGrouped[section] = new Set();
                             orgGrouped[section].add(f.country);
+                          });
+                          // Include admin-created empty sub-categories under Others
+                          getMergedOptions(cat).forEach(opt => {
+                            const already = Object.values(orgGrouped).some(s => s.has(opt));
+                            if (!already) {
+                              if (!orgGrouped['Others']) orgGrouped['Others'] = new Set();
+                              orgGrouped['Others'].add(opt);
+                            }
                           });
 
                           const orgSortedSections = SECTION_ORDER.filter(
@@ -521,6 +545,12 @@ export function CategoryFilterChips({
                             } else {
                               countryToContinentMap[f.country] = f.continent || 'Other';
                             }
+                          }
+                        });
+                        // Include admin-created empty sub-categories (grouped under Other)
+                        getMergedOptions(cat).forEach(opt => {
+                          if (!countryToContinentMap[opt]) {
+                            countryToContinentMap[opt] = 'Other';
                           }
                         });
 
