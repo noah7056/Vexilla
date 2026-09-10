@@ -4,7 +4,8 @@ import {
   BUILTIN_CUSTOM_FLAGS,
   BUILTIN_DELETED_FLAG_IDS
 } from '../data/flags';
-import { Flag, TrashItem } from '../types';
+import { Flag, TrashItem, ALL_CATEGORIES, ALL_CONTINENTS } from '../types';
+import { CONCEPT_SECTIONS } from '../data/concepts';
 import { db, testFirestoreConnection, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 
@@ -13,6 +14,23 @@ const TRASH_KEY = 'vexillo_trash_flags';
 const PERMANENT_DELETED_KEY = 'vexillo_permanently_deleted_ids';
 const LEGACY_DELETED_KEY = 'vexillo_deleted_flag_ids';
 const SUBCATEGORIES_KEY = 'vexillo_custom_subcategories';
+const CUSTOM_CATEGORIES_KEY = 'vexillo_custom_categories';
+const CUSTOM_SECTIONS_KEY = 'vexillo_custom_sections';
+
+export const FICTIONAL_SECTION_NAMES = ['Franchises / Universes', 'Media'] as const;
+
+// Categories whose flags store a sub-section in `flag.continent`.
+export const CATEGORIES_WITH_SECTIONS = [
+  'Sovereign States',
+  'Non-Sovereign & Unrecognized',
+  'US States',
+  'Provinces & Territories',
+  'Indigenous & Cultural Populations',
+  'Organizations',
+  'Languages',
+  'Fictional',
+  'Concepts',
+] as const;
 
 export const CATEGORIES_WITH_SUBCATEGORIES = [
   'Provinces & Territories',
@@ -28,6 +46,8 @@ export const CATEGORIES_WITH_SUBCATEGORIES = [
 export type SubCategoryParent = (typeof CATEGORIES_WITH_SUBCATEGORIES)[number] | string;
 
 export type DeleteSubCategoryMode = 'delete-flags' | 'move-flags';
+export type DeleteCategoryMode = 'delete-flags' | 'move-flags';
+export type DeleteSectionMode = 'delete-flags' | 'move-flags';
 
 interface FlagsContextType {
   flags: Flag[];
@@ -41,6 +61,18 @@ interface FlagsContextType {
   addSubCategory: (category: string, name: string) => { success: boolean; error?: string };
   renameSubCategory: (category: string, oldName: string, newName: string) => { success: boolean; error?: string; updatedCount?: number };
   deleteSubCategory: (category: string, name: string, action: { mode: DeleteSubCategoryMode; moveTo?: string }) => { success: boolean; error?: string; affectedCount?: number };
+  customCategories: string[];
+  getCategories: () => string[];
+  getCategoryFlagCount: (category: string) => number;
+  addCategory: (name: string) => { success: boolean; error?: string };
+  renameCategory: (oldName: string, newName: string) => { success: boolean; error?: string; updatedCount?: number };
+  deleteCategory: (name: string, action: { mode: DeleteCategoryMode; moveTo?: string }) => { success: boolean; error?: string; affectedCount?: number };
+  customSections: Record<string, string[]>;
+  getSections: (category: string) => string[];
+  getSectionFlagCount: (category: string, section: string) => number;
+  addSection: (category: string, name: string) => { success: boolean; error?: string };
+  renameSection: (category: string, oldName: string, newName: string) => { success: boolean; error?: string; updatedCount?: number };
+  deleteSection: (category: string, name: string, action: { mode: DeleteSectionMode; moveTo?: string }) => { success: boolean; error?: string; affectedCount?: number };
   addCustomFlag: (flag: Flag) => void;
   editCustomFlag: (flag: Flag) => void;
   deleteFlag: (id: string) => void;
@@ -131,6 +163,40 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
+  const [customCategories, setCustomCategories] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem(CUSTOM_CATEGORIES_KEY);
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return (parsed as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [customSections, setCustomSections] = useState<Record<string, string[]>>(() => {
+    try {
+      const saved = localStorage.getItem(CUSTOM_SECTIONS_KEY);
+      if (!saved) return {};
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const cleaned: Record<string, string[]> = {};
+        Object.entries(parsed).forEach(([k, v]) => {
+          if (Array.isArray(v)) {
+            cleaned[k] = (v as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+          }
+        });
+        return cleaned;
+      }
+      return {};
+    } catch {
+      return {};
+    }
+  });
+
   // Test connection on boot
   useEffect(() => {
     testFirestoreConnection();
@@ -142,6 +208,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     let unsubTrash: (() => void) | null = null;
     let unsubDeleted: (() => void) | null = null;
     let unsubSubs: (() => void) | null = null;
+    let unsubCats: (() => void) | null = null;
+    let unsubSections: (() => void) | null = null;
 
     try {
       // 1. Custom Flags Listener
@@ -260,6 +328,69 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
           console.warn('Firestore custom_subcategories snapshot error:', error);
         }
       );
+
+      // 5. Custom Categories Listener (single doc 'all')
+      const catsCol = collection(db, 'custom_categories');
+      unsubCats = onSnapshot(
+        catsCol,
+        (snapshot) => {
+          if (snapshot.empty) return;
+          const vals: string[] = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data() as { values?: string[] };
+            if (Array.isArray(data.values)) {
+              data.values.forEach(v => {
+                if (typeof v === 'string' && v.trim()) vals.push(v.trim());
+              });
+            }
+          });
+          if (vals.length === 0) return;
+          setCustomCategories((prev) => {
+            const merged = Array.from(new Set([...prev, ...vals]));
+            if (merged.length === prev.length) return prev;
+            try {
+              localStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        },
+        (error) => {
+          console.warn('Firestore custom_categories snapshot error:', error);
+        }
+      );
+
+      // 6. Custom Sections Listener (one doc per parent category)
+      const sectionsCol = collection(db, 'custom_sections');
+      unsubSections = onSnapshot(
+        sectionsCol,
+        (snapshot) => {
+          if (snapshot.empty) return;
+          setCustomSections((prev) => {
+            const merged: Record<string, string[]> = { ...prev };
+            let changed = false;
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() as { category?: string; values?: string[] };
+              const cat = data.category || docSnap.id;
+              const vals = Array.isArray(data.values)
+                ? data.values.filter(v => typeof v === 'string').map(v => v.trim()).filter(Boolean)
+                : [];
+              const prevSet = new Set(merged[cat] || []);
+              const nextSet = new Set([...prevSet, ...vals]);
+              const nextArr = Array.from(nextSet);
+              if (nextArr.length !== (merged[cat] || []).length) changed = true;
+              merged[cat] = nextArr;
+            });
+            if (!changed) return prev;
+            try {
+              localStorage.setItem(CUSTOM_SECTIONS_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        },
+        (error) => {
+          console.warn('Firestore custom_sections snapshot error:', error);
+        }
+      );
     } catch (err) {
       console.warn('Failed to attach Firestore listeners:', err);
     }
@@ -269,6 +400,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       if (unsubTrash) unsubTrash();
       if (unsubDeleted) unsubDeleted();
       if (unsubSubs) unsubSubs();
+      if (unsubCats) unsubCats();
+      if (unsubSections) unsubSections();
     };
   }, []);
 
@@ -301,6 +434,20 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     Object.entries(customSubCategories).forEach(([cat, values]) => {
       setDoc(doc(db, 'custom_subcategories', cat), { category: cat, values }).catch((err) =>
         console.warn('Failed to sync sub-category to Firestore:', cat, err)
+      );
+    });
+
+    // Push local custom categories to Firestore (single doc)
+    if (customCategories.length > 0) {
+      setDoc(doc(db, 'custom_categories', 'all'), { values: customCategories }).catch((err) =>
+        console.warn('Failed to sync categories to Firestore:', err)
+      );
+    }
+
+    // Push local custom sections to Firestore
+    Object.entries(customSections).forEach(([cat, values]) => {
+      setDoc(doc(db, 'custom_sections', cat), { category: cat, values }).catch((err) =>
+        console.warn('Failed to sync section to Firestore:', cat, err)
       );
     });
   }, [isFirestoreConnected]);
@@ -698,7 +845,323 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     return { success: true, affectedCount: affected.length };
   };
 
-  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0 || (Object.values(customSubCategories) as string[][]).some(a => a.length > 0);
+  // ---- Category management (top-level flag.category) ----
+  const saveCustomCategories = (next: string[]) => {
+    setCustomCategories(next);
+    try {
+      localStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(next));
+    } catch {}
+    setDoc(doc(db, 'custom_categories', 'all'), { values: next }).catch(() => {});
+  };
+
+  const getCategories = (): string[] => {
+    const seen = new Set<string>();
+    (ALL_CATEGORIES as string[]).forEach(c => seen.add(c));
+    customCategories.forEach(c => { const t = c.trim(); if (t) seen.add(t); });
+    // Robustness: include any category actually used by flags (e.g. after import)
+    flags.forEach(f => { if (f.category?.trim()) seen.add(f.category.trim()); });
+    effectiveBuiltInFlags.forEach(f => { if (f.category?.trim()) seen.add(f.category.trim()); });
+    const builtInOrder = ALL_CATEGORIES as string[];
+    const builtIn = builtInOrder.filter(c => seen.has(c));
+    const extra = Array.from(seen).filter(c => !(builtInOrder as string[]).includes(c)).sort((a, b) => a.localeCompare(b));
+    return [...builtIn, ...extra];
+  };
+
+  const getCategoryFlagCount = (category: string): number => {
+    return flags.filter(f => f.category === category).length;
+  };
+
+  const addCategory = (name: string): { success: boolean; error?: string } => {
+    const trimmed = normalizeName(name);
+    if (!trimmed) return { success: false, error: 'Name is required.' };
+    const existing = getCategories();
+    if (existing.some(e => e.toLowerCase() === trimmed.toLowerCase())) {
+      return { success: false, error: `Category "${trimmed}" already exists.` };
+    }
+    saveCustomCategories([...customCategories, trimmed]);
+    return { success: true };
+  };
+
+  const renameCategory = (oldName: string, newName: string): { success: boolean; error?: string; updatedCount?: number } => {
+    const from = normalizeName(oldName);
+    const to = normalizeName(newName);
+    if (!from || !to) return { success: false, error: 'Both names are required.' };
+    if (from === to) return { success: false, error: 'New name is the same as the old name.' };
+    const existing = getCategories();
+    if (!existing.includes(from)) return { success: false, error: `Category "${from}" not found.` };
+    if (existing.some(e => e.toLowerCase() === to.toLowerCase())) {
+      return { success: false, error: `Category "${to}" already exists. Merge instead.` };
+    }
+    const isBuiltIn = (ALL_CATEGORIES as string[]).includes(from);
+    if (isBuiltIn) {
+      return { success: false, error: `Built-in category "${from}" cannot be renamed. Create a new category and move flags instead.` };
+    }
+
+    const affected = flags.filter(f => f.category === from);
+    const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+    affected.forEach(orig => {
+      const updated: Flag = { ...orig, category: to as Flag['category'] };
+      customMap.set(orig.id, updated);
+      setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+    });
+    const mergedCustom = Array.from(customMap.values());
+    setCustomFlags(mergedCustom);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom)); } catch {}
+
+    // Move taxonomy registries keyed by category
+    if (customSubCategories[from]) {
+      const nextSubs = { ...customSubCategories };
+      const merged = Array.from(new Set([...(nextSubs[to] || []), ...nextSubs[from]]));
+      nextSubs[to] = merged;
+      delete nextSubs[from];
+      saveSubCategories(nextSubs);
+    }
+    if (customSections[from]) {
+      const nextSecs = { ...customSections };
+      const merged = Array.from(new Set([...(nextSecs[to] || []), ...nextSecs[from]]));
+      nextSecs[to] = merged;
+      delete nextSecs[from];
+      saveCustomSections(nextSecs);
+    }
+    saveCustomCategories([...customCategories.filter(c => c !== from), to]);
+
+    return { success: true, updatedCount: affected.length };
+  };
+
+  const deleteCategory = (name: string, action: { mode: DeleteCategoryMode; moveTo?: string }): { success: boolean; error?: string; affectedCount?: number } => {
+    const target = normalizeName(name);
+    if (!target) return { success: false, error: 'Category name is required.' };
+    const existing = getCategories();
+    if (!existing.includes(target)) return { success: false, error: `Category "${target}" not found.` };
+    if ((ALL_CATEGORIES as string[]).includes(target)) {
+      return { success: false, error: `Built-in category "${target}" cannot be deleted. Move its flags to another category instead.` };
+    }
+
+    const affected = flags.filter(f => f.category === target);
+
+    if (action.mode === 'move-flags') {
+      const dest = normalizeName(action.moveTo || '');
+      if (!dest) return { success: false, error: 'Choose a destination category.' };
+      if (dest === target) return { success: false, error: 'Destination must be different.' };
+      if (!existing.includes(dest)) return { success: false, error: `Destination "${dest}" not found.` };
+      const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+      affected.forEach(orig => {
+        const updated: Flag = { ...orig, category: dest as Flag['category'] };
+        customMap.set(orig.id, updated);
+        setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+      });
+      const mergedCustom = Array.from(customMap.values());
+      setCustomFlags(mergedCustom);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom)); } catch {}
+    } else {
+      if (affected.length > 0) {
+        const affectedIds = new Set(affected.map(f => f.id));
+        const remainingCustom = customFlags.filter(f => !affectedIds.has(f.id));
+        setCustomFlags(remainingCustom);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(remainingCustom)); } catch {}
+        affected.forEach(f => { deleteDoc(doc(db, 'custom_flags', f.id)).catch(() => {}); });
+        const newItems: TrashItem[] = affected.map(flag => ({
+          flag,
+          deletedAt: Date.now(),
+          isCustom: !effectiveBuiltInFlags.some(f => f.id === flag.id),
+        }));
+        const mergedTrash = [...newItems, ...trash.filter(t => !affectedIds.has(t.flag.id))];
+        saveTrash(mergedTrash);
+        newItems.forEach(item => {
+          setDoc(doc(db, 'trash_flags', item.flag.id), cleanObject(item)).catch(() => {});
+        });
+      }
+    }
+
+    // Clean registries
+    if (customSubCategories[target]) {
+      const nextSubs = { ...customSubCategories };
+      delete nextSubs[target];
+      saveSubCategories(nextSubs);
+    }
+    if (customSections[target]) {
+      const nextSecs = { ...customSections };
+      delete nextSecs[target];
+      saveCustomSections(nextSecs);
+    }
+    saveCustomCategories(customCategories.filter(c => c !== target));
+
+    return { success: true, affectedCount: affected.length };
+  };
+
+  // ---- Sub-section management (stored in flag.continent per parent category) ----
+  const saveCustomSections = (next: Record<string, string[]>) => {
+    setCustomSections(next);
+    try {
+      localStorage.setItem(CUSTOM_SECTIONS_KEY, JSON.stringify(next));
+    } catch {}
+    Object.entries(next).forEach(([cat, values]) => {
+      setDoc(doc(db, 'custom_sections', cat), { category: cat, values }).catch(() => {});
+    });
+  };
+
+  const isSectionlessCategory = (category: string) => {
+    return category === 'LGBTQI+' || category === 'Pirate Flags';
+  };
+
+  const getSections = (category: string): string[] => {
+    if (category === 'Fictional') {
+      return [...FICTIONAL_SECTION_NAMES];
+    }
+    if (isSectionlessCategory(category)) {
+      return [];
+    }
+    const base: string[] = [];
+    if (category === 'Concepts') {
+      base.push(...(CONCEPT_SECTIONS as unknown as string[]));
+    } else if (category === 'Organizations') {
+      base.push('Global', ...(ALL_CONTINENTS as string[]));
+    } else {
+      base.push(...(ALL_CONTINENTS as string[]));
+    }
+    const derived = new Set<string>(base);
+    const scan = (f: Flag) => {
+      if (f.category === category) {
+        // continent holds the section for sectioned categories
+        const cont = (f as Flag).continent;
+        if (typeof cont === 'string' && cont.trim()) derived.add(cont.trim());
+      }
+    };
+    effectiveBuiltInFlags.forEach(scan);
+    customFlags.forEach(scan);
+    flags.forEach(scan);
+    (customSections[category] || []).forEach(v => { const t = v.trim(); if (t) derived.add(t); });
+    // Keep geographic/continent order stable, extras sorted at end
+    const order = [...base];
+    const extras = Array.from(derived).filter(v => !order.includes(v)).sort((a, b) => a.localeCompare(b));
+    return [...order.filter(v => derived.has(v)), ...extras];
+  };
+
+  const getSectionFlagCount = (category: string, section: string): number => {
+    if (category === 'Fictional') {
+      // Fictional sections group sub-categories, not flags directly via continent.
+      // Count flags whose universe belongs to the section group is handled in UI;
+      // here return 0 to avoid misuse — UI computes grouped counts separately.
+      return 0;
+    }
+    return flags.filter(f => f.category === category && f.continent === section).length;
+  };
+
+  const addSection = (category: string, name: string): { success: boolean; error?: string } => {
+    const trimmed = normalizeName(name);
+    if (!trimmed) return { success: false, error: 'Name is required.' };
+    if (category === 'Fictional') {
+      return { success: false, error: 'Fictional sections (Franchises / Universes, Media) are fixed.' };
+    }
+    if (isSectionlessCategory(category)) {
+      return { success: false, error: `Category "${category}" does not use sub-sections.` };
+    }
+    const existing = getSections(category);
+    if (existing.some(e => e.toLowerCase() === trimmed.toLowerCase())) {
+      return { success: false, error: `Sub-section "${trimmed}" already exists.` };
+    }
+    const next = { ...customSections, [category]: [...(customSections[category] || []), trimmed] };
+    saveCustomSections(next);
+    return { success: true };
+  };
+
+  const renameSection = (category: string, oldName: string, newName: string): { success: boolean; error?: string; updatedCount?: number } => {
+    const from = normalizeName(oldName);
+    const to = normalizeName(newName);
+    if (!from || !to) return { success: false, error: 'Both names are required.' };
+    if (from === to) return { success: false, error: 'New name is the same as the old name.' };
+    if (category === 'Fictional') {
+      return { success: false, error: 'Fictional sections are fixed and cannot be renamed.' };
+    }
+    if (isSectionlessCategory(category)) {
+      return { success: false, error: `Category "${category}" does not use sub-sections.` };
+    }
+    const existing = getSections(category);
+    if (!existing.includes(from)) return { success: false, error: `Sub-section "${from}" not found.` };
+    if (existing.some(e => e.toLowerCase() === to.toLowerCase())) {
+      return { success: false, error: `Sub-section "${to}" already exists.` };
+    }
+    const affected = flags.filter(f => f.category === category && f.continent === from);
+    const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+    affected.forEach(orig => {
+      const updated: Flag = { ...orig, continent: to as Flag['continent'] };
+      customMap.set(orig.id, updated);
+      setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+    });
+    const mergedCustom = Array.from(customMap.values());
+    setCustomFlags(mergedCustom);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom)); } catch {}
+
+    const currentList = customSections[category] || [];
+    const withoutOld = currentList.filter(v => v !== from);
+    const next: Record<string, string[]> = { ...customSections };
+    if (affected.length === 0 && currentList.includes(from)) {
+      next[category] = [...withoutOld, to];
+    } else if (withoutOld.length !== currentList.length) {
+      next[category] = withoutOld;
+    }
+    if (next[category] !== customSections[category]) {
+      saveCustomSections(next);
+    }
+    return { success: true, updatedCount: affected.length };
+  };
+
+  const deleteSection = (category: string, name: string, action: { mode: DeleteSectionMode; moveTo?: string }): { success: boolean; error?: string; affectedCount?: number } => {
+    const target = normalizeName(name);
+    if (!target) return { success: false, error: 'Sub-section name is required.' };
+    if (category === 'Fictional') {
+      return { success: false, error: 'Fictional sections are fixed and cannot be deleted.' };
+    }
+    if (isSectionlessCategory(category)) {
+      return { success: false, error: `Category "${category}" does not use sub-sections.` };
+    }
+    const existing = getSections(category);
+    if (!existing.includes(target)) return { success: false, error: `Sub-section "${target}" not found.` };
+    const affected = flags.filter(f => f.category === category && f.continent === target);
+
+    if (action.mode === 'move-flags') {
+      const dest = normalizeName(action.moveTo || '');
+      if (!dest) return { success: false, error: 'Choose a destination sub-section.' };
+      if (dest === target) return { success: false, error: 'Destination must be different.' };
+      if (!existing.includes(dest)) return { success: false, error: `Destination "${dest}" not found.` };
+      const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
+      affected.forEach(orig => {
+        const updated: Flag = { ...orig, continent: dest as Flag['continent'] };
+        customMap.set(orig.id, updated);
+        setDoc(doc(db, 'custom_flags', orig.id), cleanObject(updated)).catch(() => {});
+      });
+      const mergedCustom = Array.from(customMap.values());
+      setCustomFlags(mergedCustom);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCustom)); } catch {}
+    } else {
+      if (affected.length > 0) {
+        const affectedIds = new Set(affected.map(f => f.id));
+        const remainingCustom = customFlags.filter(f => !affectedIds.has(f.id));
+        setCustomFlags(remainingCustom);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(remainingCustom)); } catch {}
+        affected.forEach(f => { deleteDoc(doc(db, 'custom_flags', f.id)).catch(() => {}); });
+        const newItems: TrashItem[] = affected.map(flag => ({
+          flag,
+          deletedAt: Date.now(),
+          isCustom: !effectiveBuiltInFlags.some(f => f.id === flag.id),
+        }));
+        const mergedTrash = [...newItems, ...trash.filter(t => !affectedIds.has(t.flag.id))];
+        saveTrash(mergedTrash);
+        newItems.forEach(item => {
+          setDoc(doc(db, 'trash_flags', item.flag.id), cleanObject(item)).catch(() => {});
+        });
+      }
+    }
+
+    const currentList = customSections[category] || [];
+    if (currentList.includes(target)) {
+      const next = { ...customSections, [category]: currentList.filter(v => v !== target) };
+      saveCustomSections(next);
+    }
+    return { success: true, affectedCount: affected.length };
+  };
+
+  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0 || (Object.values(customSubCategories) as string[][]).some(a => a.length > 0) || customCategories.length > 0 || (Object.values(customSections) as string[][]).some(a => a.length > 0);
 
   const clearLocalFlagsStorageOnly = () => {
     try {
@@ -707,10 +1170,14 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(PERMANENT_DELETED_KEY);
       localStorage.removeItem(LEGACY_DELETED_KEY);
       localStorage.removeItem(SUBCATEGORIES_KEY);
+      localStorage.removeItem(CUSTOM_CATEGORIES_KEY);
+      localStorage.removeItem(CUSTOM_SECTIONS_KEY);
       setCustomFlags([]);
       setTrash([]);
       setPermanentlyDeletedIds([]);
       setCustomSubCategories({});
+      setCustomCategories([]);
+      setCustomSections({});
     } catch (e) {
       console.error('Failed to clear flag storage', e);
     }
@@ -780,7 +1247,9 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       customFlags,
       trash,
       permanentlyDeletedIds,
-      customSubCategories
+      customSubCategories,
+      customCategories,
+      customSections
     };
   };
 
@@ -794,6 +1263,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       let importedTrash: TrashItem[] = [];
       let importedPermIds: string[] = [];
       let importedSubs: Record<string, string[]> = {};
+      let importedCats: string[] = [];
+      let importedSections: Record<string, string[]> = {};
 
       if (Array.isArray(data)) {
         importedFlags = data.filter(f => f && typeof f.id === 'string' && typeof f.name === 'string');
@@ -819,9 +1290,21 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
             }
           });
         }
+
+        if (Array.isArray(data.customCategories)) {
+          importedCats = (data.customCategories as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+        }
+
+        if (data.customSections && typeof data.customSections === 'object') {
+          Object.entries(data.customSections).forEach(([k, v]) => {
+            if (Array.isArray(v)) {
+              importedSections[k] = (v as unknown[]).filter(x => typeof x === 'string').map(s => (s as string).trim()).filter(Boolean);
+            }
+          });
+        }
       }
 
-      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0 && Object.keys(importedSubs).length === 0) {
+      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0 && Object.keys(importedSubs).length === 0 && importedCats.length === 0 && Object.keys(importedSections).length === 0) {
         return { success: false, importedCount: 0, error: 'No valid flag data found in JSON' };
       }
 
@@ -860,6 +1343,19 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         saveSubCategories(mergedSubs);
       }
 
+      if (importedCats.length > 0) {
+        saveCustomCategories(Array.from(new Set([...customCategories, ...importedCats])));
+      }
+
+      if (Object.keys(importedSections).length > 0) {
+        const mergedSecs: Record<string, string[]> = { ...customSections };
+        Object.entries(importedSections).forEach(([cat, vals]) => {
+          const set = new Set([...(mergedSecs[cat] || []), ...vals]);
+          mergedSecs[cat] = Array.from(set);
+        });
+        saveCustomSections(mergedSecs);
+      }
+
       return {
         success: true,
         importedCount: importedFlags.length
@@ -883,6 +1379,18 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         addSubCategory,
         renameSubCategory,
         deleteSubCategory,
+        customCategories,
+        getCategories,
+        getCategoryFlagCount,
+        addCategory,
+        renameCategory,
+        deleteCategory,
+        customSections,
+        getSections,
+        getSectionFlagCount,
+        addSection,
+        renameSection,
+        deleteSection,
         addCustomFlag,
         editCustomFlag,
         deleteFlag,

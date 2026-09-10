@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check } from 'lucide-react';
+import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check, Flag as FlagIcon, FolderCog } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Flag, Category, Continent, FlagStatus, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { Flag, Category, Continent, FlagStatus, ALL_CONTINENTS, ALL_STATUSES } from '../types';
 import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
+import { CategoryEditorPanel } from './CategoryEditorPanel';
 import { FICTIONAL_MEDIA_TYPES } from '../data/fictional';
 import { CONCEPT_SECTIONS } from '../data/concepts';
 
@@ -103,13 +104,16 @@ function saveLastAddedSelections(selections: LastAddedSelections) {
   }
 }
 
+type EditorTab = 'flag' | 'categories';
+
 interface FlagEditorModalProps {
   key?: string | number;
   flagToEdit?: Flag | null; // if provided, we edit. Else add.
   onClose: () => void;
+  initialTab?: EditorTab;
 }
 
-export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
+export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: FlagEditorModalProps) {
   const {
     flags: FLAGS,
     addCustomFlag,
@@ -119,7 +123,10 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     isCustomFlag,
     isModifiedBuiltIn,
     getSubCategories,
+    getCategories,
   } = useFlags();
+
+  const [activeTab, setActiveTab] = useState<EditorTab>(initialTab);
 
   // Resolve freshest flag data from store if editing
   const liveFlag = useMemo(() => {
@@ -270,9 +277,18 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
     return allSubOptions;
   }, [category, fictionalSection, continent, allSubOptions, FLAGS]);
 
-  const hasSection = CATEGORIES_WITH_SECTION.includes(category);
-  const hasSub = CATEGORIES_WITH_SUBS.includes(category);
-  const sectionLabel = CATEGORY_SECTION_LABELS[category] || 'Sub-section';
+  const allCategories = useMemo(() => {
+    try {
+      return getCategories();
+    } catch {
+      return ['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States', 'Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations', 'LGBTQI+', 'Languages', 'Pirate Flags', 'Organizations', 'Concepts'];
+    }
+  }, [getCategories, FLAGS]);
+  // Custom categories behave like geographic ones: they support both sub-sections (continents) and sub-categories.
+  const isCustomCategory = !(CATEGORIES_WITH_SUBS.includes(category) || CATEGORIES_WITH_SECTION.includes(category) || category === 'LGBTQI+' || category === 'Pirate Flags' || (['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States'] as string[]).includes(category));
+  const hasSection = CATEGORIES_WITH_SECTION.includes(category) || isCustomCategory;
+  const hasSub = CATEGORIES_WITH_SUBS.includes(category) || isCustomCategory;
+  const sectionLabel = CATEGORY_SECTION_LABELS[category] || (isCustomCategory ? 'Continent' : 'Sub-section');
   const subLabel = CATEGORY_SUB_LABELS[category] || 'Sub-category';
 
   const effectiveContinent: Continent | undefined =
@@ -377,9 +393,9 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-              {isEditing ? 'Edit Flag' : 'Add Custom Flag'}
+              {activeTab === 'categories' ? 'Manage Categories' : isEditing ? 'Edit Flag' : 'Add Custom Flag'}
             </h2>
-            {isEditing && (
+            {activeTab === 'flag' && isEditing && (
               <>
                 {isModified ? (
                   <span className="text-xs px-2 py-0.5 rounded-md font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
@@ -405,6 +421,65 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
           </button>
         </div>
 
+        {/* Tabs: Flag editor <-> Category editor (same modal, same layout chrome) */}
+        <div className="px-4 sm:px-5 pt-3">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+            <button
+              type="button"
+              onClick={() => setActiveTab('flag')}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                activeTab === 'flag'
+                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
+                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+              }`}
+            >
+              <FlagIcon className="w-4 h-4" />
+              {isEditing ? 'Flag' : 'Add Flag'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('categories')}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                activeTab === 'categories'
+                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
+                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+              }`}
+            >
+              <FolderCog className="w-4 h-4" />
+              Categories
+            </button>
+          </div>
+        </div>
+
+        {activeTab === 'categories' ? (
+          <>
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <CategoryEditorPanel />
+            </div>
+            <div className="p-4 sm:p-5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                New categories, sub-categories, and sub-sections appear immediately in the flag editor and filters.
+              </p>
+              <div className="flex items-center gap-2 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('flag')}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  Back to Flag
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-5 py-2 rounded-xl text-sm font-semibold bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+        <>
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col md:flex-row gap-6">
           {/* Form Side */}
           <div className="flex-1 space-y-4">
@@ -477,7 +552,7 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
                     onChange={e => handleCategoryChange(e.target.value as Category)}
                     className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
                   >
-                    {ALL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    {allCategories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="min-w-0">
@@ -908,6 +983,8 @@ export function FlagEditorModal({ flagToEdit, onClose }: FlagEditorModalProps) {
             </button>
           </div>
         </div>
+        </>
+        )}
       </motion.div>
     </div>
   );

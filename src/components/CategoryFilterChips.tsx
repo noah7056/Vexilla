@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Layers, Settings, Search, X, Check } from 'lucide-react';
 import { useFlags } from '../contexts/FlagsContext';
 import { FICTIONAL_MEDIA_TYPES, FICTIONAL_FRANCHISES } from '../data/fictional';
 import { CONCEPT_SECTIONS } from '../data/concepts';
-import { Category, Flag, ALL_CATEGORIES } from '../types';
+import { Category, Flag } from '../types';
 
 interface CategoryFilterChipsProps {
   selectedCategories: (Category | 'All')[];
@@ -30,8 +30,15 @@ export function CategoryFilterChips({
   rightAction,
   flagsPool: initialFlagsPool,
 }: CategoryFilterChipsProps) {
-  const { flags: FLAGS, getSubCategories } = useFlags();
+  const { flags: FLAGS, getSubCategories, getCategories } = useFlags();
   const flagsPool = initialFlagsPool || FLAGS;
+  const allCats: string[] = useMemo(() => {
+    try {
+      return getCategories();
+    } catch {
+      return ['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States', 'Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations', 'LGBTQI+', 'Languages', 'Pirate Flags', 'Organizations', 'Concepts'];
+    }
+  }, [getCategories, FLAGS]);
 
   const getMergedOptions = (cat: string): string[] => {
     try {
@@ -55,7 +62,7 @@ export function CategoryFilterChips({
 
   const isAllCategoriesActive =
     selectedCategories.includes('All') ||
-    (selectedCategories.length === ALL_CATEGORIES.length &&
+    (selectedCategories.length === allCats.length &&
       Object.values(selectedSubOptions).every((opts) => !opts || opts.length === 0));
 
   return (
@@ -92,11 +99,11 @@ export function CategoryFilterChips({
           </button>
         )}
 
-        {ALL_CATEGORIES.map((cat) => {
-          const hasSubOptions = ['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Organizations', 'Concepts'].includes(cat);
+        {allCats.map((cat) => {
+          const hasSubOptions = ['Provinces & Territories', 'Indigenous & Cultural Populations', 'Fictional', 'LGBTQI+', 'Languages', 'Organizations', 'Concepts'].includes(cat) || !['Sovereign States', 'Non-Sovereign & Unrecognized', 'US States', 'LGBTQI+', 'Pirate Flags'].includes(cat);
           const activeSubOptions = selectedSubOptions[cat] || [];
           const hasActiveSub = activeSubOptions.length > 0;
-          const isCategorySelected = !selectedCategories.includes('All') && selectedCategories.includes(cat);
+          const isCategorySelected = !selectedCategories.includes('All') && selectedCategories.includes(cat as Category);
           const isHighlighted = (isCategorySelected || hasActiveSub) && !isAllCategoriesActive;
           const count = flagsPool.filter((f) => f.category === cat).length;
           const activeCount = hasActiveSub
@@ -115,17 +122,17 @@ export function CategoryFilterChips({
                   onClearSubOptions(cat);
                 }
                 if (isCategorySelected) {
-                  onToggleCategory(cat);
+                  onToggleCategory(cat as Category);
                 }
               } else {
                 // Pressing an unselected category with submenu selects it with everything inside
                 if (onClearSubOptions) {
                   onClearSubOptions(cat);
                 }
-                onToggleCategory(cat);
+                onToggleCategory(cat as Category);
               }
             } else {
-              onToggleCategory(cat);
+              onToggleCategory(cat as Category);
             }
           };
 

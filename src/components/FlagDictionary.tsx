@@ -19,8 +19,7 @@ import {
   RotateCcw,
   Trash2,
   FileJson,
-  Cloud,
-  FolderCog
+  Cloud
 } from 'lucide-react';
 import { PROVINCE_COUNTRIES  } from '../data/flags';
 import { useFlags } from '../contexts/FlagsContext';
@@ -41,7 +40,6 @@ import { FlagImage } from './FlagImage';
 import { FlagModal } from './FlagModal';
 import { FlagCompareModal } from './FlagCompareModal';
 import { FlagEditorModal } from './FlagEditorModal';
-import { SubCategoryManagerModal } from './SubCategoryManagerModal';
 import { TrashBinModal } from './TrashBinModal';
 import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
@@ -80,7 +78,14 @@ type SortOption = 'name-asc' | 'name-desc' | 'continent' | 'category';
 type ItemsPerPage = 12 | 25 | 50 | 100 | 'All';
 
 export function FlagDictionary({ progress }: FlagDictionaryProps) {
-  const { flags: FLAGS, trash, isFirestoreConnected } = useFlags();
+  const { flags: FLAGS, trash, isFirestoreConnected, getCategories } = useFlags();
+  const dynamicCatCount = useMemo(() => {
+    try {
+      return getCategories().length;
+    } catch {
+      return ALL_CATEGORIES.length;
+    }
+  }, [getCategories, FLAGS]);
   const { isAdmin } = useAdmin();
   const { favoritesSet, toggleFavorite } = useFavorites();
   const [search, setSearch] = useState('');
@@ -97,9 +102,9 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const [focusedFlag, setFocusedFlag] = useState<Flag | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [flagToEdit, setFlagToEdit] = useState<Flag | null>(null);
+  const [editorInitialTab, setEditorInitialTab] = useState<'flag' | 'categories'>('flag');
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
-  const [isSubManagerOpen, setIsSubManagerOpen] = useState(false);
   
   const [itemsPerPage, setItemsPerPage] = useState<ItemsPerPage>(12);
   const [displayedCount, setDisplayedCount] = useState<number>(12);
@@ -175,7 +180,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         return next.length === 0 ? ['All'] : next;
       } else {
         const next = [...prev, cat];
-        if (next.length === ALL_CATEGORIES.length) {
+        if (next.length === dynamicCatCount) {
           setSelectedSubOptions({});
           return ['All'];
         }
@@ -464,21 +469,12 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
 
           {isAdmin && (
           <button
-            onClick={() => { setFlagToEdit(null); setIsEditorOpen(true); }}
+            onClick={() => { setFlagToEdit(null); setEditorInitialTab('flag'); setIsEditorOpen(true); }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+            title="Add flags and manage categories, sub-categories, and sub-sections"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Add Flag</span>
-          </button>
-          )}
-          {isAdmin && (
-          <button
-            onClick={() => setIsSubManagerOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800/50 hover:bg-violet-100 dark:hover:bg-violet-900/50"
-            title="Add, rename, or delete sub-categories (outside the flag editor)"
-          >
-            <FolderCog className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Sub-categories</span>
+            <span className="hidden sm:inline">Add / Manage</span>
           </button>
           )}
           {isAdmin && (
@@ -954,6 +950,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           onCompare={handleStartCompareFromModal}
           onEdit={(flag) => {
             setFlagToEdit(flag);
+            setEditorInitialTab('flag');
             setIsEditorOpen(true);
             setFocusedFlag(null);
           }}
@@ -971,12 +968,13 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         />
       )}
 
-      {/* Flag Editor Modal */}
+      {/* Unified Admin Editor Modal (flag + categories tabs) */}
       <AnimatePresence>
         {isEditorOpen && (
           <FlagEditorModal
-            key={flagToEdit ? flagToEdit.id : 'new-flag'}
+            key={`${flagToEdit ? flagToEdit.id : 'new-flag'}-${editorInitialTab}`}
             flagToEdit={flagToEdit}
+            initialTab={editorInitialTab}
             onClose={() => {
               setIsEditorOpen(false);
               setFlagToEdit(null);
@@ -996,16 +994,6 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         isOpen={isImportExportOpen}
         onClose={() => setIsImportExportOpen(false)}
       />
-
-      {/* Sub-category Manager (admin, outside flag editor) */}
-      <AnimatePresence>
-        {isSubManagerOpen && (
-          <SubCategoryManagerModal
-            isOpen={isSubManagerOpen}
-            onClose={() => setIsSubManagerOpen(false)}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }
