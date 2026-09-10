@@ -279,8 +279,8 @@ export function FlagModal({
         >
           {/* Modal Header */}
           <div className="px-4 py-3 sm:px-6 sm:py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-3 bg-zinc-50 dark:bg-zinc-900 shrink-0">
-            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-              <h2 className="text-lg sm:text-2xl font-bold text-zinc-900 dark:text-white truncate">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+              <h2 className="text-lg sm:text-2xl font-bold text-zinc-900 dark:text-white break-words leading-tight whitespace-normal min-w-0">
                 {flag.name}
               </h2>
               <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60 shrink-0">
@@ -288,7 +288,7 @@ export function FlagModal({
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               {onCompare && (
                 <button
                   id="flag-modal-compare-btn"

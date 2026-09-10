@@ -423,9 +423,6 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             <Globe2 className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
             Flag Dictionary
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Browse and inspect all world flags with high-definition zoom and pan details.
-          </p>
         </div>
 
         {/* Counter Badge & Compare Toggle */}
