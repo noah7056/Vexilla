@@ -30,7 +30,7 @@ export function CategoryFilterChips({
   rightAction,
   flagsPool: initialFlagsPool,
 }: CategoryFilterChipsProps) {
-  const { flags: FLAGS, getSubCategories, getCategories } = useFlags();
+  const { flags: FLAGS, getCategories, customFlags, customSubCategories, effectiveBuiltInFlags } = useFlags();
   const flagsPool = initialFlagsPool || FLAGS;
   const allCats: string[] = useMemo(() => {
     try {
@@ -40,22 +40,55 @@ export function CategoryFilterChips({
     }
   }, [getCategories, FLAGS]);
 
+  // Precompute per-category option lists and flag counts in single passes so
+  // rendering chips/submenus doesn't re-scan the whole pool on every render.
+  // The option set exactly mirrors getSubCategories(): pool-derived countries
+  // plus built-in, custom and visible-flag countries plus the custom registry.
+  const mergedOptionsByCat = useMemo(() => {
+    const addCountries = (set: Set<string>, list: Flag[], cat: string) => {
+      list.forEach((f) => {
+        if (f.category === cat && f.country?.trim()) set.add(f.country.trim());
+      });
+    };
+    const m = new Map<string, string[]>();
+    const cats = new Set<string>(allCats);
+    flagsPool.forEach((f) => {
+      if (f.category) cats.add(f.category);
+    });
+    cats.forEach((cat) => {
+      const merged = new Set<string>();
+      addCountries(merged, flagsPool, cat);
+      addCountries(merged, effectiveBuiltInFlags, cat);
+      addCountries(merged, customFlags, cat);
+      addCountries(merged, FLAGS, cat);
+      (customSubCategories[cat] || []).forEach((v) => {
+        const t = (v || '').trim();
+        if (t) merged.add(t);
+      });
+      m.set(cat, Array.from(merged).sort());
+    });
+    return m;
+  }, [flagsPool, customSubCategories, customFlags, effectiveBuiltInFlags, FLAGS, allCats]);
+
+  const counts = useMemo(() => {
+    const byCat = new Map<string, number>();
+    const byCatCountry = new Map<string, number>();
+    flagsPool.forEach((f) => {
+      byCat.set(f.category, (byCat.get(f.category) || 0) + 1);
+      if (f.country) {
+        const k = `${f.category}|||${f.country}`;
+        byCatCountry.set(k, (byCatCountry.get(k) || 0) + 1);
+      }
+    });
+    return { byCat, byCatCountry };
+  }, [flagsPool]);
+
   const getMergedOptions = (cat: string): string[] => {
-    try {
-      const fromFlags = new Set<string>();
-      flagsPool.forEach(f => {
-        if (f.category === cat && f.country) fromFlags.add(f.country);
-      });
-      const merged = new Set<string>(fromFlags);
-      getSubCategories(cat).forEach(v => merged.add(v));
-      return Array.from(merged).sort();
-    } catch {
-      const s = new Set<string>();
-      flagsPool.forEach(f => {
-        if (f.category === cat && f.country) s.add(f.country);
-      });
-      return Array.from(s).sort();
-    }
+    return mergedOptionsByCat.get(cat) || [];
+  };
+
+  const getOptCount = (cat: string, opt: string): number => {
+    return counts.byCatCountry.get(`${cat}|||${opt}`) || 0;
   };
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [submenuSearch, setSubmenuSearch] = useState('');
@@ -105,9 +138,9 @@ export function CategoryFilterChips({
           const hasActiveSub = activeSubOptions.length > 0;
           const isCategorySelected = !selectedCategories.includes('All') && selectedCategories.includes(cat as Category);
           const isHighlighted = (isCategorySelected || hasActiveSub) && !isAllCategoriesActive;
-          const count = flagsPool.filter((f) => f.category === cat).length;
+          const count = counts.byCat.get(cat) || 0;
           const activeCount = hasActiveSub
-            ? flagsPool.filter((f) => f.category === cat && f.country && activeSubOptions.includes(f.country)).length
+            ? activeSubOptions.reduce((n, opt) => n + getOptCount(cat, opt), 0)
             : count;
 
           const containerClass = isHighlighted
@@ -243,7 +276,7 @@ export function CategoryFilterChips({
                                    <div className="flex flex-wrap gap-1.5">
                                     {franchises.map((opt: any) => {
                                       const isOptSelected = activeSubOptions.includes(opt);
-                                      const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                      const optCount = getOptCount(cat, opt);
                                       return (
                                         <button
                                           key={opt}
@@ -275,7 +308,7 @@ export function CategoryFilterChips({
                                   <div className="flex flex-wrap gap-1.5">
                                     {media.map((opt: any) => {
                                       const isOptSelected = activeSubOptions.includes(opt);
-                                      const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                      const optCount = getOptCount(cat, opt);
                                       return (
                                         <button
                                           key={opt}
@@ -307,7 +340,7 @@ export function CategoryFilterChips({
                                   <div className="flex flex-wrap gap-1.5">
                                     {others.map((opt: any) => {
                                       const isOptSelected = activeSubOptions.includes(opt);
-                                      const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                      const optCount = getOptCount(cat, opt);
                                       return (
                                         <button
                                           key={opt}
@@ -346,7 +379,7 @@ export function CategoryFilterChips({
                             <div className="flex flex-wrap gap-1.5">
                               {options.map((opt: any) => {
                                 const isOptSelected = activeSubOptions.includes(opt);
-                                const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                const optCount = getOptCount(cat, opt);
                                 return (
                                   <button
                                     key={opt}
@@ -413,7 +446,7 @@ export function CategoryFilterChips({
                                     <div className="flex flex-wrap gap-1.5">
                                       {group.options.map((opt: any) => {
                                         const isOptSelected = activeSubOptions.includes(opt);
-                                        const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                        const optCount = getOptCount(cat, opt);
                                         return (
                                           <button
                                             key={opt}
@@ -491,7 +524,7 @@ export function CategoryFilterChips({
                               <div className="flex flex-wrap gap-1.5">
                                 {group.options.map((opt: any) => {
                                   const isOptSelected = activeSubOptions.includes(opt);
-                                  const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                  const optCount = getOptCount(cat, opt);
                                   return (
                                     <button
                                       key={opt}
@@ -592,7 +625,7 @@ export function CategoryFilterChips({
                             <div className="flex flex-wrap gap-1.5">
                               {group.options.map((opt: any) => {
                                 const isOptSelected = activeSubOptions.includes(opt);
-                                const optCount = flagsPool.filter((f) => f.category === cat && f.country === opt).length;
+                                const optCount = getOptCount(cat, opt);
                                 return (
                                   <button
                                     key={opt}

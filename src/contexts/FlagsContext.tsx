@@ -7,7 +7,7 @@ import {
 import { Flag, TrashItem, ALL_CATEGORIES, ALL_CONTINENTS } from '../types';
 import { CONCEPT_SECTIONS } from '../data/concepts';
 import { db, testFirestoreConnection, handleFirestoreError, OperationType } from '../lib/firebase';
-import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, getDocs } from 'firebase/firestore';
 
 const STORAGE_KEY = 'vexillo_custom_flags';
 const TRASH_KEY = 'vexillo_trash_flags';
@@ -52,6 +52,9 @@ export type DeleteSectionMode = 'delete-flags' | 'move-flags';
 interface FlagsContextType {
   flags: Flag[];
   customFlags: Flag[];
+  // Built-in flags from code (base + baked customs, minus baked deletions).
+  // Exposed so filter components can derive options without re-scanning.
+  effectiveBuiltInFlags: Flag[];
   trash: TrashItem[];
   deletedFlagIds: string[];
   permanentlyDeletedIds: string[];
@@ -119,7 +122,6 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
   // IDs already observed in Firestore. Used to propagate deletions made on
   // another client (or directly in the console) down to local state.
   // Null until the first server snapshot arrives.
-  const customSeenRef = useRef<Set<string> | null>(null);
   const trashSeenRef = useRef<Set<string> | null>(null);
   const deletedSeenRef = useRef<Set<string> | null>(null);
   const firstSnapshotsRef = useRef({ custom: false, trash: false, deleted: false });
@@ -221,46 +223,39 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     testFirestoreConnection();
   }, []);
 
-  // Real-time Firestore Sync
+  // Real-time Firestore Sync (live listeners only for the small collections;
+  // custom_flags is fetched once — see below)
   useEffect(() => {
-    let unsubCustom: (() => void) | null = null;
     let unsubTrash: (() => void) | null = null;
     let unsubDeleted: (() => void) | null = null;
     let unsubSubs: (() => void) | null = null;
     let unsubCats: (() => void) | null = null;
     let unsubSections: (() => void) | null = null;
+    let cancelled = false;
 
     try {
-      // 1. Custom Flags Listener (additive merge + deletion reconciliation)
+      // 1. Custom Flags: one-time fetch, no live listener. This collection can
+      // hold thousands of docs; a persistent listener re-downloads them on
+      // every change. All mutations write through to Firestore directly, and
+      // trash/hidden-ID changes still arrive live via the listeners below.
       const customCol = collection(db, 'custom_flags');
-      unsubCustom = onSnapshot(
-        customCol,
-        (snapshot) => {
+      getDocs(customCol)
+        .then((snapshot) => {
+          if (cancelled) return;
           setIsFirestoreConnected(true);
           if (!snapshot.metadata.fromCache) markSnapshotReady('custom');
           const fsFlags: Flag[] = [];
           snapshot.forEach((docSnap) => {
             fsFlags.push(docSnap.data() as Flag);
           });
-          const fsIds = new Set(fsFlags.map((f) => f.id));
 
-          if (fsFlags.length > 0 || customSeenRef.current !== null) {
+          if (fsFlags.length > 0) {
             setCustomFlags((prev) => {
-              // Merge Firestore flags with local storage flags, dropping local
-              // flags that were previously synced but have since been deleted
-              // elsewhere (e.g. definitively deleted from the trash bin).
+              // Merge Firestore flags with local storage flags
               const map = new Map<string, Flag>();
-              const seen = customSeenRef.current;
-              if (seen !== null) {
-                prev.forEach((f) => {
-                  if (fsIds.has(f.id) || !seen.has(f.id)) map.set(f.id, f);
-                });
-              } else {
-                prev.forEach((f) => map.set(f.id, f));
-              }
+              prev.forEach((f) => map.set(f.id, f));
               fsFlags.forEach((f) => map.set(f.id, f));
               const merged = Array.from(map.values());
-              customSeenRef.current = fsIds;
               const unchanged = merged.length === prev.length && prev.every((f, i) => merged[i] === f);
               if (unchanged) return prev;
               try {
@@ -268,12 +263,13 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
               } catch {}
               return merged;
             });
+          } else if (!snapshot.metadata.fromCache) {
+            markSnapshotReady('custom');
           }
-        },
-        (error) => {
-          console.warn('Firestore custom_flags snapshot error:', error);
-        }
-      );
+        })
+        .catch((error) => {
+          if (!cancelled) console.warn('Firestore custom_flags fetch error:', error);
+        });
 
       // 2. Trash Flags Listener (Firestore is source of truth; deletions
       // confirmed in the trash bin propagate to every client automatically)
@@ -469,7 +465,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     }
 
     return () => {
-      if (unsubCustom) unsubCustom();
+      cancelled = true;
       if (unsubTrash) unsubTrash();
       if (unsubDeleted) unsubDeleted();
       if (unsubSubs) unsubSubs();
@@ -478,20 +474,14 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // One-time seed: push pre-existing local items up to Firestore once connected.
-  // Runs only after the first server snapshots have been reconciled
-  // (initialSyncDone), so locally-stale trash / hidden-ID entries are never
-  // re-uploaded after being deleted elsewhere. Afterwards every mutation
-  // function writes through to Firestore directly.
+  // One-time seed: push small pre-existing local items (trash, hidden IDs,
+  // taxonomy) up to Firestore once connected. Custom flags are deliberately
+  // excluded: every mutation writes through to Firestore directly, so bulk
+  // re-uploading thousands of docs on each fresh client would only burn
+  // bandwidth and write quota. Runs after the first server snapshots have
+  // been reconciled (initialSyncDone) so stale entries are never re-uploaded.
   useEffect(() => {
     if (!isFirestoreConnected || !initialSyncDone) return;
-
-    // Push local custom flags to Firestore
-    customFlags.forEach((flag) => {
-      setDoc(doc(db, 'custom_flags', flag.id), cleanObject(flag)).catch((err) =>
-        console.warn('Failed to sync flag to Firestore:', flag.id, err)
-      );
-    });
 
     // Push local trash items to Firestore
     trash.forEach((item) => {
@@ -1454,6 +1444,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       value={{
         flags,
         customFlags,
+        effectiveBuiltInFlags,
         trash,
         deletedFlagIds,
         permanentlyDeletedIds,

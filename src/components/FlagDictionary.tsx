@@ -89,6 +89,14 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const { isAdmin } = useAdmin();
   const { favoritesSet, toggleFavorite } = useFavorites();
   const [search, setSearch] = useState('');
+  // Debounced query drives the expensive full-array filter so typing stays
+  // instant (the input itself updates immediately) while filtering runs once
+  // the user pauses. Results are identical, just computed less often.
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 150);
+    return () => clearTimeout(t);
+  }, [search]);
   const [searchTags, setSearchTags] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
   const [selectedContinents, setSelectedContinents] = useState<string[]>(['All']);
@@ -128,7 +136,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   // Reset displayedCount when filters or itemsPerPage changes
   useEffect(() => {
     setDisplayedCount(itemsPerPage === 'All' ? FLAGS.length : itemsPerPage);
-  }, [search, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, itemsPerPage]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, itemsPerPage]);
 
   // Flag Comparison State
   const [compareFlags, setCompareFlags] = useState<Flag[]>([]);
@@ -336,7 +344,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
 
   // Filter and Sort Flags
   const filteredFlags = useMemo(() => {
-    const liveQuery = search.trim().toLowerCase();
+    const liveQuery = debouncedSearch.trim().toLowerCase();
     const activeTerms = [
       ...searchTags.filter(Boolean).map((t) => t.toLowerCase()),
       ...(liveQuery ? [liveQuery] : [])
@@ -412,7 +420,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           return a.name.localeCompare(b.name);
       }
     });
-  }, [search, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS]);
 
   return (
     <div className="w-full max-w-7xl mx-auto py-6 px-4">

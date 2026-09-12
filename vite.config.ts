@@ -114,6 +114,22 @@ export default defineConfig(() => {
     optimizeDeps: {
       include: ['react', 'react-dom', 'motion', 'lucide-react'],
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // Split heavy vendor libs out of the initial chunk so first paint
+          // downloads/parses less JS. Firebase is the heaviest dependency.
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('firebase')) return 'vendor-firebase';
+              if (id.includes('motion')) return 'vendor-motion';
+              if (id.includes('lucide-react')) return 'vendor-icons';
+            }
+            return undefined;
+          },
+        },
+      },
+    },
     server: {
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},

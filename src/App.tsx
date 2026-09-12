@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { ViewMode } from './types';
 import { FlagDictionary } from './components/FlagDictionary';
-import { Flashcards } from './components/Flashcards';
-import { Quiz } from './components/Quiz';
-import { ProgressTracker } from './components/ProgressTracker';
-import { CollectionsView } from './components/CollectionsView';
+// Secondary views are code-split so the initial bundle only contains the
+// dictionary (the default view). They load on demand when selected.
+const Flashcards = lazy(() => import('./components/Flashcards').then((m) => ({ default: m.Flashcards })));
+const Quiz = lazy(() => import('./components/Quiz').then((m) => ({ default: m.Quiz })));
+const ProgressTracker = lazy(() => import('./components/ProgressTracker').then((m) => ({ default: m.ProgressTracker })));
+const CollectionsView = lazy(() => import('./components/CollectionsView').then((m) => ({ default: m.CollectionsView })));
 import { useProgress } from './hooks/useProgress';
 import { AdminProvider, useAdmin } from './contexts/AdminContext';
 import { Globe2, BookOpen, BrainCircuit, BarChart3, Moon, Sun, Droplets, TreePine, Flame, Sparkles, Palette, FolderHeart, Lock, Unlock, X } from 'lucide-react';
@@ -240,10 +242,20 @@ function AppInner() {
       <main className="flex-1 overflow-hidden flex flex-col relative">
         <div className="absolute inset-0 overflow-y-auto">
           {view === 'dictionary' && <FlagDictionary progress={progress} />}
-          {view === 'collections' && <CollectionsView />}
-          {view === 'flashcards' && <Flashcards />}
-          {view === 'quiz' && <Quiz onAnswer={recordAnswer} />}
-          {view === 'progress' && <ProgressTracker progress={progress} onResetProgress={resetProgress} />}
+          {view !== 'dictionary' && (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-16 text-sm text-zinc-500 dark:text-zinc-400">
+                  Loading…
+                </div>
+              }
+            >
+              {view === 'collections' && <CollectionsView />}
+              {view === 'flashcards' && <Flashcards />}
+              {view === 'quiz' && <Quiz onAnswer={recordAnswer} />}
+              {view === 'progress' && <ProgressTracker progress={progress} onResetProgress={resetProgress} />}
+            </Suspense>
+          )}
         </div>
       </main>
 

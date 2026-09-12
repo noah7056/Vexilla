@@ -85,7 +85,7 @@ export function AdditionalFiltersBar({
       }
     });
     return Array.from(tagSet).sort();
-  }, []);
+  }, [FLAGS]);
 
   const filteredTags = useMemo(() => {
     if (!tagSearch.trim()) return allAvailableTags;

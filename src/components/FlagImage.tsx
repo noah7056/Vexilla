@@ -69,6 +69,8 @@ export function FlagImage({ flag, className = '', alt, highRes = false, draggabl
       alt={alt || flag.name}
       className={className}
       draggable={draggable}
+      loading="lazy"
+      decoding="async"
       onDragStart={(e) => {
         if (!draggable) e.preventDefault();
       }}
