@@ -2,41 +2,6 @@ import { createProvinceFlags } from './utils';
 
 export const CHAD_PROVINCES = createProvinceFlags('Chad', [
   {
-    name: 'Bahr el Gazel',
-    code: 'td-bg',
-    aliases: ['Barh el Ghazal', 'Baḩr al Ghazāl'],
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Batha',
-    code: 'td-ba',
-    aliases: ['Al Baţḩā’'],
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Borkou',
-    code: 'td-bo',
-    aliases: ['Būrkū'],
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Chari-Baguirmi',
-    code: 'td-cb',
-    aliases: ['Shārī Bāqirmī'],
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Ennedi-Est',
-    code: 'td-ee',
-    aliases: ['East Ennedi', 'Inīdī ash Sharqī'],
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Ennedi-Ouest',
     code: 'td-eo',
     aliases: ['West Ennedi', 'Inīdī al Gharbī'],

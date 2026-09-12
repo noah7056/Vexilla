@@ -17,18 +17,4 @@ export const MALTA_PROVINCES = createProvinceFlags('Malta', [
     tags: [],
     status: ""
   },
-  {
-    name: 'Birgu (Vittoriosa)',
-    code: 'mt-bir',
-    image: 'Flag_of_Birgu.svg',
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Mdina',
-    code: 'mt-mdi',
-    image: 'Flag_of_Mdina.svg',
-    tags: [],
-    status: ""
-  }
 ], 'Europe');

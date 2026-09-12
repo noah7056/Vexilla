@@ -60,13 +60,6 @@ export const ROMANIA_PROVINCES = createProvinceFlags('Romania', [
     status: ""
   },
   {
-    name: 'Carei',
-    code: 'ro-car',
-    image: 'ROU_SM_Carei_Flag.svg',
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Constanța',
     code: 'ro-con',
     image: 'Flag_of_Constanta,_Romania.svg',

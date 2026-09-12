@@ -38,15 +38,6 @@ export const AFRICA_ORG_FLAGS = createOrganizationFlags('Africa', 'Africa', [
     status: 'official',
   },
   {
-    id: 'org-igad',
-    name: 'Intergovernmental Authority on Development',
-    image: 'Flag_of_IGAD.svg',
-    continent: 'Africa',
-    country: 'Africa',
-    aliases: ['IGAD', 'Intergovernmental Authority on Development'],
-    status: 'official',
-  },
-  {
     id: 'org-maghreb',
     name: 'Arab Maghreb Union',
     image: 'Flag_of_the_Arab_Maghreb_Union.svg',

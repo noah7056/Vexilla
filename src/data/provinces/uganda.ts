@@ -218,18 +218,6 @@ export const UGANDA_PROVINCES = createProvinceFlags('Uganda', [
     status: ""
   },
   {
-    name: 'Kampala District',
-    code: 'ug-102',
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Kamuli District',
-    code: 'ug-205',
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Kamwenge District',
     code: 'ug-413',
     tags: [],

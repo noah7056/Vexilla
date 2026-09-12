@@ -65,13 +65,6 @@ export const GUINEA_BISSAU_PROVINCES = createProvinceFlags('Guinea-Bissau', [
     status: ""
   },
   {
-    name: 'Kaabu Empire (Historic 1537–1867)',
-    code: 'gw-kaa',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kaabu.svg',
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Portuguese Guinea (Historic 1967 Proposal)',
     code: 'gw-col',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Portuguese_Guinea_(1967_proposal).svg',

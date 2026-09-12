@@ -100,13 +100,6 @@ export const MADAGASCAR_PROVINCES = createProvinceFlags('Madagascar', [
     status: ""
   },
   {
-    name: 'Atsinanana',
-    code: 'mg-ats',
-    aliases: [],
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Betsiboka',
     code: 'mg-bet',
     aliases: [],

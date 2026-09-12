@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from 'react';
 import {
   BASE_FLAGS,
   BUILTIN_CUSTOM_FLAGS,
@@ -112,6 +112,25 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
   const [bakedCustomFlags, setBakedCustomFlags] = useState<Flag[]>(() => BUILTIN_CUSTOM_FLAGS || []);
   const [bakedDeletedIds, setBakedDeletedIds] = useState<string[]>(() => BUILTIN_DELETED_FLAG_IDS || []);
   const [isFirestoreConnected, setIsFirestoreConnected] = useState<boolean>(false);
+  // True once the first real (non-cached) server snapshots for the three flag
+  // collections have been reconciled. Gates the one-time local -> cloud seed
+  // so stale local deletions are never re-uploaded.
+  const [initialSyncDone, setInitialSyncDone] = useState<boolean>(false);
+  // IDs already observed in Firestore. Used to propagate deletions made on
+  // another client (or directly in the console) down to local state.
+  // Null until the first server snapshot arrives.
+  const customSeenRef = useRef<Set<string> | null>(null);
+  const trashSeenRef = useRef<Set<string> | null>(null);
+  const deletedSeenRef = useRef<Set<string> | null>(null);
+  const firstSnapshotsRef = useRef({ custom: false, trash: false, deleted: false });
+
+  const markSnapshotReady = (key: 'custom' | 'trash' | 'deleted') => {
+    const s = firstSnapshotsRef.current;
+    if (!s[key]) {
+      s[key] = true;
+      if (s.custom && s.trash && s.deleted) setInitialSyncDone(true);
+    }
+  };
 
   const [customFlags, setCustomFlags] = useState<Flag[]>(() => {
     try {
@@ -212,24 +231,38 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     let unsubSections: (() => void) | null = null;
 
     try {
-      // 1. Custom Flags Listener
+      // 1. Custom Flags Listener (additive merge + deletion reconciliation)
       const customCol = collection(db, 'custom_flags');
       unsubCustom = onSnapshot(
         customCol,
         (snapshot) => {
           setIsFirestoreConnected(true);
+          if (!snapshot.metadata.fromCache) markSnapshotReady('custom');
           const fsFlags: Flag[] = [];
           snapshot.forEach((docSnap) => {
             fsFlags.push(docSnap.data() as Flag);
           });
+          const fsIds = new Set(fsFlags.map((f) => f.id));
 
-          if (fsFlags.length > 0) {
+          if (fsFlags.length > 0 || customSeenRef.current !== null) {
             setCustomFlags((prev) => {
-              // Merge Firestore flags with local storage flags
+              // Merge Firestore flags with local storage flags, dropping local
+              // flags that were previously synced but have since been deleted
+              // elsewhere (e.g. definitively deleted from the trash bin).
               const map = new Map<string, Flag>();
-              prev.forEach((f) => map.set(f.id, f));
+              const seen = customSeenRef.current;
+              if (seen !== null) {
+                prev.forEach((f) => {
+                  if (fsIds.has(f.id) || !seen.has(f.id)) map.set(f.id, f);
+                });
+              } else {
+                prev.forEach((f) => map.set(f.id, f));
+              }
               fsFlags.forEach((f) => map.set(f.id, f));
               const merged = Array.from(map.values());
+              customSeenRef.current = fsIds;
+              const unchanged = merged.length === prev.length && prev.every((f, i) => merged[i] === f);
+              if (unchanged) return prev;
               try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
               } catch {}
@@ -242,54 +275,94 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         }
       );
 
-      // 2. Trash Flags Listener
+      // 2. Trash Flags Listener (Firestore is source of truth; deletions
+      // confirmed in the trash bin propagate to every client automatically)
       const trashCol = collection(db, 'trash_flags');
       unsubTrash = onSnapshot(
         trashCol,
         (snapshot) => {
+          const fromServer = !snapshot.metadata.fromCache;
+          if (fromServer) markSnapshotReady('trash');
           const fsTrash: TrashItem[] = [];
           snapshot.forEach((docSnap) => {
             fsTrash.push(docSnap.data() as TrashItem);
           });
+          const fsIds = new Set(fsTrash.map((t) => t.flag.id));
 
-          if (fsTrash.length > 0) {
-            setTrash((prev) => {
+          // While offline (cached snapshot) never discard local items.
+          if (!fromServer && trashSeenRef.current === null) return;
+
+          setTrash((prev) => {
+            const seen = trashSeenRef.current;
+            let next: TrashItem[];
+            if (seen === null) {
+              // First server snapshot: adopt Firestore contents so items
+              // deleted elsewhere (e.g. trash emptied in the console) do not
+              // linger locally and get re-uploaded.
               const map = new Map<string, TrashItem>();
-              prev.forEach((t) => map.set(t.flag.id, t));
               fsTrash.forEach((t) => map.set(t.flag.id, t));
-              const merged = Array.from(map.values());
-              try {
-                localStorage.setItem(TRASH_KEY, JSON.stringify(merged));
-              } catch {}
-              return merged;
-            });
-          }
+              next = Array.from(map.values());
+            } else {
+              const map = new Map<string, TrashItem>();
+              prev.forEach((t) => {
+                if (fsIds.has(t.flag.id) || !seen.has(t.flag.id)) map.set(t.flag.id, t);
+              });
+              fsTrash.forEach((t) => map.set(t.flag.id, t));
+              next = Array.from(map.values());
+            }
+            trashSeenRef.current = fsIds;
+            const unchanged = next.length === prev.length && prev.every((t, i) => next[i] === t);
+            if (unchanged) return prev;
+            try {
+              localStorage.setItem(TRASH_KEY, JSON.stringify(next));
+              localStorage.setItem(LEGACY_DELETED_KEY, JSON.stringify(next.map((t) => t.flag.id)));
+            } catch {}
+            return next;
+          });
         },
         (error) => {
           console.warn('Firestore trash_flags snapshot error:', error);
         }
       );
 
-      // 3. Permanently Deleted Flag IDs Listener
+      // 3. Permanently Deleted Flag IDs Listener (Firestore is source of
+      // truth; confirmed deletions propagate to every client automatically)
       const deletedCol = collection(db, 'deleted_flag_ids');
       unsubDeleted = onSnapshot(
         deletedCol,
         (snapshot) => {
-          const fsDeletedIds: string[] = [];
+          const fromServer = !snapshot.metadata.fromCache;
+          if (fromServer) markSnapshotReady('deleted');
+          const fsDeletedIds = new Set<string>();
           snapshot.forEach((docSnap) => {
-            fsDeletedIds.push(docSnap.id);
+            fsDeletedIds.add(docSnap.id);
           });
 
-          if (fsDeletedIds.length > 0) {
-            setPermanentlyDeletedIds((prev) => {
-              const set = new Set([...prev, ...fsDeletedIds]);
-              const merged = Array.from(set);
-              try {
-                localStorage.setItem(PERMANENT_DELETED_KEY, JSON.stringify(merged));
-              } catch {}
-              return merged;
-            });
-          }
+          // While offline (cached snapshot) never discard local items.
+          if (!fromServer && deletedSeenRef.current === null) return;
+
+          setPermanentlyDeletedIds((prev) => {
+            const seen = deletedSeenRef.current;
+            let next: string[];
+            if (seen === null) {
+              // First server snapshot: adopt Firestore contents so IDs deleted
+              // elsewhere do not linger locally and get re-uploaded.
+              next = Array.from(fsDeletedIds);
+            } else {
+              const merged = new Set<string>(fsDeletedIds);
+              prev.forEach((id) => {
+                if (fsDeletedIds.has(id) || !seen.has(id)) merged.add(id);
+              });
+              next = Array.from(merged);
+            }
+            deletedSeenRef.current = new Set(fsDeletedIds);
+            const unchanged = next.length === prev.length && prev.every((id) => next.includes(id));
+            if (unchanged) return prev;
+            try {
+              localStorage.setItem(PERMANENT_DELETED_KEY, JSON.stringify(next));
+            } catch {}
+            return next;
+          });
         },
         (error) => {
           console.warn('Firestore deleted_flag_ids snapshot error:', error);
@@ -405,9 +478,13 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Sync existing local items up to Firestore if connected
+  // One-time seed: push pre-existing local items up to Firestore once connected.
+  // Runs only after the first server snapshots have been reconciled
+  // (initialSyncDone), so locally-stale trash / hidden-ID entries are never
+  // re-uploaded after being deleted elsewhere. Afterwards every mutation
+  // function writes through to Firestore directly.
   useEffect(() => {
-    if (!isFirestoreConnected) return;
+    if (!isFirestoreConnected || !initialSyncDone) return;
 
     // Push local custom flags to Firestore
     customFlags.forEach((flag) => {
@@ -450,7 +527,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         console.warn('Failed to sync section to Firestore:', cat, err)
       );
     });
-  }, [isFirestoreConnected]);
+  }, [isFirestoreConnected, initialSyncDone]);
 
   // Effective built-in flags (Base flags + Baked custom flags - Baked deleted flags)
   const effectiveBuiltInFlags = useMemo(() => {
@@ -633,9 +710,16 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       });
     }
 
+    const trashedIds = new Set(trash.map(t => t.flag.id));
     trash.forEach(item => {
       deleteDoc(doc(db, 'trash_flags', item.flag.id)).catch(() => {});
+      // Drop any lingering custom override for the trashed flag as well, so a
+      // hardcoded flag can't conflict with a stale override if it reappears.
+      deleteDoc(doc(db, 'custom_flags', item.flag.id)).catch(() => {});
     });
+    if (customFlags.some(f => trashedIds.has(f.id))) {
+      saveCustom(customFlags.filter(f => !trashedIds.has(f.id)));
+    }
 
     saveTrash([]);
   };

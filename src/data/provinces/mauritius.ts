@@ -72,20 +72,6 @@ export const MAURITIUS_PROVINCES = createProvinceFlags('Mauritius', [
     status: ""
   },
   {
-    name: 'Cargados Carajos Shoals',
-    code: 'mu-cc',
-    aliases: ['Saint Brandon Islands', 'Cargados Carajos'],
-    tags: [],
-    status: ""
-  },
-  {
-    name: 'Rodrigues Island',
-    code: 'mu-ro',
-    aliases: ['Rodrigues'],
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Rodrigues Island (Autonomous Island)',
     code: 'mu-ro-f',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Rodrigues.svg',

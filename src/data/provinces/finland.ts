@@ -25,13 +25,6 @@ export const FINLAND_PROVINCES = createProvinceFlags('Finland', [
     status: ""
   },
   {
-    name: 'Tavastia Proper',
-    code: 'fi-tp',
-    image: 'Flag_of_Tavastia_Proper.svg',
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Uusimaa',
     code: 'fi-uu',
     image: 'Flag_of_Uusimaa.svg',

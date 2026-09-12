@@ -37,13 +37,6 @@ export const MOZAMBIQUE_PROVINCES = createProvinceFlags('Mozambique', [
     status: ""
   },
   {
-    name: 'Maputo City',
-    code: 'mz-mpm',
-    aliases: ['Cidade de Maputo'],
-    tags: [],
-    status: ""
-  },
-  {
     name: 'Nampula',
     code: 'mz-n',
     aliases: [],
