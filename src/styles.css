@@ -142,3 +142,74 @@
   --color-indigo-900: #3d276b;
   --color-indigo-950: #251646;
 }
+
+/* Fullscreen maps (Atlas + editor picker): force true full-viewport sizing.
+   The flex fill below beats Leaflet/react-leaflet inline heights, which is
+   what caused the "thin strip" — the container kept its pre-fullscreen size
+   through the transition instead of filling the screen. */
+.vexilla-fs:fullscreen,
+.vexilla-fs:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: #fff;
+}
+.dark .vexilla-fs:fullscreen,
+.dark .vexilla-fs:-webkit-full-screen {
+  background: #09090b;
+}
+.vexilla-fs:fullscreen .leaflet-container,
+.vexilla-fs:-webkit-full-screen .leaflet-container {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+/* Subtle overlay-style scrollbars everywhere: thin, rounded, transparent
+   track so they never take up visual space or clash with the UI. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(161 161 170 / 0.55) transparent;
+}
+.dark *,
+.theme-midnight * {
+  scrollbar-color: rgb(82 82 91 / 0.7) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(161 161 170 / 0.55);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgb(113 113 122 / 0.8);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.dark *::-webkit-scrollbar-thumb,
+.theme-midnight *::-webkit-scrollbar-thumb {
+  background: rgb(82 82 91 / 0.7);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.dark *::-webkit-scrollbar-thumb:hover,
+.theme-midnight *::-webkit-scrollbar-thumb:hover {
+  background: rgb(113 113 122 / 0.9);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}

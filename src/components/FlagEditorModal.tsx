@@ -1,13 +1,17 @@
-import { useState, useMemo } from 'react';
-import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check, Flag as FlagIcon, FolderCog } from 'lucide-react';
+import { useState, useMemo, lazy, Suspense } from 'react';
+import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check, Flag as FlagIcon, FolderCog, MapPin, Crosshair } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Flag, Category, Continent, FlagStatus, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { Flag, Category, Continent, FlagStatus, GeoLevel, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { nominatimLookup } from '../lib/geo';
 import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 import { CategoryEditorPanel } from './CategoryEditorPanel';
 import { FICTIONAL_MEDIA_TYPES } from '../data/fictional';
 import { CONCEPT_SECTIONS } from '../data/concepts';
+
+// Lazy so Leaflet stays in the map chunk and out of the initial bundle.
+const MapPicker = lazy(() => import('./MapPicker').then((m) => ({ default: m.MapPicker })));
 
 // Bottom-left field (underneath the category dropdown) always shows sub-categories.
 const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
@@ -190,6 +194,13 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     return last?.sourceUrl !== undefined ? last.sourceUrl : '';
   });
   
+  const [latStr, setLatStr] = useState(liveFlag?.lat !== undefined ? String(liveFlag.lat) : '');
+  const [lonStr, setLonStr] = useState(liveFlag?.lon !== undefined ? String(liveFlag.lon) : '');
+  const [geoLevel, setGeoLevel] = useState<GeoLevel | ''>(liveFlag?.geoLevel || '');
+  const [detecting, setDetecting] = useState(false);
+  const [geoMsg, setGeoMsg] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   const [aliases, setAliases] = useState<string[]>(liveFlag?.aliases || []);
   const [newAlias, setNewAlias] = useState('');
   
@@ -295,6 +306,28 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     category === 'Fictional' ? 'Fictional Universes' : (hasSection ? (continent || undefined) : undefined);
   const effectiveCountry: string | undefined = hasSub ? (country.trim() || undefined) : undefined;
 
+  const handleDetect = async () => {
+    if (detecting || !name.trim()) return;
+    setDetecting(true);
+    setGeoMsg('');
+    try {
+      const q = [name.replace(/\s*\((city flag|capital city flag|capital city|city)\)\s*$/i, '').trim(), country.trim(), continent]
+        .filter(Boolean).join(', ');
+      const hit = await nominatimLookup(q);
+      if (hit) {
+        setLatStr(String(Math.round(hit.lat * 10000) / 10000));
+        setLonStr(String(Math.round(hit.lon * 10000) / 10000));
+        setGeoMsg(hit.displayName.slice(0, 90));
+      } else {
+        setGeoMsg('No match found.');
+      }
+    } catch {
+      setGeoMsg('Lookup failed.');
+    } finally {
+      setDetecting(false);
+    }
+  };
+
   const handleSave = () => {
     setError('');
     const trimmedName = name.trim();
@@ -318,6 +351,25 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
       return;
     }
 
+    const parsedLat = latStr.trim() === '' ? undefined : Number(latStr);
+    const parsedLon = lonStr.trim() === '' ? undefined : Number(lonStr);
+    if ((latStr.trim() !== '' && !Number.isFinite(parsedLat)) || (lonStr.trim() !== '' && !Number.isFinite(parsedLon))) {
+      setError('Latitude and longitude must be valid numbers (or left empty).');
+      return;
+    }
+    if ((parsedLat !== undefined || parsedLon !== undefined) && (parsedLat === undefined || parsedLon === undefined)) {
+      setError('Provide both latitude and longitude, or leave both empty.');
+      return;
+    }
+    if (parsedLat !== undefined && (parsedLat < -90 || parsedLat > 90)) {
+      setError('Latitude must be between -90 and 90.');
+      return;
+    }
+    if (parsedLon !== undefined && (parsedLon < -180 || parsedLon > 180)) {
+      setError('Longitude must be between -180 and 180.');
+      return;
+    }
+
     const newFlag: Flag = {
       id: flagToEdit ? flagToEdit.id : `custom-${trimmedCode}-${Date.now()}`,
       name: trimmedName,
@@ -331,6 +383,9 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
       status: status || undefined,
       creator: creator.trim() || undefined,
       sourceUrl: sourceUrl.trim() || undefined,
+      ...(parsedLat !== undefined && parsedLon !== undefined
+        ? { lat: parsedLat, lon: parsedLon, geoLevel: geoLevel || undefined, geoApprox: false }
+        : {}),
     };
 
     if (flagToEdit) {
@@ -372,8 +427,14 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     status: status || undefined,
     creator: creator.trim() || undefined,
     sourceUrl: sourceUrl.trim() || undefined,
-    tags: tags.length > 0 ? tags : undefined
+    tags: tags.length > 0 ? tags : undefined,
+    ...(latStr.trim() !== '' && lonStr.trim() !== '' && Number.isFinite(Number(latStr)) && Number.isFinite(Number(lonStr))
+      ? { lat: Number(latStr), lon: Number(lonStr) }
+      : {}),
   };
+
+  const pickerLat = latStr.trim() !== '' && Number.isFinite(Number(latStr)) ? Number(latStr) : undefined;
+  const pickerLon = lonStr.trim() !== '' && Number.isFinite(Number(lonStr)) ? Number(lonStr) : undefined;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 sm:py-8 overflow-y-auto">
@@ -742,6 +803,76 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
                     placeholder="e.g. https://... or wiki page"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                  Location
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="number" step="any" min={-90} max={90}
+                    value={latStr}
+                    onChange={e => setLatStr(e.target.value)}
+                    placeholder="Latitude"
+                    title="Latitude (-90 to 90)"
+                    className="min-w-0 w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                  />
+                  <input
+                    type="number" step="any" min={-180} max={180}
+                    value={lonStr}
+                    onChange={e => setLonStr(e.target.value)}
+                    placeholder="Longitude"
+                    title="Longitude (-180 to 180)"
+                    className="min-w-0 w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                  />
+                </div>
+                <div className="mt-2 flex gap-2">
+                  <select
+                    value={geoLevel}
+                    onChange={e => setGeoLevel(e.target.value as GeoLevel | '')}
+                    title="Map level (auto by default, non-geo hides the pin)"
+                    className="min-w-0 flex-1 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                  >
+                    <option value="">Auto level</option>
+                    <option value="country">country</option>
+                    <option value="state">state</option>
+                    <option value="province">province</option>
+                    <option value="city">city</option>
+                    <option value="region">region</option>
+                    <option value="culture">culture</option>
+                    <option value="non-geo">hide</option>
+                  </select>
+                  <button
+                    type="button"
+                    disabled={detecting || !name.trim()}
+                    onClick={handleDetect}
+                    title="Detect coordinates from name"
+                    className="w-9 shrink-0 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 disabled:opacity-40 text-zinc-600 dark:text-zinc-300 rounded-xl transition-colors flex items-center justify-center"
+                  >
+                    <Crosshair className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPickerOpen(v => !v)}
+                    title="Pick a point on the map"
+                    className={`w-9 shrink-0 py-2 rounded-xl transition-colors flex items-center justify-center ${pickerOpen ? 'bg-indigo-600 text-white' : 'bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-600 dark:text-zinc-300'}`}
+                  >
+                    <MapPin className="w-4 h-4" />
+                  </button>
+                </div>
+                {geoMsg && <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400 truncate" title={geoMsg}>{geoMsg}</p>}
+                {pickerOpen && (
+                  <Suspense fallback={<div className="mt-2 px-3 py-6 rounded-xl bg-zinc-50 dark:bg-zinc-800 text-xs text-zinc-400 text-center">Loading map…</div>}>
+                    <div className="mt-2">
+                      <MapPicker
+                        lat={pickerLat}
+                        lon={pickerLon}
+                        onPick={(la, lo) => { setLatStr(String(la)); setLonStr(String(lo)); setGeoMsg(''); }}
+                      />
+                    </div>
+                  </Suspense>
+                )}
               </div>
 
               <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">

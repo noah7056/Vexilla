@@ -29,6 +29,8 @@ import {
   Info
 } from 'lucide-react';
 import { Flag, FlagProgress } from '../types';
+import { requestShowOnMap } from '../lib/atlasBus';
+import { resolveGeo } from '../lib/geo';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 import { useFavorites } from '../hooks/useFavorites';
@@ -289,6 +291,15 @@ export function FlagModal({
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                id="flag-modal-map-btn"
+                onClick={() => { onClose(); requestShowOnMap(flag.id); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/60 dark:hover:text-emerald-300 text-xs font-semibold transition-colors"
+                title="Show on map"
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Map</span>
+              </button>
               {onCompare && (
                 <button
                   id="flag-modal-compare-btn"
@@ -748,6 +759,24 @@ export function FlagModal({
                   ))}
                 </div>
               )}
+              {(() => {
+                const g = resolveGeo(flag);
+                if (!g) return null;
+                return (
+                  <button
+                    onClick={() => { onClose(); requestShowOnMap(flag.id); }}
+                    title={g.approx ? 'Approximate location — open in Atlas' : 'Open in Atlas'}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-semibold transition-colors ${
+                      g.approx
+                        ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/60'
+                        : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60'
+                    }`}
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>{g.lat.toFixed(2)}, {g.lon.toFixed(2)}{g.approx ? ' · approx' : ''}</span>
+                  </button>
+                );
+              })()}
               <span className="sm:hidden px-2.5 py-1 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700">
                 Code: {flag.code.toUpperCase()}
               </span>

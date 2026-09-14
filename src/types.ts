@@ -99,6 +99,15 @@ export const ALL_STATUSES: FlagStatus[] = [
   'ceremonial'
 ];
 
+export type GeoLevel =
+  | 'country'
+  | 'state'
+  | 'province'
+  | 'city'
+  | 'region'
+  | 'culture'
+  | 'non-geo';
+
 export interface Flag {
   id: string;
   name: string;
@@ -112,6 +121,13 @@ export interface Flag {
   status?: FlagStatus | ''; // Official status / designation of the flag
   creator?: string; // Name or username of creator (for fan-made flags / origin)
   sourceUrl?: string; // Generic link to creator's page, flag info page, origin post, etc.
+  // --- Optional geography (Atlas map). All optional so Firestore docs without
+  // them keep working; `cleanObject` in FlagsContext strips undefined on save.
+  lat?: number;
+  lon?: number;
+  bbox?: [south: number, west: number, north: number, east: number];
+  geoLevel?: GeoLevel;
+  geoApprox?: boolean; // true = parent-centroid fallback, show hollow style + disclaimer
 }
 
 export interface FlagProgress {
@@ -121,7 +137,7 @@ export interface FlagProgress {
   lastAttemptedAt: string | null;
 }
 
-export type ViewMode = 'dictionary' | 'flashcards' | 'quiz' | 'progress' | 'collections';
+export type ViewMode = 'dictionary' | 'atlas' | 'flashcards' | 'quiz' | 'progress' | 'collections';
 
 export type QuizMode = 'flag-to-name' | 'name-to-flag';
 

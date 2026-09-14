@@ -37,6 +37,7 @@ import {
   getFlagMasteryLevel
 } from '../types';
 import { FlagImage } from './FlagImage';
+import { requestShowOnMap } from '../lib/atlasBus';
 import { FlagModal } from './FlagModal';
 import { FlagCompareModal } from './FlagCompareModal';
 import { FlagEditorModal } from './FlagEditorModal';
@@ -744,6 +745,18 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
                       }`}
                     >
                       <ArrowLeftRight className="w-3.5 h-3.5" />
+                    </div>
+
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        requestShowOnMap(flag.id);
+                      }}
+                      role="button"
+                      title="Show on map"
+                      className="p-1.5 rounded-full backdrop-blur-md transition-all hover:scale-110 bg-white/50 dark:bg-zinc-800/50 text-zinc-400 opacity-0 group-hover:opacity-100 hover:text-emerald-600"
+                    >
+                      <MapPin className="w-3.5 h-3.5" />
                     </div>
                   </div>
 

@@ -10,12 +10,14 @@ import { FlagDictionary } from './components/FlagDictionary';
 // Secondary views are code-split so the initial bundle only contains the
 // dictionary (the default view). They load on demand when selected.
 const Flashcards = lazy(() => import('./components/Flashcards').then((m) => ({ default: m.Flashcards })));
+const AtlasView = lazy(() => import('./components/AtlasView').then((m) => ({ default: m.AtlasView })));
 const Quiz = lazy(() => import('./components/Quiz').then((m) => ({ default: m.Quiz })));
 const ProgressTracker = lazy(() => import('./components/ProgressTracker').then((m) => ({ default: m.ProgressTracker })));
 const CollectionsView = lazy(() => import('./components/CollectionsView').then((m) => ({ default: m.CollectionsView })));
 import { useProgress } from './hooks/useProgress';
 import { AdminProvider, useAdmin } from './contexts/AdminContext';
-import { Globe2, BookOpen, BrainCircuit, BarChart3, Moon, Sun, Droplets, TreePine, Flame, Sparkles, Palette, FolderHeart, Lock, Unlock, X } from 'lucide-react';
+import { Globe2, BookOpen, BrainCircuit, BarChart3, Moon, Sun, Droplets, TreePine, Flame, Sparkles, Palette, FolderHeart, Lock, Unlock, X, Map as MapIcon } from 'lucide-react';
+import { ATLAS_FOCUS_EVENT } from './lib/atlasBus';
 
 type ThemeId = 'daylight' | 'twilight' | 'midnight' | 'ocean' | 'forest' | 'sunset' | 'lavender';
 
@@ -142,8 +144,15 @@ function AppInner() {
 
   const activeThemeObj = APP_THEMES.find(t => t.id === currentTheme) || APP_THEMES[0];
 
+  useEffect(() => {
+    const handler = () => setView('atlas');
+    window.addEventListener(ATLAS_FOCUS_EVENT, handler);
+    return () => window.removeEventListener(ATLAS_FOCUS_EVENT, handler);
+  }, []);
+
   const navItems: { id: ViewMode; label: string; icon: ReactNode }[] = [
     { id: 'dictionary', label: 'Dictionary', icon: <Globe2 className="w-5 h-5" /> },
+    { id: 'atlas', label: 'Atlas', icon: <MapIcon className="w-5 h-5" /> },
     { id: 'collections', label: 'Collections', icon: <FolderHeart className="w-5 h-5" /> },
     { id: 'flashcards', label: 'Flashcards', icon: <BookOpen className="w-5 h-5" /> },
     { id: 'quiz', label: 'Quiz', icon: <BrainCircuit className="w-5 h-5" /> },
@@ -251,6 +260,7 @@ function AppInner() {
               }
             >
               {view === 'collections' && <CollectionsView />}
+              {view === 'atlas' && <AtlasView progress={progress} />}
               {view === 'flashcards' && <Flashcards />}
               {view === 'quiz' && <Quiz onAnswer={recordAnswer} />}
               {view === 'progress' && <ProgressTracker progress={progress} onResetProgress={resetProgress} />}
