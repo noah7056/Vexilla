@@ -262,7 +262,7 @@ function AppInner() {
               {view === 'collections' && <CollectionsView />}
               {view === 'atlas' && <AtlasView progress={progress} />}
               {view === 'flashcards' && <Flashcards />}
-              {view === 'quiz' && <Quiz onAnswer={recordAnswer} />}
+              {view === 'quiz' && <Quiz onAnswer={recordAnswer} progress={progress} />}
               {view === 'progress' && <ProgressTracker progress={progress} onResetProgress={resetProgress} />}
             </Suspense>
           )}

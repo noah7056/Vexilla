@@ -139,7 +139,14 @@ export interface FlagProgress {
 
 export type ViewMode = 'dictionary' | 'atlas' | 'flashcards' | 'quiz' | 'progress' | 'collections';
 
-export type QuizMode = 'flag-to-name' | 'name-to-flag';
+export type QuizMode =
+  | 'flag-to-name'
+  | 'name-to-flag'
+  | 'flag-to-map'
+  | 'name-to-map'
+  | 'map-to-flag'
+  | 'true-false'
+  | 'flag-to-origin';
 
 export interface QuizConfig {
   mode: QuizMode;
@@ -154,6 +161,7 @@ export interface QuizConfig {
   selectedSubOptions?: Record<string, string[]>;
   statuses?: (FlagStatus | 'unspecified' | 'All')[];
   tags?: string[];
+  mastery?: (MasteryLevel | 'all')[];
   optionCount: 2 | 4 | 6;
   showCountryHintAfterAnswer?: boolean;
   showCountryInQuestion?: boolean;
@@ -165,6 +173,24 @@ export interface QuizQuestionResult {
   flag: Flag;
   selectedFlagId: string;
   isCorrect: boolean;
+  /** Map-guess modes: distance from guess pin to true location (km). */
+  distanceKm?: number;
+  /** Map-guess modes: reverse-geocoded click landed inside the expected country. */
+  insideCountry?: boolean;
+  /** Map-guess modes: where the user clicked. */
+  guessLat?: number;
+  guessLon?: number;
+  /** True/False mode: the name that was proposed alongside the flag. */
+  proposedName?: string;
+  /** Origin mode: the correct answer (continent or parent country). */
+  originAnswer?: string;
+}
+
+export interface QuizPreset {
+  id: string;
+  name: string;
+  createdAt: number;
+  config: QuizConfig;
 }
 
 export interface TrashItem {
