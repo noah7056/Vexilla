@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -601,9 +601,16 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     }));
   };
 
+  // Frozen question pool for the active round (see handleStartQuiz).
+  const poolRef = useRef<Flag[]>([]);
+
   // Start Quiz
   const handleStartQuiz = () => {
     if (matchingFlags.length === 0) return;
+
+    // Snapshot the pool for the whole round: progress updates from answered
+    // questions must not mutate the pool (or retrigger question setup) mid-quiz.
+    poolRef.current = matchingFlags;
 
     // Shuffle flags
     const shuffled = [...matchingFlags].sort(() => Math.random() - 0.5);
@@ -634,9 +641,15 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
   // True location for map modes (pin + forgiving country scoring)
   const truth = currentFlag ? resolveGeo(currentFlag) : null;
 
-  // Populate options whenever currentFlag changes
+  // Populate options whenever the current question changes. NOTE: this must
+  // NOT depend on `matchingFlags` — every answered question updates progress,
+  // which recomputes that array, and a re-run here would wipe the just-given
+  // answer (score panel / selection) and reshuffle options. The round uses the
+  // frozen poolRef snapshot instead.
   useEffect(() => {
     if (gameState !== 'active' || !currentFlag) return;
+
+    const snapshot = poolRef.current.length > 0 ? poolRef.current : FLAGS;
 
     // Reset per-question transient state for the special modes
     setGuess(null);
@@ -646,7 +659,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
 
     // True/False: 50% true statement, else a decoy name from the pool
     if (config.mode === 'true-false') {
-      const pool = matchingFlags.length > 1 ? matchingFlags : FLAGS;
+      const pool = snapshot.length > 1 ? snapshot : FLAGS;
       const showTrue = Math.random() < 0.5;
       if (showTrue) {
         setTfProposed({ name: currentFlag.name, isTrue: true });
@@ -664,7 +677,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
 
     // Origin mode: ask parent country when the flag has one, else continent
     if (config.mode === 'flag-to-origin') {
-      const pool = matchingFlags.length > 1 ? matchingFlags : FLAGS;
+      const pool = snapshot.length > 1 ? snapshot : FLAGS;
       if (currentFlag.country) {
         const countries = Array.from(
           new Set(pool.map((f) => f.country).filter((c): c is string => Boolean(c)))
@@ -706,7 +719,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     const neededWrong = config.optionCount - 1;
 
     // Prioritize wrong options from matching pool first for higher relevance
-    let potentialWrong = matchingFlags.filter((f) => f.id !== currentFlag.id);
+    let potentialWrong = snapshot.filter((f) => f.id !== currentFlag.id);
     if (potentialWrong.length < neededWrong) {
       potentialWrong = FLAGS.filter((f) => f.id !== currentFlag.id);
     }
@@ -718,7 +731,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     const allOptions = [...wrongOptions, currentFlag].sort(() => Math.random() - 0.5);
     setCurrentOptions(allOptions);
     setSelectedAnswer(null);
-  }, [currentQuestionIndex, gameState, currentFlag, matchingFlags, config.optionCount, config.mode]);
+  }, [currentQuestionIndex, gameState, currentFlag, config.optionCount, config.mode]);
 
   // Handle Option Selection
   const handleSelectAnswer = (flagId: string) => {
