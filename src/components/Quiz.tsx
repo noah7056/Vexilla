@@ -37,9 +37,10 @@ import { FlagModal } from './FlagModal';
 import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
 import { resolveGeo } from '../lib/geo';
-import { haversineKm, reverseGeocodeCountry, matchesExpectedCountry, scoreMapGuess, MapScore, MAP_VERDICT_LABEL } from '../lib/mapQuiz';
+import { haversineKm, reverseGeocodeCountry, reverseGeocodePlace, matchesExpectedCountry, matchQuizRegion, placeToCountry, scoreMapGuess, scoreRegionalGuess, REGIONAL_QUIZ_CATEGORIES, MapScore, MAP_VERDICT_LABEL } from '../lib/mapQuiz';
 import { loadCustomPresets, saveCustomPreset, deleteCustomPreset, renameCustomPreset } from '../lib/quizPresets';
 import { QuizGuessMap, QuizPromptMap } from './quiz/QuizMapPanel';
+import { QuizFlagViewer } from './quiz/QuizFlagViewer';
 
 interface QuizProps {
   onAnswer: (flagId: string, isCorrect: boolean) => void;
@@ -850,17 +851,46 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     if (!guess || !currentFlag || !truth || mapScore || checkingCountry || isAnimating) return;
     setCheckingCountry(true);
     const distanceKm = haversineKm(guess.lat, guess.lon, truth.lat, truth.lon);
-    // Forgiving country check (reverse-geocode, cached). Any click inside
-    // the right country counts — equivalent to border containment without
-    // shipping polygon data. Falls back to pure distance when offline.
-    let insideCountry = false;
-    try {
-      const reverse = await reverseGeocodeCountry(guess.lat, guess.lon);
-      insideCountry = matchesExpectedCountry(reverse, currentFlag);
-    } catch {
-      insideCountry = false;
+
+    let score: MapScore;
+    if (REGIONAL_QUIZ_CATEGORIES.has(currentFlag.category)) {
+      // Provinces / states: the clicked REGION must match, not just the
+      // country — otherwise any in-country pin would count. Single zoom-10
+      // lookup gives state/county/locality; open-ocean nulls fall back to
+      // the legacy country + distance scoring so tiny islands stay fair.
+      let place: Awaited<ReturnType<typeof reverseGeocodePlace>> = null;
+      try {
+        place = await reverseGeocodePlace(guess.lat, guess.lon);
+      } catch {
+        place = null;
+      }
+      if (place && (place.country || place.countryCode || place.state || place.county || place.locality)) {
+        const insideCountry = matchesExpectedCountry(placeToCountry(place), currentFlag);
+        const rm = matchQuizRegion(place, currentFlag);
+        score = scoreRegionalGuess(distanceKm, insideCountry, rm.matched, rm.detected);
+      } else {
+        let insideCountry = false;
+        try {
+          const reverse = await reverseGeocodeCountry(guess.lat, guess.lon);
+          insideCountry = matchesExpectedCountry(reverse, currentFlag);
+        } catch {
+          insideCountry = false;
+        }
+        score = scoreMapGuess(distanceKm, insideCountry);
+      }
+    } else {
+      // Forgiving country check (reverse-geocode, cached). Any click inside
+      // the right country counts — equivalent to border containment without
+      // shipping polygon data. Falls back to pure distance when offline.
+      let insideCountry = false;
+      try {
+        const reverse = await reverseGeocodeCountry(guess.lat, guess.lon);
+        insideCountry = matchesExpectedCountry(reverse, currentFlag);
+      } catch {
+        insideCountry = false;
+      }
+      score = scoreMapGuess(distanceKm, insideCountry);
     }
-    const score = scoreMapGuess(distanceKm, insideCountry);
     setCheckingCountry(false);
     setMapScore(score);
     recordResult({
@@ -868,7 +898,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
       selectedFlagId: '',
       isCorrect: score.isCorrect,
       distanceKm,
-      insideCountry,
+      insideCountry: score.insideCountry,
+      detectedPlace: score.detectedPlace || undefined,
       guessLat: guess.lat,
       guessLon: guess.lon,
     });
@@ -1144,8 +1175,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {modeCard('flag-to-name', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <Eye className="w-5 h-5" />, 'Flag → Guess Name', 'Show flag image, pick the matching country or territory name.')}
                 {modeCard('name-to-flag', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <ImageIcon className="w-5 h-5" />, 'Name → Guess Flag', 'Show territory name, choose the correct flag from images.')}
-                {modeCard('flag-to-map', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <MapPin className="w-5 h-5" />, 'Flag → Map Pin', 'Show the flag — tap the map where it belongs. Anywhere in the right country counts.')}
-                {modeCard('name-to-map', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <Navigation className="w-5 h-5" />, 'Name → Map Pin', 'Show the territory name — tap the map where it belongs.')}
+                {modeCard('flag-to-map', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <MapPin className="w-5 h-5" />, 'Flag → Map Pin', 'Show the flag — tap the map where it belongs. Countries count in-country; provinces & states need the right region.')}
+                {modeCard('name-to-map', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <Navigation className="w-5 h-5" />, 'Name → Map Pin', 'Show the territory name — tap the map where it belongs. Regions are scored strictly.')}
                 {modeCard('map-to-flag', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <MapIcon className="w-5 h-5" />, 'Map → Guess Flag', 'Show a mystery pin on a label-free map — pick the matching territory.')}
                 {modeCard('true-false', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <Scale className="w-5 h-5" />, 'True / False', 'Show a flag plus a name — judge whether they match. Rapid-fire.' )}
                 {modeCard('flag-to-origin', config.mode, (m) => setConfig((prev) => ({ ...prev, mode: m })), <Compass className="w-5 h-5" />, 'Flag → Continent / Country', 'Show the flag — guess its continent, or its parent country for provinces.')}
@@ -1871,7 +1902,9 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                     {config.mode === 'flag-to-map' ? 'Where does this flag belong? Tap the map.' : 'Where is this territory? Tap the map.'}
                   </div>
                   <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                    Forgiving scoring: anywhere inside the right country counts — plus a 300&nbsp;km pin tolerance for tiny islands.
+                    {REGIONAL_QUIZ_CATEGORIES.has(currentFlag.category)
+                      ? 'Provinces & states are scored by region — find the right one, not just the right country.'
+                      : 'Forgiving scoring: anywhere inside the right country counts — plus a 300 km pin tolerance for tiny islands.'}
                   </p>
                 </div>
 
@@ -1938,7 +1971,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                         {checkingCountry ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Checking country…
+                            Checking location…
                           </>
                         ) : (
                           <>
@@ -1962,7 +1995,11 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                     </div>
                     <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-1">
                       {Math.round(mapScore.distanceKm)} km from the pin
-                      {mapScore.insideCountry ? ` · inside ${currentFlag.country || currentFlag.name} ✅` : ' · outside the country'}
+                      {mapScore.detectedPlace
+                        ? ` · you clicked in ${mapScore.detectedPlace}`
+                        : mapScore.insideCountry
+                          ? ` · inside ${currentFlag.country || currentFlag.name} ✅`
+                          : ' · outside the country'}
                     </p>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                       Correct answer: <span className="font-semibold text-zinc-800 dark:text-zinc-100">{currentFlag.name}</span>
@@ -1983,7 +2020,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
         </AnimatePresence>
 
         {focusedFlag && (
-          <FlagModal flag={focusedFlag} onClose={() => setFocusedFlag(null)} />
+          <QuizFlagViewer flag={focusedFlag} onClose={() => setFocusedFlag(null)} />
         )}
       </div>
     );
@@ -2132,7 +2169,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                         </span>
                         {typeof item.distanceKm === 'number' && (
                           <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">
-                            {Math.round(item.distanceKm)} km away{item.insideCountry ? ' · in-country' : ''}
+                            {Math.round(item.distanceKm)} km away{item.detectedPlace ? ` · ${item.detectedPlace}` : item.insideCountry ? ' · in-country' : ''}
                           </span>
                         )}
                         {item.originAnswer && item.originAnswer !== item.flag.name && (
@@ -2149,7 +2186,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                         </span>
                         {typeof item.distanceKm === 'number' && (
                           <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">
-                            {Math.round(item.distanceKm)} km away{item.insideCountry ? ' · in-country' : ''}
+                            {Math.round(item.distanceKm)} km away{item.detectedPlace ? ` · ${item.detectedPlace}` : item.insideCountry ? ' · in-country' : ''}
                           </span>
                         )}
                         {selectedFlag && (

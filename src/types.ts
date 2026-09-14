@@ -177,6 +177,8 @@ export interface QuizQuestionResult {
   distanceKm?: number;
   /** Map-guess modes: reverse-geocoded click landed inside the expected country. */
   insideCountry?: boolean;
+  /** Map-guess modes: most specific detected locality (region scoring). */
+  detectedPlace?: string;
   /** Map-guess modes: where the user clicked. */
   guessLat?: number;
   guessLon?: number;
