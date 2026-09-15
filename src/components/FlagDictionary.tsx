@@ -563,6 +563,16 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     return m;
   }, [groupedSections]);
 
+  // Render flags in grouped order when sections are active. Without this,
+  // `visibleFlags` stays in the selected sort order (e.g. name A-Z), so flags
+  // of the same parent are scattered: a header like "Abruzzo" would appear
+  // mid-grid with alphabetically-following flags from other regions right
+  // underneath it, looking as if they all belonged to Abruzzo.
+  const orderedVisibleFlags = useMemo(() => {
+    if (!groupedSections) return visibleFlags;
+    return groupedSections.flatMap((s) => s.flags);
+  }, [groupedSections, visibleFlags]);
+
 
   return (
     <div className="w-full max-w-7xl mx-auto py-6 px-4">
@@ -836,7 +846,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       {filteredFlags.length > 0 ? (
         <div className="pb-20">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
-            {visibleFlags.map((flag) => {
+            {orderedVisibleFlags.map((flag) => {
               const flagProg = progress[flag.id];
               const attempts = flagProg?.attempts || 0;
               const correct = flagProg?.correct || 0;
