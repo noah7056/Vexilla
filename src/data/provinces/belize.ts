@@ -5,6 +5,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
 
   {
     name: 'Belize City',
+    adminType: 'city',
     code: 'bz-bc',
     image: 'Flag_of_Belize_City.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Belize District',
+    adminType: 'district',
     code: 'bz-bd',
     image: 'https://static.wikia.nocookie.net/vexillology/images/9/98/Belize_Belize_District_Flag_Proposal_Coliop_Mapping.svg/revision/latest?cb=20260729090355',
     tags: [],
@@ -19,6 +21,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Cayo',
+    adminType: 'district',
     code: 'bz-cay',
     image: 'https://static.wikia.nocookie.net/vexillology/images/e/eb/Belize_Cayo_District_Flag_Design_Coliop-Mapping.svg/revision/latest?cb=20260729090814',
     tags: [],
@@ -26,6 +29,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Corozal',
+    adminType: 'district',
     code: 'bz-cor',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/6d/Belize_Corozal_District_Flag_Prooosal_Coliop-Mapping.svg/revision/latest?cb=20260729091007',
     tags: [],
@@ -33,6 +37,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Orange Walk',
+    adminType: 'district',
     code: 'bz-orw',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/3e/Belize_Orange_Walk_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729091319',
     tags: [],
@@ -40,6 +45,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Stann Creek',
+    adminType: 'district',
     code: 'bz-stc',
     image: 'https://static.wikia.nocookie.net/vexillology/images/e/ed/Belize_Stan_Creek_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest/scale-to-width-down/1000?cb=20260729091522',
     tags: [],
@@ -47,6 +53,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Toledo',
+    adminType: 'district',
     code: 'bz-tol',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/86/Belize_Toledo_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729091723',
     tags: [],
@@ -54,6 +61,7 @@ export const BELIZE_PROVINCES = createProvinceFlags('Belize', [
   },
   {
     name: 'Belmopan (City Flag)',
+    adminType: 'city',
     code: 'bz-bel',
     image: 'https://static.wikia.nocookie.net/vexillology/images/d/d4/Flag_of_Belmopan.svg/revision/latest?cb=20221029114010',
     tags: [],

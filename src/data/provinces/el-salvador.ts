@@ -33,6 +33,7 @@ export const EL_SALVADOR_PROVINCES = createProvinceFlags('El Salvador', [
   },
   {
     name: 'La Libertad',
+    adminType: 'department',
     code: 'sv-li',
     image: 'Flag_of_La_Libertad_Department_(El_Salvador).svg',
     tags: [],
@@ -61,6 +62,7 @@ export const EL_SALVADOR_PROVINCES = createProvinceFlags('El Salvador', [
   },
   {
     name: 'Cabañas',
+    adminType: 'department',
     code: 'sv-ca',
     image: 'Flag_of_the_Cabañas_Department.svg',
     tags: [],
@@ -68,6 +70,7 @@ export const EL_SALVADOR_PROVINCES = createProvinceFlags('El Salvador', [
   },
   {
     name: 'San Vicente',
+    adminType: 'department',
     code: 'sv-sv',
     image: 'Flag_of_San_Vicente_Department.svg',
     tags: [],
@@ -75,6 +78,7 @@ export const EL_SALVADOR_PROVINCES = createProvinceFlags('El Salvador', [
   },
   {
     name: 'Usulután',
+    adminType: 'department',
     code: 'sv-us',
     image: 'Flag_of_Usulatán_Department.svg',
     tags: [],
@@ -89,6 +93,7 @@ export const EL_SALVADOR_PROVINCES = createProvinceFlags('El Salvador', [
   },
   {
     name: 'Morazán',
+    adminType: 'department',
     code: 'sv-mo',
     image: 'Flag_of_Morazán_Department.svg',
     tags: [],

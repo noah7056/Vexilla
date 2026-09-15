@@ -173,6 +173,7 @@ export const MONTENEGRO_PROVINCES = createProvinceFlags('Montenegro', [
   },
   {
     name: 'Zeta',
+    adminType: 'municipality',
     code: 'me-zet',
     image: 'https://static.wikia.nocookie.net/vexillology/images/e/eb/Flag_of_Zeta_Municipality_%281%29.png/revision/latest?cb=20241005115010',
     tags: [],

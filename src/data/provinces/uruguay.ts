@@ -11,6 +11,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Canelones',
+    adminType: 'department',
     code: 'uy-can',
     image: 'Flag_of_Canelones_Department.svg',
     aliases: ['Departamento de Canelones'],
@@ -19,6 +20,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Maldonado',
+    adminType: 'department',
     code: 'uy-mld',
     image: 'Flag_of_Maldonado_Department.png',
     aliases: ['Departamento de Maldonado', 'Punta del Este'],
@@ -27,6 +29,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Colonia',
+    adminType: 'department',
     code: 'uy-col',
     image: 'Flag_of_Colonia_Department.svg',
     aliases: ['Departamento de Colonia', 'Colonia del Sacramento'],
@@ -35,6 +38,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Salto',
+    adminType: 'department',
     code: 'uy-sal',
     image: 'Flag_of_Salto_Department.svg',
     aliases: ['Departamento de Salto'],
@@ -43,6 +47,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Rocha',
+    adminType: 'department',
     code: 'uy-roc',
     image: 'Flag_of_Rocha_Department.svg',
     aliases: ['Departamento de Rocha'],
@@ -51,6 +56,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Paysandú',
+    adminType: 'department',
     code: 'uy-pay',
     image: 'Flag_of_Paysand%C3%BA_Department.svg',
     aliases: ['Paysandu', 'Departamento de Paysandu', 'Departamento de Paysandú'],
@@ -59,6 +65,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Artigas',
+    adminType: 'department',
     code: 'uy-ar',
     image: 'Flag_of_Artigas_Department.svg',
     aliases: ['Departamento de Artigas'],
@@ -67,6 +74,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Cerro Largo',
+    adminType: 'department',
     code: 'uy-cl',
     image: 'Flag_of_Cerro_Largo_Department.svg',
     aliases: ['Departamento de Cerro Largo', 'Melo'],
@@ -75,6 +83,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Durazno',
+    adminType: 'department',
     code: 'uy-du',
     image: 'Flag_of_Durazno_Department.svg',
     aliases: ['Departamento de Durazno'],
@@ -83,6 +92,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Flores',
+    adminType: 'department',
     code: 'uy-fs',
     image: 'Flag_of_Flores_Department.png',
     aliases: ['Departamento de Flores', 'Trinidad'],
@@ -91,6 +101,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Florida (Uruguay)',
+    adminType: 'department',
     code: 'uy-fd',
     image: 'Flag_of_Florida_Department.png',
     aliases: ['Departamento de Florida', 'Florida'],
@@ -99,6 +110,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Lavalleja',
+    adminType: 'department',
     code: 'uy-lv',
     image: 'Flag_of_Lavalleja_Department.svg',
     aliases: ['Departamento de Lavalleja', 'Minas'],
@@ -107,6 +119,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Río Negro',
+    adminType: 'department',
     code: 'uy-rn',
     image: 'Flag_of_Rio_Negro_Department.svg',
     aliases: ['Rio Negro', 'Departamento de Rio Negro', 'Departamento de Río Negro', 'Fray Bentos'],
@@ -115,6 +128,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Rivera',
+    adminType: 'department',
     code: 'uy-rv',
     image: 'Flag_of_Rivera_Department.png',
     aliases: ['Departamento de Rivera'],
@@ -123,6 +137,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'San José (Uruguay)',
+    adminType: 'department',
     code: 'uy-sj',
     image: 'Flag_of_San_Jos%C3%A9_Department.svg',
     aliases: ['San Jose', 'Departamento de San Jose', 'Departamento de San José', 'San Jose de Mayo'],
@@ -131,6 +146,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Soriano',
+    adminType: 'department',
     code: 'uy-so',
     image: 'Flag_of_Soriano_Department.svg',
     aliases: ['Departamento de Soriano', 'Mercedes'],
@@ -147,6 +163,7 @@ export const URUGUAY_PROVINCES = createProvinceFlags('Uruguay', [
   },
   {
     name: 'Treinta y Tres',
+    adminType: 'department',
     code: 'uy-tt',
     image: 'Flag_of_Treinta_y_Tres_Department.svg',
     aliases: ['Departamento de Treinta y Tres', '33'],

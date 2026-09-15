@@ -5,6 +5,7 @@ export const IRAQ_PROVINCES = createProvinceFlags('Iraq', [
 
   {
     name: 'Kurdistan Region',
+    adminType: 'region',
     code: 'iq-kr',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/35/Flag_of_Kurdistan.svg',
     tags: [],
@@ -19,6 +20,7 @@ export const IRAQ_PROVINCES = createProvinceFlags('Iraq', [
   },
   {
     name: 'Baghdad Governorate',
+    adminType: 'governorate',
     code: 'iq-bg',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Flag_of_Baghdad.svg',
     tags: [],

@@ -12,6 +12,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Mombasa County',
+    adminType: 'county',
     code: 'ke-01',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Mombasa_County.svg',
     tags: [],
@@ -19,6 +20,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Kwale County',
+    adminType: 'county',
     code: 'ke-02',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kwale_County.svg',
     tags: [],
@@ -26,6 +28,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Kilifi County',
+    adminType: 'county',
     code: 'ke-03',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kilifi_County.svg',
     tags: [],
@@ -33,6 +36,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Tana River County',
+    adminType: 'county',
     code: 'ke-04',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Tana_River_County.svg',
     tags: [],
@@ -40,6 +44,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Lamu County',
+    adminType: 'county',
     code: 'ke-05',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Lamu_County.svg',
     tags: [],
@@ -47,6 +52,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Taita–Taveta County',
+    adminType: 'county',
     code: 'ke-06',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Taita_Taveta_County.svg',
     tags: [],
@@ -54,6 +60,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Garissa County',
+    adminType: 'county',
     code: 'ke-07',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Garissa_County.gif',
     tags: [],
@@ -61,6 +68,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Wajir County',
+    adminType: 'county',
     code: 'ke-08',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Wajir_County.svg',
     tags: [],
@@ -68,6 +76,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Mandera County',
+    adminType: 'county',
     code: 'ke-09',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Mandera_County.svg',
     tags: [],
@@ -75,6 +84,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Marsabit County',
+    adminType: 'county',
     code: 'ke-10',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Marsabit_County.svg',
     tags: [],
@@ -82,6 +92,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Isiolo County',
+    adminType: 'county',
     code: 'ke-11',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Isiolo_County.gif',
     tags: [],
@@ -89,6 +100,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Meru County',
+    adminType: 'county',
     code: 'ke-12',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Meru_County.svg',
     tags: [],
@@ -96,6 +108,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Tharaka-Nithi County',
+    adminType: 'county',
     code: 'ke-13',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Tharaka_Nithi_County.svg',
     tags: [],
@@ -103,6 +116,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Embu County',
+    adminType: 'county',
     code: 'ke-14',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Embu_County,_Kenya.png',
     tags: [],
@@ -110,6 +124,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Kitui County',
+    adminType: 'county',
     code: 'ke-15',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kitui_County.svg',
     tags: [],
@@ -117,6 +132,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Machakos County',
+    adminType: 'county',
     code: 'ke-16',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Machakos_County.svg',
     tags: [],
@@ -124,6 +140,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Makueni County',
+    adminType: 'county',
     code: 'ke-17',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Makueni_County.svg',
     tags: [],
@@ -131,6 +148,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Nyandarua County',
+    adminType: 'county',
     code: 'ke-18',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Nyandarua_County.svg',
     tags: [],
@@ -138,6 +156,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Nyeri County',
+    adminType: 'county',
     code: 'ke-19',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Nyeri_County.svg',
     tags: [],
@@ -145,6 +164,7 @@ export const KENYA_PROVINCES = createProvinceFlags('Kenya', [
   },
   {
     name: 'Kirinyaga County',
+    adminType: 'county',
     code: 'ke-20',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Kirinyaga_County.svg',
     tags: [],

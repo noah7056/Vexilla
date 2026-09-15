@@ -96,6 +96,7 @@ export const MALAYSIA_PROVINCES = createProvinceFlags('Malaysia', [
   },
   {
     name: 'Federal Territory of Kuala Lumpur',
+    adminType: 'territory',
     code: 'my-14',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Flag_of_Kuala_Lumpur%2C_Malaysia.svg',
     tags: [],
@@ -103,6 +104,7 @@ export const MALAYSIA_PROVINCES = createProvinceFlags('Malaysia', [
   },
   {
     name: 'Federal Territory of Labuan',
+    adminType: 'territory',
     code: 'my-15',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Flag_of_Labuan.svg',
     tags: [],
@@ -110,6 +112,7 @@ export const MALAYSIA_PROVINCES = createProvinceFlags('Malaysia', [
   },
   {
     name: 'Federal Territory of Putrajaya',
+    adminType: 'territory',
     code: 'my-16',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Putrajaya.svg',
     tags: [],

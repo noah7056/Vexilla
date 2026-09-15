@@ -5,6 +5,7 @@ export const MACAO_PROVINCES = createProvinceFlags('Macao', [
 
   {
     name: 'Municipality of Macau (Leal Senado 1975–1999)',
+    adminType: 'municipality',
     code: 'mo-mac',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Bandeira_do_Leal_Senado.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const MACAO_PROVINCES = createProvinceFlags('Macao', [
   },
   {
     name: 'Municipal Council of Macau',
+    adminType: 'council',
     code: 'mo-mcm',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_Municipal_Council_of_Macau.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const MACAO_PROVINCES = createProvinceFlags('Macao', [
   },
   {
     name: 'Municipal Council of Ilhas',
+    adminType: 'council',
     code: 'mo-ilh',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/51/Flag_of_Municipal_Council_of_Ilhas.svg',
     tags: [],

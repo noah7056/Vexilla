@@ -5,6 +5,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
 
   {
     name: 'Aimeliik State',
+    adminType: 'state',
     code: 'pw-002',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Aimeliik.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Airai State',
+    adminType: 'state',
     code: 'pw-004',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Flag_of_Airai_State.png',
     tags: [],
@@ -19,6 +21,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Angaur State',
+    adminType: 'state',
     code: 'pw-010',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Flag_of_Angaur_State.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Hatohobei State (Tobi)',
+    adminType: 'state',
     code: 'pw-050',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Flag_of_Hatohobei.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Kayangel State',
+    adminType: 'state',
     code: 'pw-100',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/35/Flag_of_Kayangel.svg',
     tags: [],
@@ -40,6 +45,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Koror State',
+    adminType: 'state',
     code: 'pw-150',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Koror_State.png',
     tags: [],
@@ -47,6 +53,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Melekeok State',
+    adminType: 'state',
     code: 'pw-212',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/93/Flag_of_Melekeok.svg',
     tags: [],
@@ -54,6 +61,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngaraard State',
+    adminType: 'state',
     code: 'pw-214',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Flag_of_Ngaraard_State.svg',
     tags: [],
@@ -61,6 +69,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngarchelong State',
+    adminType: 'state',
     code: 'pw-218',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Ngarchelong.svg',
     tags: [],
@@ -68,6 +77,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngardmau State',
+    adminType: 'state',
     code: 'pw-222',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Flag_of_Ngardmau_State.svg',
     tags: [],
@@ -75,6 +85,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngatpang State',
+    adminType: 'state',
     code: 'pw-224',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Flag_of_Ngatpang.svg',
     tags: [],
@@ -82,6 +93,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngchesar State',
+    adminType: 'state',
     code: 'pw-226',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Flag_of_Ngchesar_State%2C_Palau.svg',
     tags: [],
@@ -89,6 +101,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngeremlengui State',
+    adminType: 'state',
     code: 'pw-227',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/Flag_of_Ngeremlengui_State%2C_Palau.svg',
     tags: [],
@@ -96,6 +109,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Ngiwal State',
+    adminType: 'state',
     code: 'pw-228',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Flag_of_Ngiwal.png',
     tags: [],
@@ -103,6 +117,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Peleliu State',
+    adminType: 'state',
     code: 'pw-350',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Peleliu.svg',
     tags: [],
@@ -110,6 +125,7 @@ export const PALAU_PROVINCES = createProvinceFlags('Palau', [
   },
   {
     name: 'Sonsorol State',
+    adminType: 'state',
     code: 'pw-370',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_Sonsorol.svg',
     tags: [],

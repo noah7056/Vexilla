@@ -3,120 +3,140 @@ import { createProvinceFlags } from './utils';
 export const TUNISIA_PROVINCES = createProvinceFlags('Tunisia', [
   {
     name: 'Ariana Governorate',
+    adminType: 'governorate',
     code: 'tn-12',
     tags: [],
     status: ""
   },
   {
     name: 'Béja Governorate',
+    adminType: 'governorate',
     code: 'tn-31',
     tags: [],
     status: ""
   },
   {
     name: 'Ben Arous Governorate',
+    adminType: 'governorate',
     code: 'tn-13',
     tags: [],
     status: ""
   },
   {
     name: 'Bizerte Governorate',
+    adminType: 'governorate',
     code: 'tn-23',
     tags: [],
     status: ""
   },
   {
     name: 'Gabès Governorate',
+    adminType: 'governorate',
     code: 'tn-81',
     tags: [],
     status: ""
   },
   {
     name: 'Gafsa Governorate',
+    adminType: 'governorate',
     code: 'tn-71',
     tags: [],
     status: ""
   },
   {
     name: 'Jendouba Governorate',
+    adminType: 'governorate',
     code: 'tn-32',
     tags: [],
     status: ""
   },
   {
     name: 'Kairouan Governorate',
+    adminType: 'governorate',
     code: 'tn-41',
     tags: [],
     status: ""
   },
   {
     name: 'Kasserine Governorate',
+    adminType: 'governorate',
     code: 'tn-42',
     tags: [],
     status: ""
   },
   {
     name: 'Kebili Governorate',
+    adminType: 'governorate',
     code: 'tn-73',
     tags: [],
     status: ""
   },
   {
     name: 'Kef Governorate',
+    adminType: 'governorate',
     code: 'tn-33',
     tags: [],
     status: ""
   },
   {
     name: 'Mahdia Governorate',
+    adminType: 'governorate',
     code: 'tn-53',
     tags: [],
     status: ""
   },
   {
     name: 'Manouba Governorate',
+    adminType: 'governorate',
     code: 'tn-14',
     tags: [],
     status: ""
   },
   {
     name: 'Médenine Governorate',
+    adminType: 'governorate',
     code: 'tn-82',
     tags: [],
     status: ""
   },
   {
     name: 'Monastir Governorate',
+    adminType: 'governorate',
     code: 'tn-52',
     tags: [],
     status: ""
   },
   {
     name: 'Nabeul Governorate',
+    adminType: 'governorate',
     code: 'tn-21',
     tags: [],
     status: ""
   },
   {
     name: 'Sfax Governorate',
+    adminType: 'governorate',
     code: 'tn-61',
     tags: [],
     status: ""
   },
   {
     name: 'Sidi Bouzid Governorate',
+    adminType: 'governorate',
     code: 'tn-43',
     tags: [],
     status: ""
   },
   {
     name: 'Siliana Governorate',
+    adminType: 'governorate',
     code: 'tn-34',
     tags: [],
     status: ""
   },
   {
     name: 'Sousse Governorate',
+    adminType: 'governorate',
     code: 'tn-51',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_commune_Sousse.svg',
     tags: [],
@@ -124,24 +144,28 @@ export const TUNISIA_PROVINCES = createProvinceFlags('Tunisia', [
   },
   {
     name: 'Tataouine Governorate',
+    adminType: 'governorate',
     code: 'tn-83',
     tags: [],
     status: ""
   },
   {
     name: 'Tozeur Governorate',
+    adminType: 'governorate',
     code: 'tn-72',
     tags: [],
     status: ""
   },
   {
     name: 'Tunis Governorate',
+    adminType: 'governorate',
     code: 'tn-11',
     tags: [],
     status: ""
   },
   {
     name: 'Zaghouan Governorate',
+    adminType: 'governorate',
     code: 'tn-22',
     tags: [],
     status: ""

@@ -19,6 +19,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Luanda',
+    adminType: 'province',
     code: 'ao-lua',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/d/dd/Luanda_Province.svg/revision/latest?cb=20241028071906',
     tags: [],
@@ -26,6 +27,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Benguela (Historic Municipal)',
+    adminType: 'municipality',
     code: 'ao-bng',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/ae/Bandeira_da_Benguela.gif/revision/latest?cb=20220831004444',
     tags: [],
@@ -33,6 +35,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Huambo (Historic Municipal)',
+    adminType: 'municipality',
     code: 'ao-hua',
     imageUrl: 'Bandeira_do_Huambo.png',
     tags: [],
@@ -40,6 +43,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Bengo',
+    adminType: 'province',
     code: 'ao-ben',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/4/43/Flag_of_Bengo_Province.jpg/revision/latest?cb=20230607033308',
     tags: [],
@@ -47,6 +51,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Bié',
+    adminType: 'province',
     code: 'ao-bie',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/1/11/Bie_Province_V2.png/revision/latest/scale-to-width-down/1000?cb=20250909105205',
     tags: [],
@@ -124,6 +129,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Namibe',
+    adminType: 'province',
     code: 'ao-nam',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/9/93/Namibe_Province.png/revision/latest/scale-to-width-down/1000?cb=20240127163408',
     tags: [],
@@ -131,6 +137,7 @@ export const ANGOLA_PROVINCES = createProvinceFlags('Angola', [
   },
   {
     name: 'Uíge',
+    adminType: 'province',
     code: 'ao-uig',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/a9/Uige_Province.png/revision/latest/scale-to-width-down/1000?cb=20240127163705',
     tags: [],

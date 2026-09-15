@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const DJIBOUTI_PROVINCES = createProvinceFlags('Djibouti', [
   {
     name: 'Djibouti (City)',
+    adminType: 'city',
     code: 'dj-dj',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Djibouti_City_%281976-1985%29.svg',
     aliases: ['Ville de Djibouti', 'Djibouti City', 'Jībūtī'],
@@ -58,6 +59,7 @@ export const DJIBOUTI_PROVINCES = createProvinceFlags('Djibouti', [
   },
   {
     name: 'French Somaliland / Afars and Issas (Historic 1967–1977)',
+    adminType: 'territory',
     code: 'dj-cfa',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_French_Territory_of_the_Afars_and_the_Issas.svg',
     tags: [],

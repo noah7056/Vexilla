@@ -5,6 +5,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-al",
     name: "Alabama",
+    adminType: 'state',
     code: "us-al",
     continent: "North America",
     country: "United States",
@@ -16,6 +17,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ak",
     name: "Alaska",
+    adminType: 'state',
     code: "us-ak",
     continent: "North America",
     country: "United States",
@@ -27,6 +29,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-az",
     name: "Arizona",
+    adminType: 'state',
     code: "us-az",
     continent: "North America",
     country: "United States",
@@ -38,6 +41,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ar",
     name: "Arkansas",
+    adminType: 'state',
     code: "us-ar",
     continent: "North America",
     country: "United States",
@@ -49,6 +53,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ca",
     name: "California",
+    adminType: 'state',
     code: "us-ca",
     continent: "North America",
     country: "United States",
@@ -60,6 +65,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-co",
     name: "Colorado",
+    adminType: 'state',
     code: "us-co",
     continent: "North America",
     country: "United States",
@@ -71,6 +77,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ct",
     name: "Connecticut",
+    adminType: 'state',
     code: "us-ct",
     continent: "North America",
     country: "United States",
@@ -82,6 +89,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-de",
     name: "Delaware",
+    adminType: 'state',
     code: "us-de",
     continent: "North America",
     country: "United States",
@@ -93,6 +101,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-fl",
     name: "Florida",
+    adminType: 'state',
     code: "us-fl",
     continent: "North America",
     country: "United States",
@@ -104,6 +113,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ga",
     name: "Georgia",
+    adminType: 'state',
     code: "us-ga",
     continent: "North America",
     country: "United States",
@@ -115,6 +125,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-hi",
     name: "Hawaii",
+    adminType: 'state',
     code: "us-hi",
     continent: "Oceania",
     country: "United States",
@@ -126,6 +137,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-id",
     name: "Idaho",
+    adminType: 'state',
     code: "us-id",
     continent: "North America",
     country: "United States",
@@ -137,6 +149,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-il",
     name: "Illinois",
+    adminType: 'state',
     code: "us-il",
     continent: "North America",
     country: "United States",
@@ -148,6 +161,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-in",
     name: "Indiana",
+    adminType: 'state',
     code: "us-in",
     continent: "North America",
     country: "United States",
@@ -159,6 +173,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ia",
     name: "Iowa",
+    adminType: 'state',
     code: "us-ia",
     continent: "North America",
     country: "United States",
@@ -170,6 +185,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ks",
     name: "Kansas",
+    adminType: 'state',
     code: "us-ks",
     continent: "North America",
     country: "United States",
@@ -181,6 +197,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ky",
     name: "Kentucky",
+    adminType: 'state',
     code: "us-ky",
     continent: "North America",
     country: "United States",
@@ -192,6 +209,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-la",
     name: "Louisiana",
+    adminType: 'state',
     code: "us-la",
     continent: "North America",
     country: "United States",
@@ -203,6 +221,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-me",
     name: "Maine",
+    adminType: 'state',
     code: "us-me",
     continent: "North America",
     country: "United States",
@@ -214,6 +233,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-md",
     name: "Maryland",
+    adminType: 'state',
     code: "us-md",
     continent: "North America",
     country: "United States",
@@ -225,6 +245,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ma",
     name: "Massachusetts",
+    adminType: 'state',
     code: "us-ma",
     continent: "North America",
     country: "United States",
@@ -236,6 +257,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-mi",
     name: "Michigan",
+    adminType: 'state',
     code: "us-mi",
     continent: "North America",
     country: "United States",
@@ -247,6 +269,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-mn",
     name: "Minnesota",
+    adminType: 'state',
     code: "us-mn",
     continent: "North America",
     country: "United States",
@@ -258,6 +281,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ms",
     name: "Mississippi",
+    adminType: 'state',
     code: "us-ms",
     continent: "North America",
     country: "United States",
@@ -269,6 +293,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-mo",
     name: "Missouri",
+    adminType: 'state',
     code: "us-mo",
     continent: "North America",
     country: "United States",
@@ -280,6 +305,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-mt",
     name: "Montana",
+    adminType: 'state',
     code: "us-mt",
     continent: "North America",
     country: "United States",
@@ -291,6 +317,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ne",
     name: "Nebraska",
+    adminType: 'state',
     code: "us-ne",
     continent: "North America",
     country: "United States",
@@ -302,6 +329,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nv",
     name: "Nevada",
+    adminType: 'state',
     code: "us-nv",
     continent: "North America",
     country: "United States",
@@ -313,6 +341,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nh",
     name: "New Hampshire",
+    adminType: 'state',
     code: "us-nh",
     continent: "North America",
     country: "United States",
@@ -324,6 +353,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nj",
     name: "New Jersey",
+    adminType: 'state',
     code: "us-nj",
     continent: "North America",
     country: "United States",
@@ -335,6 +365,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nm",
     name: "New Mexico",
+    adminType: 'state',
     code: "us-nm",
     continent: "North America",
     country: "United States",
@@ -346,6 +377,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ny",
     name: "New York",
+    adminType: 'state',
     code: "us-ny",
     continent: "North America",
     country: "United States",
@@ -357,6 +389,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nc",
     name: "North Carolina",
+    adminType: 'state',
     code: "us-nc",
     continent: "North America",
     country: "United States",
@@ -368,6 +401,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-nd",
     name: "North Dakota",
+    adminType: 'state',
     code: "us-nd",
     continent: "North America",
     country: "United States",
@@ -379,6 +413,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-oh",
     name: "Ohio",
+    adminType: 'state',
     code: "us-oh",
     continent: "North America",
     country: "United States",
@@ -390,6 +425,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ok",
     name: "Oklahoma",
+    adminType: 'state',
     code: "us-ok",
     continent: "North America",
     country: "United States",
@@ -401,6 +437,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-or",
     name: "Oregon",
+    adminType: 'state',
     code: "us-or",
     continent: "North America",
     country: "United States",
@@ -412,6 +449,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-pa",
     name: "Pennsylvania",
+    adminType: 'state',
     code: "us-pa",
     continent: "North America",
     country: "United States",
@@ -423,6 +461,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ri",
     name: "Rhode Island",
+    adminType: 'state',
     code: "us-ri",
     continent: "North America",
     country: "United States",
@@ -434,6 +473,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-sc",
     name: "South Carolina",
+    adminType: 'state',
     code: "us-sc",
     continent: "North America",
     country: "United States",
@@ -445,6 +485,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-sd",
     name: "South Dakota",
+    adminType: 'state',
     code: "us-sd",
     continent: "North America",
     country: "United States",
@@ -456,6 +497,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-tn",
     name: "Tennessee",
+    adminType: 'state',
     code: "us-tn",
     continent: "North America",
     country: "United States",
@@ -467,6 +509,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-tx",
     name: "Texas",
+    adminType: 'state',
     code: "us-tx",
     continent: "North America",
     country: "United States",
@@ -478,6 +521,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-ut",
     name: "Utah",
+    adminType: 'state',
     code: "us-ut",
     continent: "North America",
     country: "United States",
@@ -489,6 +533,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-vt",
     name: "Vermont",
+    adminType: 'state',
     code: "us-vt",
     continent: "North America",
     country: "United States",
@@ -500,6 +545,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-va",
     name: "Virginia",
+    adminType: 'state',
     code: "us-va",
     continent: "North America",
     country: "United States",
@@ -511,6 +557,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-wa",
     name: "Washington",
+    adminType: 'state',
     code: "us-wa",
     continent: "North America",
     country: "United States",
@@ -522,6 +569,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-wv",
     name: "West Virginia",
+    adminType: 'state',
     code: "us-wv",
     continent: "North America",
     country: "United States",
@@ -533,6 +581,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-wi",
     name: "Wisconsin",
+    adminType: 'state',
     code: "us-wi",
     continent: "North America",
     country: "United States",
@@ -544,6 +593,7 @@ export const US_STATE_FLAGS: Flag[] = createCountryFlags('US States', [
   {
     id: "us-wy",
     name: "Wyoming",
+    adminType: 'state',
     code: "us-wy",
     continent: "North America",
     country: "United States",

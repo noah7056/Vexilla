@@ -5,6 +5,7 @@ export const BELARUS_PROVINCES = createProvinceFlags('Belarus', [
 
   {
     name: 'Minsk City',
+    adminType: 'city',
     code: 'by-hm',
     image: 'Flag_of_Minsk,_Belarus.svg',
     tags: [],
@@ -40,6 +41,7 @@ export const BELARUS_PROVINCES = createProvinceFlags('Belarus', [
   },
   {
     name: 'Viciebsk (Vitebsk) Region',
+    adminType: 'region',
     code: 'by-vi',
     image: 'Flag_of_Vitsebsk_region.svg',
     tags: [],

@@ -5,6 +5,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
 
   {
     name: 'Bratislava Region',
+    adminType: 'region',
     code: 'sk-bl',
     image: 'Bratislavsky_vlajka.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Trnava Region',
+    adminType: 'region',
     code: 'sk-ta',
     image: 'Trnavsky_vlajka.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Trenčín Region',
+    adminType: 'region',
     code: 'sk-tc',
     image: 'Trenciansky_vlajka.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Nitra Region',
+    adminType: 'region',
     code: 'sk-ni',
     image: 'Nitriansky_vlajka.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Žilina Region',
+    adminType: 'region',
     code: 'sk-zi',
     image: 'Zilinsky_vlajka.svg',
     tags: [],
@@ -40,6 +45,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Banská Bystrica Region',
+    adminType: 'region',
     code: 'sk-bc',
     image: 'Banskobystricky_vlajka.svg',
     tags: [],
@@ -47,6 +53,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Prešov Region',
+    adminType: 'region',
     code: 'sk-pv',
     image: 'Presovsky_vlajka.svg',
     tags: [],
@@ -54,6 +61,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Košice Region',
+    adminType: 'region',
     code: 'sk-ki',
     image: 'Kosicky_vlajka.svg',
     tags: [],
@@ -61,6 +69,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Bratislava City',
+    adminType: 'city',
     code: 'sk-ba',
     image: 'Flag_of_Bratislava.svg',
     tags: [],
@@ -68,6 +77,7 @@ export const SLOVAKIA_PROVINCES = createProvinceFlags('Slovakia', [
   },
   {
     name: 'Košice City',
+    adminType: 'city',
     code: 'sk-ke',
     image: 'Flag_of_Košice.svg',
     tags: [],

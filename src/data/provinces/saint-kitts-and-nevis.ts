@@ -19,6 +19,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Basseterre (City Flag)',
+    adminType: 'city',
     code: 'kn-bas',
     image: 'https://static.wikia.nocookie.net/vexillology/images/5/57/Flag_of_Basseterre.svg/revision/latest/scale-to-width-down/1000?cb=20220913003741',
     tags: [],
@@ -33,6 +34,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Anne Sandy Point Parish',
+    adminType: 'parish',
     code: 'kn-sas',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/09/Flag_of_Saint_Anne_Sandy_Point_Parish.png/revision/latest?cb=20230602211209',
     tags: [],
@@ -40,6 +42,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint George Basseterre Parish',
+    adminType: 'parish',
     code: 'kn-sgb',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/02/Flag_of_Saint_George_Basseterre_Parish.svg/revision/latest?cb=20230602213856',
     tags: [],
@@ -47,6 +50,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint George Gingerland Parish',
+    adminType: 'parish',
     code: 'kn-sgg',
     image: 'https://static.wikia.nocookie.net/vexillology/images/9/99/Flag_of_Saint_George_Gingerland_Parish.png/revision/latest/scale-to-width-down/1000?cb=20230602224224',
     tags: [],
@@ -54,6 +58,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint James Windward Parish',
+    adminType: 'parish',
     code: 'kn-sjw',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/13/Flag_of_Saint_James_Windward_Parish.png/revision/latest?cb=20230603001556',
     tags: [],
@@ -61,6 +66,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint John Capisterre Parish',
+    adminType: 'parish',
     code: 'kn-sjc',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/77/Flag_of_Saint_John_Capisterre_Parish.png/revision/latest?cb=20230602214630',
     tags: [],
@@ -68,6 +74,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint John Figtree Parish',
+    adminType: 'parish',
     code: 'kn-sjf',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b4/Flag_of_Saint_John_Figtree_Parish.png/revision/latest?cb=20230603011106',
     tags: [],
@@ -75,6 +82,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Mary Cayon Parish',
+    adminType: 'parish',
     code: 'kn-smc',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/38/Flag_of_Saint_Mary_Cayon_Parish.png/revision/latest/scale-to-width-down/1000?cb=20230602214954',
     tags: [],
@@ -82,6 +90,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Paul Capisterre Parish',
+    adminType: 'parish',
     code: 'kn-pcp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/a/ac/Flag_of_Saint_Paul_Capisterre_Parish.png/revision/latest/scale-to-width-down/1000?cb=20230602215307',
     tags: [],
@@ -89,6 +98,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Paul Charlestown Parish',
+    adminType: 'parish',
     code: 'kn-spc',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/fb/Flag_of_Saint_Paul_Charlestown_Parish.png/revision/latest/scale-to-width-down/1000?cb=20230603012105',
     tags: [],
@@ -96,6 +106,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Peter Basseterre Parish',
+    adminType: 'parish',
     code: 'kn-spb',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/47/Saint_Peter_Basseterre.png/revision/latest?cb=20240221073123',
     tags: [],
@@ -103,6 +114,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Thomas Lowland Parish',
+    adminType: 'parish',
     code: 'kn-stl',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b4/Flag_of_Saint_Thomas_Lowland_Parish.png/revision/latest?cb=20230603013505',
     tags: [],
@@ -110,6 +122,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Saint Thomas Middle Island Parish',
+    adminType: 'parish',
     code: 'kn-tmi',
     image: 'https://static.wikia.nocookie.net/vexillology/images/2/23/Flag_of_Saint_Thomas_Middle_Island_Parish.png/revision/latest?cb=20230602222058',
     tags: [],
@@ -117,6 +130,7 @@ export const SAINT_KITTS_AND_NEVIS_PROVINCES = createProvinceFlags('Saint Kitts 
   },
   {
     name: 'Trinity Palmetto Point Parish',
+    adminType: 'parish',
     code: 'kn-tpp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/12/Flag_of_Trinity_Palmetto_Point_Parish.png/revision/latest?cb=20230602222256',
     tags: [],

@@ -47,6 +47,7 @@ export const MEXICO_PROVINCES = createProvinceFlags('Mexico', [
   },
   {
     name: 'Mexico City (CDMX)',
+    adminType: 'city',
     code: 'mx-cmx',
     image: 'Flag_of_Mexico_City%2C_Mexico.svg',
     tags: [],
@@ -103,6 +104,7 @@ export const MEXICO_PROVINCES = createProvinceFlags('Mexico', [
   },
   {
     name: 'State of Mexico',
+    adminType: 'state',
     code: 'mx-mex',
     image: 'Flag_of_the_State_of_Mexico.svg',
     tags: [],

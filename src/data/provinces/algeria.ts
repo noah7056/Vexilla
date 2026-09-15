@@ -19,6 +19,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Adrar',
+    adminType: 'province',
     code: 'dz-adr',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/e/e6/Flag_of_Adrar_Province_%28Russikeh%29.svg/revision/latest?cb=20241015220128',
     tags: [],
@@ -33,6 +34,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Aïn Témouchent',
+    adminType: 'province',
     code: 'dz-ait',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/6/6c/Flag_of_A%C3%AFn_T%C3%A9mouchent_Province_%28Strmare%29.svg/revision/latest/scale-to-width-down/1000?cb=20241015215050',
     tags: [],
@@ -47,6 +49,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Annaba',
+    adminType: 'province',
     code: 'dz-ann',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/0/09/Flag_of_Annaba_Province.svg/revision/latest/scale-to-width-down/1000?cb=20230502223414',
     tags: [],
@@ -54,6 +57,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Batna',
+    adminType: 'province',
     code: 'dz-bat',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/ae/Flag_of_Batna_Province_%281993-2002%29.svg/revision/latest/scale-to-width-down/1000?cb=20230506224941',
     tags: [],
@@ -61,6 +65,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Béchar',
+    adminType: 'province',
     code: 'dz-bec',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/d/d2/B%C3%A9char_Province.png/revision/latest/scale-to-width-down/1000?cb=20250913071124',
     tags: [],
@@ -68,6 +73,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Béjaïa',
+    adminType: 'province',
     code: 'dz-bej',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/e/ef/Flag_of_B%C3%A9ja%C3%AFa_Province.svg/revision/latest/scale-to-width-down/1000?cb=20241018035331',
     tags: [],
@@ -96,6 +102,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Bordj Badji Mokhtar',
+    adminType: 'province',
     code: 'dz-bbm',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/c/c7/Flag_of_Bordj_Baji_Mokhtar_Province.svg/revision/latest?cb=20230502223443',
     tags: [],
@@ -117,6 +124,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Boumerdès',
+    adminType: 'province',
     code: 'dz-bom',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/a1/Flag_of_Boumerd%C3%A8s_Province_%28Strmare%29.svg/revision/latest?cb=20241018025732',
     tags: [],
@@ -124,6 +132,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Chlef',
+    adminType: 'province',
     code: 'dz-chl',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/3/3d/Flag_of_Chlef_Province.svg/revision/latest/scale-to-width-down/1000?cb=20230416123540',
     tags: [],
@@ -152,6 +161,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'El Bayadh',
+    adminType: 'province',
     code: 'dz-elb',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/7/73/Flag_of_El_Bayadh_Province.svg/revision/latest?cb=20220914032605',
     tags: [],
@@ -159,6 +169,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'El M’Ghair',
+    adminType: 'province',
     code: 'dz-elm',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/4/4d/Flag_of_El_M%27Ghair_Province.svg/revision/latest?cb=20221214075926',
     tags: [],
@@ -166,6 +177,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'El Menia',
+    adminType: 'province',
     code: 'dz-men',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/f/f5/El_Menia_Province.png/revision/latest/scale-to-width-down/1000?cb=20250907153249',
     tags: [],
@@ -173,6 +185,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'El Oued',
+    adminType: 'province',
     code: 'dz-elo',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/6/67/Flag_of_El_Oued_Province.svg/revision/latest?cb=20230502123156',
     tags: [],
@@ -187,6 +200,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Ghardaïa',
+    adminType: 'province',
     code: 'dz-gha',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/9/96/Flag_of_Gharda%C3%AFa_Province.svg/revision/latest?cb=20230502223634',
     tags: [],
@@ -194,6 +208,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Guelma',
+    adminType: 'province',
     code: 'dz-gue',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/5d/Flag_of_Guelma_Province.svg/revision/latest?cb=20230502223404',
     tags: [],
@@ -201,6 +216,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Illizi',
+    adminType: 'province',
     code: 'dz-ill',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/4/48/Flag_of_Illizi_Province.svg/revision/latest/scale-to-width-down/1000?cb=20230502223656',
     tags: [],
@@ -222,6 +238,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Jijel',
+    adminType: 'province',
     code: 'dz-jij',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/f/f4/Jijel_Province.png/revision/latest/scale-to-width-down/1000?cb=20250831005405',
     tags: [],
@@ -229,6 +246,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Khenchela',
+    adminType: 'province',
     code: 'dz-khe',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/50/Khenchela_Province.png/revision/latest/scale-to-width-down/1000?cb=20250830120615',
     tags: [],
@@ -236,6 +254,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Laghouat',
+    adminType: 'province',
     code: 'dz-lag',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/57/Laghouat_Province.png/revision/latest/scale-to-width-down/1000?cb=20250903113219',
     tags: [],
@@ -243,6 +262,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Mascara',
+    adminType: 'province',
     code: 'dz-mas',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/7/78/Mascara_Province.png/revision/latest/scale-to-width-down/1000?cb=20250830125019',
     tags: [],
@@ -264,6 +284,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Mostaganem',
+    adminType: 'province',
     code: 'dz-mos',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/f/f4/Flag_of_Mostaganem_Province.svg/revision/latest?cb=20241018033538',
     tags: [],
@@ -292,6 +313,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Ouargla',
+    adminType: 'province',
     code: 'dz-oua',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/e/e4/Flag_of_Ouargla_Province.svg/revision/latest?cb=20230502124132',
     tags: [],
@@ -299,6 +321,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Ouled Djellal',
+    adminType: 'province',
     code: 'dz-odj',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/0/01/Flag_of_Ouled_Djellal_Province.svg/revision/latest/scale-to-width-down/1000?cb=20230502223647',
     tags: [],
@@ -306,6 +329,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Oum El Bouaghi',
+    adminType: 'province',
     code: 'dz-oeb',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/8/87/Flag_of_Oum_El_Bouaghi_Province_%28Strmare%29.svg/revision/latest?cb=20241018025224',
     tags: [],
@@ -327,6 +351,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Sétif',
+    adminType: 'province',
     code: 'dz-set',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/3/33/Flag_of_S%C3%A9tif_Province_%28Russikeh%29.svg/revision/latest?cb=20241015220917',
     tags: [],
@@ -362,6 +387,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Tébessa',
+    adminType: 'province',
     code: 'dz-teb',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/1/1a/Flag_of_T%C3%A9bessa_Province_%28Treehouse2000%29.svg/revision/latest/scale-to-width-down/1000?cb=20241016171842',
     tags: [],
@@ -376,6 +402,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Timimoun',
+    adminType: 'province',
     code: 'dz-tim',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/5e/Flag_of_Timimoun_Province.svg/revision/latest?cb=20230502223821',
     tags: [],
@@ -390,6 +417,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Tipaza',
+    adminType: 'province',
     code: 'dz-tip',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/58/Flag_of_Tipaza_Province.svg/revision/latest/scale-to-width-down/1000?cb=20230502124845',
     tags: [],
@@ -418,6 +446,7 @@ export const ALGERIA_PROVINCES = createProvinceFlags('Algeria', [
   },
   {
     name: 'Touggourt',
+    adminType: 'province',
     code: 'dz-tou',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/57/Touggourt_Province_FlagProposal_%28ABDkeys%29.svg/revision/latest/scale-to-width-down/1000?cb=20240812042838',
     tags: [],

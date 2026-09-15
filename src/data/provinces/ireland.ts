@@ -43,6 +43,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Carlow',
+    adminType: 'county',
     code: 'ie-cw',
     image: 'Flag_of_county_Carlow.svg',
     aliases: ['Ceatharlach'],
@@ -59,6 +60,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Clare',
+    adminType: 'county',
     code: 'ie-ce',
     image: 'Flag_of_county_Clare.svg',
     aliases: ['An Clár'],
@@ -67,6 +69,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Cork',
+    adminType: 'county',
     code: 'ie-co',
     image: 'Flag_of_County_Cork.svg',
     aliases: ['Corcaigh'],
@@ -83,6 +86,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Dublin',
+    adminType: 'county',
     code: 'ie-d',
     image: 'Flag_of_county_Dublin.svg',
     aliases: ['Baile Átha Cliath'],
@@ -99,6 +103,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Kerry',
+    adminType: 'county',
     code: 'ie-ky',
     image: 'Flag_of_county_Kerry.svg',
     aliases: ['Ciarraí'],
@@ -107,6 +112,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Kildare',
+    adminType: 'county',
     code: 'ie-ke',
     image: 'Flag_of_county_Kildare.svg',
     aliases: ['Cill Dara'],
@@ -115,6 +121,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Kilkenny',
+    adminType: 'county',
     code: 'ie-kk',
     image: 'Flag_of_county_Kilkenny.svg',
     aliases: ['Cill Chainnigh'],
@@ -131,6 +138,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Leitrim',
+    adminType: 'county',
     code: 'ie-lm',
     image: 'Flag_of_county_Leitrim.svg',
     aliases: ['Liatroim'],
@@ -139,6 +147,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Limerick',
+    adminType: 'county',
     code: 'ie-lk',
     image: 'Flag_of_County_Limerick.svg',
     aliases: ['Luimneach'],
@@ -147,6 +156,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Longford',
+    adminType: 'county',
     code: 'ie-ld',
     image: 'County_colors_of_Longford_and_Wicklow_(1x2_ratio).svg',
     aliases: ['An Longfort'],
@@ -155,6 +165,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Louth',
+    adminType: 'county',
     code: 'ie-lh',
     image: 'Flag_of_the_counties_of_Cork_and_Louth.svg',
     aliases: ['Lú'],
@@ -163,6 +174,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Mayo',
+    adminType: 'county',
     code: 'ie-mo',
     image: 'Flag_of_county_Mayo.svg',
     aliases: ['Maigh Eo'],
@@ -179,6 +191,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Monaghan',
+    adminType: 'county',
     code: 'ie-mn',
     image: 'Flag_of_county_Monaghan.svg',
     aliases: ['Muineachán'],
@@ -187,6 +200,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Offaly',
+    adminType: 'county',
     code: 'ie-oy',
     image: 'Flag_of_county_Offaly.svg',
     aliases: ['Uíbh Fhailí'],
@@ -195,6 +209,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Roscommon',
+    adminType: 'county',
     code: 'ie-rn',
     image: 'Flag_of_county_Roscommon.svg',
     aliases: ['Ros Comáin'],
@@ -203,6 +218,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Sligo',
+    adminType: 'county',
     code: 'ie-so',
     image: 'Flag_of_county_Sligo.svg',
     aliases: ['Sligeach'],
@@ -211,6 +227,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Tipperary',
+    adminType: 'county',
     code: 'ie-ta',
     image: 'Flag_of_county_Tipperary.svg',
     aliases: ['Tiobraid Árann'],
@@ -219,6 +236,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Waterford',
+    adminType: 'county',
     code: 'ie-wd',
     image: 'Flag_of_County_Waterford.svg',
     aliases: ['Port Láirge'],
@@ -235,6 +253,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Wexford',
+    adminType: 'county',
     code: 'ie-wx',
     image: 'Flag_of_county_Wexford.svg',
     aliases: ['Loch Garman'],
@@ -243,6 +262,7 @@ export const IRELAND_PROVINCES = createProvinceFlags('Ireland', [
   },
   {
     name: 'Wicklow',
+    adminType: 'county',
     code: 'ie-ww',
     image: 'County_colors_of_Longford_and_Wicklow_(1x2_ratio).svg',
     aliases: ['Cill Mhantáin'],

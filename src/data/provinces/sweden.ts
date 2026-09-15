@@ -75,6 +75,7 @@ export const SWEDEN_PROVINCES = createProvinceFlags('Sweden', [
   },
   {
     name: 'Jämtland County',
+    adminType: 'county',
     code: 'se-jc',
     image: 'Jämtland_län_vapen.svg',
     tags: [],
@@ -180,6 +181,7 @@ export const SWEDEN_PROVINCES = createProvinceFlags('Sweden', [
   },
   {
     name: 'Västmanland County',
+    adminType: 'county',
     code: 'se-vmc',
     image: 'Västmanland_vapen.svg',
     tags: [],
@@ -215,6 +217,7 @@ export const SWEDEN_PROVINCES = createProvinceFlags('Sweden', [
   },
   {
     name: 'Östergötland County',
+    adminType: 'county',
     code: 'se-oc',
     image: 'Östergötland_vapen.svg',
     tags: [],
@@ -229,6 +232,7 @@ export const SWEDEN_PROVINCES = createProvinceFlags('Sweden', [
   },
   {
     name: 'Stockholm County',
+    adminType: 'county',
     code: 'se-sc',
     image: 'Stockholm_län_vapen.svg',
     tags: [],

@@ -75,6 +75,7 @@ export const NICARAGUA_PROVINCES = createProvinceFlags('Nicaragua', [
   },
   {
     name: 'North Caribbean Coast (RACCN)',
+    adminType: 'region',
     code: 'ni-an',
     image: 'Flag_of_Region_Autonoma_del_Atlantico_Norte.svg',
     tags: [],
@@ -82,6 +83,7 @@ export const NICARAGUA_PROVINCES = createProvinceFlags('Nicaragua', [
   },
   {
     name: 'South Caribbean Coast (RACCS)',
+    adminType: 'region',
     code: 'ni-as',
     image: 'Flag_of_Region_Autonoma_Atlantico_Sur.svg',
     tags: [],

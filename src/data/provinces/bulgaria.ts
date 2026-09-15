@@ -124,6 +124,7 @@ export const BULGARIA_PROVINCES = createProvinceFlags('Bulgaria', [
   },
   {
     name: 'Silistra',
+    adminType: 'municipality',
     code: 'bg-sil',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/8f/Silistra_Municipality_HD.jpg/revision/latest/scale-to-width-down/1000?cb=20230604113802',
     tags: [],
@@ -138,6 +139,7 @@ export const BULGARIA_PROVINCES = createProvinceFlags('Bulgaria', [
   },
   {
     name: 'Smolyan',
+    adminType: 'municipality',
     code: 'bg-smo',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/f7/Smolyan_Municipality.jpg/revision/latest/scale-to-width-down/1000?cb=20230604113826',
     tags: [],
@@ -152,6 +154,7 @@ export const BULGARIA_PROVINCES = createProvinceFlags('Bulgaria', [
   },
   {
     name: 'Targovishte',
+    adminType: 'municipality',
     code: 'bg-tar',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/46/Targovishte_Municipality.jpg/revision/latest/scale-to-width-down/1000?cb=20230604114152',
     tags: [],

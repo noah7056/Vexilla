@@ -5,6 +5,7 @@ export const UKRAINE_PROVINCES = createProvinceFlags('Ukraine', [
 
   {
     name: 'Kyiv City',
+    adminType: 'city',
     code: 'ua-30',
     image: 'Flag_of_Kyiv_Kurovskyi.svg',
     tags: [],

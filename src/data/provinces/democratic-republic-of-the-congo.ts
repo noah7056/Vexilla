@@ -174,6 +174,7 @@ export const DEMOCRATIC_REPUBLIC_OF_THE_CONGO_PROVINCES = createProvinceFlags('D
   },
   {
     name: 'State of Katanga (Historic / Regional)',
+    adminType: 'state',
     code: 'cd-kat',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Flag_of_Katanga.svg',
     tags: [],
@@ -181,6 +182,7 @@ export const DEMOCRATIC_REPUBLIC_OF_THE_CONGO_PROVINCES = createProvinceFlags('D
   },
   {
     name: 'South Kasai (Historic / Mining State)',
+    adminType: 'state',
     code: 'cd-kas',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Flag_of_South_Kasai.svg',
     tags: [],
@@ -195,6 +197,7 @@ export const DEMOCRATIC_REPUBLIC_OF_THE_CONGO_PROVINCES = createProvinceFlags('D
   },
   {
     name: 'Congo Free State (Historic 1885–1908)',
+    adminType: 'state',
     code: 'cd-cfs',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Flag_of_the_Congo_Free_State.svg',
     tags: [],

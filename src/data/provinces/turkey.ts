@@ -5,6 +5,7 @@ export const TURKEY_PROVINCES = createProvinceFlags('Turkey', [
 
   {
     name: 'Republic of Hatay (Historic State 1938–1939)',
+    adminType: 'state',
     code: 'tr-hat',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/80/Flag_of_Hatay.svg',
     tags: [],

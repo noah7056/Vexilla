@@ -19,6 +19,7 @@ export const BELGIUM_PROVINCES = createProvinceFlags('Belgium', [
   },
   {
     name: 'Brussels-Capital Region',
+    adminType: 'region',
     code: 'be-bru',
     image: 'Flag_of_the_Brussels-Capital_Region.svg',
     tags: [],
@@ -68,6 +69,7 @@ export const BELGIUM_PROVINCES = createProvinceFlags('Belgium', [
   },
   {
     name: 'Liège',
+    adminType: 'province',
     code: 'be-wlg',
     image: 'Flag_of_the_Province_of_Liège.svg',
     tags: [],
@@ -82,6 +84,7 @@ export const BELGIUM_PROVINCES = createProvinceFlags('Belgium', [
   },
   {
     name: 'Namur',
+    adminType: 'province',
     code: 'be-wna',
     image: 'Flag_of_Namur_Province.svg',
     tags: [],

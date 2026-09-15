@@ -108,6 +108,43 @@ export type GeoLevel =
   | 'culture'
   | 'non-geo';
 
+export type AdminType =
+  | 'province'
+  | 'state'
+  | 'region'
+  | 'territory'
+  | 'county'
+  | 'district'
+  | 'municipality'
+  | 'city'
+  | 'town'
+  | 'village'
+  | 'council'
+  | 'governorate'
+  | 'department'
+  | 'prefecture'
+  | 'parish'
+  | 'canton';
+
+export const ALL_ADMIN_TYPES: AdminType[] = [
+  'province',
+  'state',
+  'region',
+  'territory',
+  'county',
+  'district',
+  'municipality',
+  'city',
+  'town',
+  'village',
+  'council',
+  'governorate',
+  'department',
+  'prefecture',
+  'parish',
+  'canton'
+];
+
 export interface Flag {
   id: string;
   name: string;
@@ -121,6 +158,12 @@ export interface Flag {
   status?: FlagStatus | ''; // Official status / designation of the flag
   creator?: string; // Name or username of creator (for fan-made flags / origin)
   sourceUrl?: string; // Generic link to creator's page, flag info page, origin post, etc.
+  // --- Subnational classification (Provinces & Territories, US States).
+  // Both optional so existing flags without them keep working; missing
+  // adminType is treated as 'unspecified' in filters. Missing/empty
+  // parentRegion means direct-to-country (e.g. Cape Verde municipalities).
+  adminType?: AdminType | '';
+  parentRegion?: string;
   // --- Optional geography (Atlas map). All optional so Firestore docs without
   // them keep working; `cleanObject` in FlagsContext strips undefined on save.
   lat?: number;
@@ -159,6 +202,8 @@ export interface QuizConfig {
   indigenousCountry?: string; // 'All' or specific country/region like 'United States', 'New Zealand'
   regionCountry?: string;
   selectedSubOptions?: Record<string, string[]>;
+  adminTypes?: (AdminType | 'unspecified' | 'All')[];
+  parentRegions?: string[];
   statuses?: (FlagStatus | 'unspecified' | 'All')[];
   tags?: string[];
   mastery?: (MasteryLevel | 'all')[];

@@ -96,6 +96,7 @@ export const SOUTH_AFRICA_PROVINCES = createProvinceFlags('South Africa', [
   },
   {
     name: 'Orange Free State (Historic)',
+    adminType: 'state',
     code: 'za-ofs',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Orange_Free_State.svg',
     tags: [],
@@ -124,6 +125,7 @@ export const SOUTH_AFRICA_PROVINCES = createProvinceFlags('South Africa', [
   },
   {
     name: 'State of Goshen (Historic)',
+    adminType: 'state',
     code: 'za-gsh',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Goshen.svg',
     tags: [],

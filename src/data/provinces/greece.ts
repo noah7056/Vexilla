@@ -33,6 +33,7 @@ export const GREECE_PROVINCES = createProvinceFlags('Greece', [
   },
   {
     name: 'Ikaria (Free State of Ikaria)',
+    adminType: 'state',
     code: 'gr-ik',
     image: 'Flag_of_the_Free_State_of_Ikaria.svg',
     tags: [],

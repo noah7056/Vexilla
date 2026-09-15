@@ -73,20 +73,28 @@ function FlagZoomCanvas({ flag, slotNumber, progress = {}, onChangeFlag }: FlagZ
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isPickerOpen]);
 
-  // Mouse wheel zoom
-  const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.deltaY < 0) {
-      setScale((prev) => Math.min(prev + 0.35, 6));
-    } else {
-      setScale((prev) => {
-        const next = Math.max(prev - 0.35, 1);
-        if (next === 1) setPosition({ x: 0, y: 0 });
-        return next;
-      });
-    }
-  };
+  // Mouse wheel zoom (native non-passive listener: React attaches onWheel as
+  // passive at the root, so preventDefault() inside it warns and fails to
+  // stop the page behind the modal from scrolling).
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: globalThis.WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.deltaY < 0) {
+        setScale((prev) => Math.min(prev + 0.35, 6));
+      } else {
+        setScale((prev) => {
+          const next = Math.max(prev - 0.35, 1);
+          if (next === 1) setPosition({ x: 0, y: 0 });
+          return next;
+        });
+      }
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   // Mouse Pan Start
   const handleMouseDown = (e: MouseEvent) => {
@@ -329,7 +337,6 @@ function FlagZoomCanvas({ flag, slotNumber, progress = {}, onChangeFlag }: FlagZ
         {/* Canvas Area with Drag & Scale */}
         <div
           ref={containerRef}
-          onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onDoubleClick={handleDoubleClick}

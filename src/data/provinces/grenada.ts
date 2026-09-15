@@ -54,6 +54,7 @@ export const GRENADA_PROVINCES = createProvinceFlags('Grenada', [
   },
   {
     name: 'St. George (City Flag)',
+    adminType: 'city',
     code: 'gd-stg',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/72/Flag_of_St._George%27s%2C_Grenada.svg/revision/latest?cb=20221209234044',
     tags: [],

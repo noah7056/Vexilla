@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   {
     name: 'Asunción (Capital District)',
+    adminType: 'district',
     code: 'py-asu',
     image: 'Flag_of_Asunci%C3%B3n.svg',
     aliases: ['Asuncion', 'Distrito Capital', 'Capital of Paraguay', 'Nuestra Senora de la Asuncion'],
@@ -11,6 +12,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Alto Paraná',
+    adminType: 'department',
     code: 'py-ap',
     image: 'Flag_of_Alto_Paran%C3%A1_Department.svg',
     aliases: ['Alto Parana', 'Departamento de Alto Parana', 'Departamento de Alto Paraná', 'Ciudad del Este'],
@@ -35,6 +37,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Boquerón',
+    adminType: 'department',
     code: 'py-bq',
     image: 'Flag_of_Boquer%C3%B3n_Department.svg',
     aliases: ['Boqueron', 'Departamento de Boqueron', 'Departamento de Boquerón', 'Filadelfia'],
@@ -43,6 +46,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Caaguazú',
+    adminType: 'department',
     code: 'py-cg',
     image: 'Flag_of_Caaguaz%C3%BA_Department.svg',
     aliases: ['Caaguazu', 'Departamento de Caaguazu', 'Departamento de Caaguazú', 'Coronel Oviedo'],
@@ -51,6 +55,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Caazapá',
+    adminType: 'department',
     code: 'py-cz',
     image: 'Flag_of_Caazap%C3%A1_Department.svg',
     aliases: ['Caazapa', 'Departamento de Caazapa', 'Departamento de Caazapá'],
@@ -59,6 +64,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Canindeyú',
+    adminType: 'department',
     code: 'py-cn',
     image: 'Flag_of_Canindey%C3%BA_Department.svg',
     aliases: ['Canindeyu', 'Departamento de Canindeyu', 'Departamento de Canindeyú', 'Salto del Guaira'],
@@ -67,6 +73,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Central Department',
+    adminType: 'department',
     code: 'py-ce',
     image: 'Flag_of_Central_Department%2C_Paraguay.svg',
     aliases: ['Central', 'Departamento Central', 'Aregua'],
@@ -83,6 +90,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Guairá',
+    adminType: 'department',
     code: 'py-gu',
     image: 'Flag_of_Guair%C3%A1_Department.svg',
     aliases: ['Guaira', 'Departamento del Guaira', 'Departamento del Guairá', 'Villarrica'],
@@ -99,6 +107,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Ñeembucú',
+    adminType: 'department',
     code: 'py-ne',
     image: 'Flag_of_%C3%91eembuc%C3%BA_Department.svg',
     aliases: ['Neembucu', 'Ñeembucu', 'Departamento de Neembucu', 'Departamento de Ñeembucú', 'Pilar'],
@@ -107,6 +116,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Paraguarí',
+    adminType: 'department',
     code: 'py-pa',
     image: 'Flag_of_Paraguar%C3%AD_Department.svg',
     aliases: ['Paraguari', 'Departamento de Paraguari', 'Departamento de Paraguarí'],
@@ -115,6 +125,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Presidente Hayes',
+    adminType: 'department',
     code: 'py-ph',
     image: 'Flag_of_Presidente_Hayes_Department.svg',
     aliases: ['Departamento de Presidente Hayes', 'Villa Hayes', 'Chaco'],
@@ -123,6 +134,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'San Pedro',
+    adminType: 'department',
     code: 'py-sp',
     image: 'Flag_of_San_Pedro_Department_(Paraguay).svg',
     aliases: ['Departamento de San Pedro', 'San Pedro de Ycuamandiyú'],
@@ -131,6 +143,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Itapúa',
+    adminType: 'department',
     code: 'py-it',
     image: 'Flag_of_Itap%C3%BAa_Department.svg',
     aliases: ['Itapua', 'Departamento de Itapua', 'Departamento de Itapúa', 'Encarnación', 'Encarnacion'],
@@ -139,6 +152,7 @@ export const PARAGUAY_PROVINCES = createProvinceFlags('Paraguay', [
   },
   {
     name: 'Concepción',
+    adminType: 'department',
     code: 'py-cc',
     image: 'Flag_of_Concepci%C3%B3n_Department.svg',
     aliases: ['Concepcion', 'Departamento de Concepcion', 'Departamento de Concepción'],

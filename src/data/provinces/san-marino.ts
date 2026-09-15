@@ -5,6 +5,7 @@ export const SAN_MARINO_PROVINCES = createProvinceFlags('San Marino', [
 
   {
     name: 'City of San Marino',
+    adminType: 'city',
     code: 'sm-01',
     image: 'San_Marino_(RSM)-Bandiera.svg',
     tags: [],

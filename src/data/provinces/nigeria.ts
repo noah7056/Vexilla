@@ -5,6 +5,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
 
   {
     name: 'Abia State',
+    adminType: 'state',
     code: 'ng-ab',
     imageUrl: 'Flag_of_Abia_(new).png',
     tags: [],
@@ -12,6 +13,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Akwa Ibom State',
+    adminType: 'state',
     code: 'ng-ak',
     imageUrl: 'Flag_of_Akwa_Ibom_State.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Anambra State',
+    adminType: 'state',
     code: 'ng-an',
     imageUrl: 'Flag_of_Anambra_State.png',
     tags: [],
@@ -26,6 +29,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Bayelsa State',
+    adminType: 'state',
     code: 'ng-by',
     imageUrl: 'Flag_of_Bayelsa_State.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Cross River State',
+    adminType: 'state',
     code: 'ng-cr',
     imageUrl: 'Cross_River_State_Flag.svg',
     tags: [],
@@ -40,6 +45,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Delta State',
+    adminType: 'state',
     code: 'ng-de',
     imageUrl: 'Flag_of_Delta_State.png',
     tags: [],
@@ -47,6 +53,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Edo State',
+    adminType: 'state',
     code: 'ng-ed',
     imageUrl: 'Flag_of_Edo_State.png',
     tags: [],
@@ -54,6 +61,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Ekiti State',
+    adminType: 'state',
     code: 'ng-ek',
     imageUrl: 'Ekiti_State_Flag.gif',
     tags: [],
@@ -61,6 +69,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Enugu State',
+    adminType: 'state',
     code: 'ng-en',
     imageUrl: 'Enugu_State_Flag.svg',
     tags: [],
@@ -68,6 +77,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Gombe State',
+    adminType: 'state',
     code: 'ng-go',
     imageUrl: 'Flag_of_Gombe_State.svg',
     tags: [],
@@ -75,6 +85,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Kaduna State',
+    adminType: 'state',
     code: 'ng-kd',
     imageUrl: 'Flag_of_Kaduna_State.png',
     tags: [],
@@ -82,6 +93,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Kano State',
+    adminType: 'state',
     code: 'ng-kn',
     imageUrl: 'Flag_of_Kano_State.png',
     tags: [],
@@ -89,6 +101,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Katsina State',
+    adminType: 'state',
     code: 'ng-kt',
     imageUrl: 'Flag_of_Katsina_State.svg',
     tags: [],
@@ -96,6 +109,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Lagos State',
+    adminType: 'state',
     code: 'ng-la',
     imageUrl: 'Flag_of_Lagos_State.png',
     tags: [],
@@ -103,6 +117,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Ogun State',
+    adminType: 'state',
     code: 'ng-og',
     imageUrl: 'Flag_of_Ogun_State.png',
     tags: [],
@@ -110,6 +125,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Ondo State',
+    adminType: 'state',
     code: 'ng-on',
     imageUrl: 'Flag_of_Ondo_State.svg',
     tags: [],
@@ -117,6 +133,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Osun State',
+    adminType: 'state',
     code: 'ng-os',
     imageUrl: 'Flag_of_Osun_State.svg',
     tags: [],
@@ -124,6 +141,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Oyo State',
+    adminType: 'state',
     code: 'ng-oy',
     imageUrl: 'Flag_of_Oyo_State.svg',
     tags: [],
@@ -131,6 +149,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Plateau State',
+    adminType: 'state',
     code: 'ng-pl',
     imageUrl: 'Flag_of_Plateau_State.svg',
     tags: [],
@@ -138,6 +157,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Rivers State',
+    adminType: 'state',
     code: 'ng-ri',
     imageUrl: 'Flag_of_Rivers_State.png',
     tags: [],
@@ -145,6 +165,7 @@ export const NIGERIA_PROVINCES = createProvinceFlags('Nigeria', [
   },
   {
     name: 'Federal Capital Territory (Abuja)',
+    adminType: 'territory',
     code: 'ng-fc',
     imageUrl: 'Flag_of_Abuja.svg',
     tags: [],

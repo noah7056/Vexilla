@@ -1,7 +1,8 @@
 import { useState, useMemo, lazy, Suspense } from 'react';
 import { X, Save, ShieldAlert, Trash2, RotateCcw, AlertTriangle, Heart, User, Link2, ExternalLink, Plus, Check, Flag as FlagIcon, FolderCog, MapPin, Crosshair } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Flag, Category, Continent, FlagStatus, GeoLevel, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { Flag, Category, Continent, FlagStatus, AdminType, GeoLevel, ALL_CONTINENTS, ALL_STATUSES, ALL_ADMIN_TYPES } from '../types';
+import { SUBNATIONAL_CATEGORIES } from '../lib/subnational';
 import { nominatimLookup } from '../lib/geo';
 import { useFlags } from '../contexts/FlagsContext';
 import { FlagImage } from './FlagImage';
@@ -87,6 +88,7 @@ interface LastAddedSelections {
   continent?: Continent | '';
   country?: string;
   status?: FlagStatus | '';
+  adminType?: AdminType | '';
   creator?: string;
   sourceUrl?: string;
 }
@@ -182,6 +184,38 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     return last?.status !== undefined ? last.status : '';
   });
 
+  const isSubnationalCategory = (SUBNATIONAL_CATEGORIES as readonly string[]).includes(category);
+
+  const [adminType, setAdminType] = useState<AdminType | ''>(() => {
+    if (liveFlag) return (liveFlag.adminType as AdminType) || '';
+    const last = getLastAddedSelections();
+    return (last?.adminType as AdminType) || '';
+  });
+
+  const [parentRegion, setParentRegion] = useState(() => {
+    if (liveFlag) return liveFlag.parentRegion || '';
+    return '';
+  });
+
+  // Suggestions: every other subdivision name in the same country (regions and
+  // municipalities alike — counts in the Parent filter reveal which are which
+  // as parenting progresses) plus referenced parentRegion values.
+  const parentSuggestions = useMemo(() => {
+    const trimmedCountry = country.trim();
+    if (!trimmedCountry || !isSubnationalCategory) return [];
+    const set = new Set<string>();
+    FLAGS.forEach((f) => {
+      if (f.id === liveFlag?.id) return;
+      if (!(SUBNATIONAL_CATEGORIES as readonly string[]).includes(f.category)) return;
+      if ((f.country || '').trim() !== trimmedCountry) return;
+      if (f.parentRegion?.trim()) set.add(f.parentRegion.trim());
+      if (f.name?.trim()) set.add(f.name.trim());
+    });
+    const selfName = (liveFlag?.name || name).trim();
+    if (selfName) set.delete(selfName);
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [FLAGS, country, category, liveFlag, name, isSubnationalCategory]);
+
   const [creator, setCreator] = useState(() => {
     if (liveFlag) return liveFlag.creator || '';
     const last = getLastAddedSelections();
@@ -217,6 +251,11 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     setCategory(newCat);
     setAddingCustom(false);
     setCustomValue('');
+    // Subnational classification only applies to Provinces & Territories / US States.
+    if (!(SUBNATIONAL_CATEGORIES as readonly string[]).includes(newCat)) {
+      setAdminType('');
+      setParentRegion('');
+    }
     // Sub-categories live underneath the category dropdown; clear them unless the
     // new category supports them.
     if (!CATEGORIES_WITH_SUBS.includes(newCat)) {
@@ -381,6 +420,8 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
       aliases: aliases.length > 0 ? aliases : undefined,
       tags: tags.length > 0 ? tags : undefined,
       status: status || undefined,
+      adminType: isSubnationalCategory && adminType ? adminType : undefined,
+      parentRegion: isSubnationalCategory && parentRegion.trim() ? parentRegion.trim() : undefined,
       creator: creator.trim() || undefined,
       sourceUrl: sourceUrl.trim() || undefined,
       ...(parsedLat !== undefined && parsedLon !== undefined
@@ -397,6 +438,7 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
         continent,
         country: country.trim(),
         status,
+        adminType: isSubnationalCategory ? adminType : '',
         creator: creator.trim() || undefined,
         sourceUrl: sourceUrl.trim() || undefined,
       });
@@ -425,6 +467,8 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
     country: effectiveCountry,
     imageUrl: imageUrl.trim() || undefined,
     status: status || undefined,
+    adminType: isSubnationalCategory && adminType ? adminType : undefined,
+    parentRegion: isSubnationalCategory && parentRegion.trim() ? parentRegion.trim() : undefined,
     creator: creator.trim() || undefined,
     sourceUrl: sourceUrl.trim() || undefined,
     tags: tags.length > 0 ? tags : undefined,
@@ -775,6 +819,66 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
                       </option>
                     ))}
                   </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="min-w-0">
+                  <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                    Subdivision type
+                  </label>
+                  {isSubnationalCategory ? (
+                    <select
+                      value={adminType}
+                      onChange={e => setAdminType(e.target.value as AdminType | '')}
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                    >
+                      <option value="">(Unspecified)</option>
+                      {ALL_ADMIN_TYPES.map(t => (
+                        <option key={t} value={t}>
+                          {t.charAt(0).toUpperCase() + t.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value=""
+                      disabled
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
+                      placeholder="N/A for this category"
+                    />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                    Parent region
+                  </label>
+                  {isSubnationalCategory ? (
+                    <>
+                      <input
+                        type="text"
+                        value={parentRegion}
+                        onChange={e => setParentRegion(e.target.value)}
+                        list="vexilla-parent-region-suggestions"
+                        className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-zinc-900 dark:text-white text-sm"
+                        placeholder="e.g. Lombardy (empty = direct to country)"
+                      />
+                      <datalist id="vexilla-parent-region-suggestions">
+                        {parentSuggestions.map(s => (
+                          <option key={s} value={s} />
+                        ))}
+                      </datalist>
+                    </>
+                  ) : (
+                    <input
+                      type="text"
+                      value=""
+                      disabled
+                      className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl outline-none text-zinc-900 dark:text-white text-sm opacity-40 cursor-not-allowed"
+                      placeholder="N/A for this category"
+                    />
+                  )}
                 </div>
               </div>
 

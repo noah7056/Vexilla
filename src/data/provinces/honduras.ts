@@ -26,6 +26,7 @@ export const HONDURAS_PROVINCES = createProvinceFlags('Honduras', [
   },
   {
     name: 'Atlántida',
+    adminType: 'department',
     code: 'hn-at',
     image: 'Flag_Of_Atlantida_Department.png',
     tags: [],
@@ -40,6 +41,7 @@ export const HONDURAS_PROVINCES = createProvinceFlags('Honduras', [
   },
   {
     name: 'Colón (Honduras)',
+    adminType: 'department',
     code: 'hn-cl',
     image: 'Flag_of_Colon_Department_(Honduras).gif',
     tags: [],

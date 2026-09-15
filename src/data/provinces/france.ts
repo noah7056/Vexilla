@@ -163,6 +163,7 @@ export const FRANCE_PROVINCES = createProvinceFlags('France', [
   },
   {
     name: 'Auvergne-Rhône-Alpes',
+    adminType: 'region',
     code: 'fr-ara',
     continent: 'Europe',
     image: 'Flag_of_the_region_Auvergne-Rhône-Alpes.svg',
@@ -171,6 +172,7 @@ export const FRANCE_PROVINCES = createProvinceFlags('France', [
   },
   {
     name: 'Bourgogne-Franche-Comté',
+    adminType: 'region',
     code: 'fr-bfc',
     continent: 'Europe',
     image: 'Flag_of_the_region_Bourgogne-Franche-Comté.svg',
@@ -187,6 +189,7 @@ export const FRANCE_PROVINCES = createProvinceFlags('France', [
   },
   {
     name: 'Grand Est',
+    adminType: 'region',
     code: 'fr-ge',
     continent: 'Europe',
     image: 'Flag_of_the_Region_of_Grand_Est_(Variant_1).svg',

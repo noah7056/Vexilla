@@ -103,6 +103,7 @@ export const SPAIN_PROVINCES = createProvinceFlags('Spain', [
   },
   {
     name: 'Region of Murcia',
+    adminType: 'region',
     code: 'es-mc',
     image: 'Flag_of_the_Region_of_Murcia.svg',
     tags: [],

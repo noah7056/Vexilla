@@ -12,6 +12,7 @@ export const FIJI_PROVINCES = createProvinceFlags('Fiji', [
   },
   {
     name: 'Suva (Capital City)',
+    adminType: 'city',
     code: 'fj-suv',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Suva_City_Flag.png',
     tags: [],

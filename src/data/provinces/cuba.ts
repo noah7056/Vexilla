@@ -5,6 +5,7 @@ export const CUBA_PROVINCES = createProvinceFlags('Cuba', [
 
   {
     name: 'Havana (City Flag)',
+    adminType: 'city',
     code: 'cu-hav',
     image: 'Bandera_de_La_Habana.png',
     tags: [],

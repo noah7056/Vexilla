@@ -18,5 +18,18 @@ service cloud.firestore {
     match /deleted_flag_ids/{docId} {
       allow read, write: if true;
     }
+
+    // Taxonomy sync (sub-categories, categories, sub-sections)
+    match /custom_subcategories/{docId} {
+      allow read, write: if true;
+    }
+
+    match /custom_categories/{docId} {
+      allow read, write: if true;
+    }
+
+    match /custom_sections/{docId} {
+      allow read, write: if true;
+    }
   }
 }

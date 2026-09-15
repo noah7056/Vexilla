@@ -19,6 +19,7 @@ export const NETHERLANDS_PROVINCES = createProvinceFlags('Netherlands', [
   },
   {
     name: 'Utrecht',
+    adminType: 'province',
     code: 'nl-ut',
     continent: 'Europe',
     image: 'Flag_of_Utrecht_(province).svg',
@@ -67,6 +68,7 @@ export const NETHERLANDS_PROVINCES = createProvinceFlags('Netherlands', [
   },
   {
     name: 'Groningen',
+    adminType: 'province',
     code: 'nl-gr',
     continent: 'Europe',
     image: 'Flag_of_Groningen_(province).svg',

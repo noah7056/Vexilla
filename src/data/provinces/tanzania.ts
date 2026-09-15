@@ -3,36 +3,42 @@ import { createProvinceFlags } from './utils';
 export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   {
     name: 'Arusha Region',
+    adminType: 'region',
     code: 'tz-01',
     tags: [],
     status: ""
   },
   {
     name: 'Dar es Salaam Region',
+    adminType: 'region',
     code: 'tz-02',
     tags: [],
     status: ""
   },
   {
     name: 'Dodoma Region',
+    adminType: 'region',
     code: 'tz-03',
     tags: [],
     status: ""
   },
   {
     name: 'Iringa Region',
+    adminType: 'region',
     code: 'tz-04',
     tags: [],
     status: ""
   },
   {
     name: 'Kagera Region',
+    adminType: 'region',
     code: 'tz-05',
     tags: [],
     status: ""
   },
   {
     name: 'Kaskazini Pemba Region',
+    adminType: 'region',
     code: 'tz-06',
     aliases: ['North Pemba'],
     tags: [],
@@ -40,6 +46,7 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Kaskazini Unguja Region',
+    adminType: 'region',
     code: 'tz-07',
     aliases: ['North Unguja'],
     tags: [],
@@ -47,18 +54,21 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Kigoma Region',
+    adminType: 'region',
     code: 'tz-08',
     tags: [],
     status: ""
   },
   {
     name: 'Kilimanjaro Region',
+    adminType: 'region',
     code: 'tz-09',
     tags: [],
     status: ""
   },
   {
     name: 'Kusini Pemba Region',
+    adminType: 'region',
     code: 'tz-10',
     aliases: ['South Pemba'],
     tags: [],
@@ -66,6 +76,7 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Kusini Unguja Region',
+    adminType: 'region',
     code: 'tz-11',
     aliases: ['South Unguja'],
     tags: [],
@@ -73,30 +84,35 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Lindi Region',
+    adminType: 'region',
     code: 'tz-12',
     tags: [],
     status: ""
   },
   {
     name: 'Manyara Region',
+    adminType: 'region',
     code: 'tz-13',
     tags: [],
     status: ""
   },
   {
     name: 'Mara Region',
+    adminType: 'region',
     code: 'tz-14',
     tags: [],
     status: ""
   },
   {
     name: 'Mbeya Region',
+    adminType: 'region',
     code: 'tz-15',
     tags: [],
     status: ""
   },
   {
     name: 'Mjini Magharibi Region',
+    adminType: 'region',
     code: 'tz-16',
     aliases: ['West Unguja'],
     tags: [],
@@ -104,30 +120,35 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Morogoro Region',
+    adminType: 'region',
     code: 'tz-17',
     tags: [],
     status: ""
   },
   {
     name: 'Mtwara Region',
+    adminType: 'region',
     code: 'tz-18',
     tags: [],
     status: ""
   },
   {
     name: 'Mwanza Region',
+    adminType: 'region',
     code: 'tz-19',
     tags: [],
     status: ""
   },
   {
     name: 'Njombe Region',
+    adminType: 'region',
     code: 'tz-20',
     tags: [],
     status: ""
   },
   {
     name: 'Pwani Region',
+    adminType: 'region',
     code: 'tz-21',
     aliases: ['Coast Region'],
     tags: [],
@@ -135,36 +156,42 @@ export const TANZANIA_PROVINCES = createProvinceFlags('Tanzania', [
   },
   {
     name: 'Rukwa Region',
+    adminType: 'region',
     code: 'tz-22',
     tags: [],
     status: ""
   },
   {
     name: 'Ruvuma Region',
+    adminType: 'region',
     code: 'tz-23',
     tags: [],
     status: ""
   },
   {
     name: 'Shinyanga Region',
+    adminType: 'region',
     code: 'tz-24',
     tags: [],
     status: ""
   },
   {
     name: 'Singida Region',
+    adminType: 'region',
     code: 'tz-25',
     tags: [],
     status: ""
   },
   {
     name: 'Tabora Region',
+    adminType: 'region',
     code: 'tz-26',
     tags: [],
     status: ""
   },
   {
     name: 'Tanga Region',
+    adminType: 'region',
     code: 'tz-27',
     tags: [],
     status: ""

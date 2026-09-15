@@ -12,6 +12,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Central District',
+    adminType: 'district',
     code: 'bw-ced',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/1/1a/Flag_of_Central_District%2C_Botswana.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -19,6 +20,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Chobe',
+    adminType: 'district',
     code: 'bw-cho',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/f/f5/Flag_of_Chobe_District.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -26,6 +28,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Ghanzi',
+    adminType: 'district',
     code: 'bw-gha',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/2/2b/Flag_of_Ghanzi_District.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -33,6 +36,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Kgalagadi',
+    adminType: 'district',
     code: 'bw-kgl',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/8/8e/Flag_of_Kgalagadi_District.svg/revision/latest?cb=20230830010534',
     tags: [],
@@ -40,6 +44,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Kgatleng',
+    adminType: 'district',
     code: 'bw-kgt',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/7/7e/Flag_of_Kgatleng_District.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -47,6 +52,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Kweneng',
+    adminType: 'district',
     code: 'bw-kwe',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/b/bc/Flag_of_Kweneng_District.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -54,6 +60,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'North-East District',
+    adminType: 'district',
     code: 'bw-ned',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/1/16/Flag_of_North-East_District%2C_Botswana.svg/revision/latest?cb=20230830010543',
     tags: [],
@@ -61,6 +68,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'North-West District',
+    adminType: 'district',
     code: 'bw-nwd',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/e/e2/Flag_of_North-West_District%2C_Botswana.svg/revision/latest?cb=20230830010559',
     tags: [],
@@ -68,6 +76,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'South-East District',
+    adminType: 'district',
     code: 'bw-sed',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/8/87/Flag_of_South-East_District%2C_Botswana.svg/revision/latest?cb=20230830010633',
     tags: [],
@@ -75,6 +84,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Southern District',
+    adminType: 'district',
     code: 'bw-sod',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/2/29/Flag_of_Southern_District%2C_Botswana.svg/revision/latest?cb=20230830010305',
     tags: [],
@@ -82,6 +92,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Francistown (City Flag)',
+    adminType: 'city',
     code: 'bw-fra',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/d/d4/Flag_of_Francistown.svg/revision/latest?cb=20230830010442',
     tags: [],
@@ -89,6 +100,7 @@ export const BOTSWANA_PROVINCES = createProvinceFlags('Botswana', [
   },
   {
     name: 'Gaborone (City Flag)',
+    adminType: 'city',
     code: 'bw-gab',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/8/8c/Flag_of_Gaborone.svg/revision/latest?cb=20230830010453',
     tags: [],

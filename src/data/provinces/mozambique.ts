@@ -73,6 +73,7 @@ export const MOZAMBIQUE_PROVINCES = createProvinceFlags('Mozambique', [
   },
   {
     name: 'Maputo City (Capital Flag)',
+    adminType: 'city',
     code: 'mz-mpm-f',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Maputo.png',
     tags: [],

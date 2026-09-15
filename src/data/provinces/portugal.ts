@@ -19,6 +19,7 @@ export const PORTUGAL_PROVINCES = createProvinceFlags('Portugal', [
   },
   {
     name: 'Lisbon (City Flag)',
+    adminType: 'city',
     code: 'pt-lis',
     image: 'Bandeira_de_Lisboa.svg',
     tags: [],
@@ -26,6 +27,7 @@ export const PORTUGAL_PROVINCES = createProvinceFlags('Portugal', [
   },
   {
     name: 'Porto (City Flag)',
+    adminType: 'city',
     code: 'pt-por',
     image: 'Flag_of_Porto.svg',
     tags: [],
@@ -54,6 +56,7 @@ export const PORTUGAL_PROVINCES = createProvinceFlags('Portugal', [
   },
   {
     name: 'Bragança',
+    adminType: 'province',
     code: 'pt-bgc',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/77/Bragan%C3%A7a_Province_Flag.png/revision/latest?cb=20240928094643',
     tags: [],

@@ -12,6 +12,7 @@ export const SINGAPORE_PROVINCES = createProvinceFlags('Singapore', [
   },
   {
     name: 'Singapore Port Marine Ensign',
+    adminType: 'state',
     code: 'sg-mar',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/State_Marine_Ensign_of_Singapore.svg',
     tags: [],

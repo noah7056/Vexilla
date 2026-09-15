@@ -5,6 +5,7 @@ export const SLOVENIA_PROVINCES = createProvinceFlags('Slovenia', [
 
   {
     name: 'Ljubljana (City Flag)',
+    adminType: 'city',
     code: 'si-lju',
     image: 'Flag_of_Ljubljana.svg',
     tags: [],

@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const IVORY_COAST_PROVINCES = createProvinceFlags('Ivory Coast', [
   {
     name: 'Abidjan Autonomous District',
+    adminType: 'district',
     code: 'ci-ab',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Abidjan.svg',
     tags: [],
@@ -87,6 +88,7 @@ export const IVORY_COAST_PROVINCES = createProvinceFlags('Ivory Coast', [
   },
   {
     name: 'Yamoussoukro Autonomous District',
+    adminType: 'district',
     code: 'ci-ym',
     aliases: ['Yamoussoukro District'],
     tags: [],

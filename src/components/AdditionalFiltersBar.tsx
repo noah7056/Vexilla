@@ -4,15 +4,25 @@ import { useFlags } from '../contexts/FlagsContext';
 import {
   Continent,
   FlagStatus,
+  AdminType,
   MasteryFilter,
   MasteryLevel,
   FlagProgress,
   Flag,
   ALL_CONTINENTS,
   ALL_STATUSES,
+  ALL_ADMIN_TYPES,
   ALL_MASTERY_LEVELS,
   getFlagMasteryLevel
 } from '../types';
+import {
+  AdminTypeFilter,
+  NO_PARENT_VALUE,
+  getAdminTypeCounts,
+  getAdminTypeKey,
+  getParentKey,
+  getParentOptionsDetailed,
+} from '../lib/subnational';
 
 interface AdditionalFiltersBarProps {
   flagsPool?: Flag[];
@@ -32,6 +42,17 @@ interface AdditionalFiltersBarProps {
   selectedMastery?: (MasteryLevel | 'all')[];
   onToggleMastery?: (mastery: MasteryLevel) => void;
   onSelectAllMastery?: () => void;
+
+  // Subnational facets (subdivision type + parent region). Shown only when
+  // subnationalActive is true; Parent is enabled once scopeCountries is non-empty.
+  subnationalActive?: boolean;
+  scopeCountries?: string[];
+  selectedAdminTypes?: AdminTypeFilter[];
+  onToggleAdminType?: (t: AdminType | 'unspecified') => void;
+  onSelectAllAdminTypes?: () => void;
+  selectedParents?: string[];
+  onToggleParent?: (p: string) => void;
+  onClearParents?: () => void;
 
   // Backward compatibility
   masteryFilter?: MasteryFilter;
@@ -60,6 +81,14 @@ export function AdditionalFiltersBar({
   selectedMastery,
   onToggleMastery,
   onSelectAllMastery,
+  subnationalActive,
+  scopeCountries,
+  selectedAdminTypes,
+  onToggleAdminType,
+  onSelectAllAdminTypes,
+  selectedParents,
+  onToggleParent,
+  onClearParents,
   masteryFilter,
   onSelectMastery,
   progress,
@@ -72,7 +101,7 @@ export function AdditionalFiltersBar({
   const flagsPool = initialFlagsPool || FLAGS;
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [tagSearch, setTagSearch] = useState('');
-  const [statusSearch, setStatusSearch] = useState('');
+  const [parentSearch, setParentSearch] = useState('');
 
   // Collect all unique tags from FLAGS
   const allAvailableTags = useMemo(() => {
@@ -146,6 +175,35 @@ export function AdditionalFiltersBar({
   const showStatuses = Boolean(selectedStatuses && onToggleStatus && onSelectAllStatuses);
   const showTags = Boolean(selectedTags && onToggleTag && onClearTags);
   const showMastery = Boolean(progress !== undefined && (onToggleMastery || onSelectMastery));
+  const showTypes = Boolean(subnationalActive && selectedAdminTypes && onToggleAdminType && onSelectAllAdminTypes);
+  const showParents = Boolean(subnationalActive && selectedParents && onToggleParent && onClearParents);
+  const parentScope = scopeCountries || [];
+  const parentEnabled = parentScope.length > 0;
+
+  const hasActiveTypes = Boolean(
+    showTypes && selectedAdminTypes && !selectedAdminTypes.includes('All') && selectedAdminTypes.length > 0
+  );
+  const hasActiveParents = Boolean(showParents && selectedParents && selectedParents.length > 0);
+
+  const typeCounts = useMemo(
+    () => getAdminTypeCounts(flagsPool, parentScope),
+    [flagsPool, parentScope]
+  );
+  const parentData = useMemo(
+    () => getParentOptionsDetailed(flagsPool, parentScope),
+    [flagsPool, parentScope]
+  );
+  const parentGroups = useMemo(() => {
+    const q = parentSearch.trim().toLowerCase();
+    const groups = new Map<string, typeof parentData.opts>();
+    parentData.opts.forEach((o) => {
+      if (q && !o.parent.toLowerCase().includes(q) && !o.country.toLowerCase().includes(q)) return;
+      const arr = groups.get(o.country) || [];
+      arr.push(o);
+      groups.set(o.country, arr);
+    });
+    return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [parentData, parentSearch]);
 
   const hasSubOptions = Boolean(selectedSubOptions && Object.entries(selectedSubOptions).some(([_, opts]) => opts && opts.length > 0));
   const hasActiveContinents = Boolean(selectedContinents && !selectedContinents.includes('All') && selectedContinents.length > 0);
@@ -153,7 +211,7 @@ export function AdditionalFiltersBar({
   const hasActiveTags = Boolean(selectedTags && selectedTags.length > 0);
   const hasActiveMastery = activeMasteryLevels.length > 0;
 
-  const showSelectedFiltersSection = hasSubOptions || hasActiveContinents || hasActiveStatuses || hasActiveTags || hasActiveMastery;
+  const showSelectedFiltersSection = hasSubOptions || hasActiveContinents || hasActiveStatuses || hasActiveTags || hasActiveMastery || hasActiveTypes || hasActiveParents;
 
   // Clear all submenu filters helper
   const handleClearAllSubmenuFilters = () => {
@@ -163,6 +221,8 @@ export function AdditionalFiltersBar({
     }
     if (onSelectAllContinents) onSelectAllContinents();
     if (onSelectAllStatuses) onSelectAllStatuses();
+    if (onSelectAllAdminTypes) onSelectAllAdminTypes();
+    if (onClearParents) onClearParents();
     if (onClearTags) onClearTags();
     handleSelectAllMastery();
     if (selectedSubOptions && onRemoveSubOption) {
@@ -189,6 +249,10 @@ export function AdditionalFiltersBar({
           (Boolean(f.status) && activeStatusesList.includes(f.status as any)) ||
           (!f.status && activeStatusesList.includes('unspecified'))
       ).length
+    : 0;
+
+  const activeTypeCount = hasActiveTypes && selectedAdminTypes
+    ? (selectedAdminTypes as string[]).reduce((n, t) => n + (typeCounts.get(t as AdminType | 'unspecified') || 0), 0)
     : 0;
 
   const tagsFlagCount = hasActiveTags && selectedTags
@@ -317,13 +381,10 @@ export function AdditionalFiltersBar({
           );
         })()}
 
-        {/* Flag Statuses Filter */}
+        {/* Statuses Filter */}
         {showStatuses && onToggleStatus && onSelectAllStatuses && (() => {
           const isDropdownOpen = openSubmenu === '__statuses__';
           const statusOptions = [...ALL_STATUSES, 'unspecified' as const];
-          const filteredStatuses = statusSearch.trim()
-            ? statusOptions.filter((s) => s.toLowerCase().includes(statusSearch.trim().toLowerCase()))
-            : statusOptions;
 
           const handleStatusMainClick = () => {
             if (hasActiveStatuses) {
@@ -345,12 +406,12 @@ export function AdditionalFiltersBar({
                 <button
                   type="button"
                   onClick={handleStatusMainClick}
-                  title={hasActiveStatuses ? 'Click to deselect all statuses' : 'Configure flag status filter'}
+                  title={hasActiveStatuses ? 'Click to deselect all statuses' : 'Configure status filter'}
                   className={`px-3 py-1.5 rounded-l-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
                     hasActiveStatuses ? 'hover:bg-black/10 dark:hover:bg-black/20' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  <span>Flag Status</span>
+                  <span>Status</span>
                   {hasActiveStatuses && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-700 text-indigo-100 font-bold">
                       {statusesFlagCount}
@@ -364,7 +425,7 @@ export function AdditionalFiltersBar({
                     e.stopPropagation();
                     setOpenSubmenu(isDropdownOpen ? null : '__statuses__');
                   }}
-                  title="Open flag status menu"
+                  title="Open status menu"
                   className={`px-2 py-1.5 rounded-r-xl border-l flex items-center justify-center transition-colors cursor-pointer ${
                     hasActiveStatuses
                       ? 'border-indigo-500/50 hover:bg-black/10 dark:hover:bg-black/20 text-white'
@@ -382,25 +443,12 @@ export function AdditionalFiltersBar({
                   <div className="absolute top-[calc(100%+4px)] left-0 min-w-[280px] max-w-[360px] bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xl z-[50] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                     <div className="p-2.5 border-b border-zinc-100 dark:border-zinc-700/60 flex items-center justify-between">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                        Filter by Flag Status
+                        Filter by Status
                       </span>
                     </div>
 
-                    <div className="p-2 border-b border-zinc-100 dark:border-zinc-700/60">
-                      <div className="relative">
-                        <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="text"
-                          placeholder="Search status..."
-                          value={statusSearch}
-                          onChange={(e) => setStatusSearch(e.target.value)}
-                          className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/40 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
-                        />
-                      </div>
-                    </div>
-
                     <div className="p-2.5 flex flex-wrap gap-1.5 max-h-64 overflow-y-auto">
-                      {filteredStatuses.map((st) => {
+                      {statusOptions.map((st) => {
                         const isSelected = selectedStatuses && !selectedStatuses.includes('All') && selectedStatuses.includes(st);
                         const countInPool = flagsPool.filter((f) => (st === 'unspecified' ? !f.status : f.status === st)).length;
                         return (
@@ -422,6 +470,269 @@ export function AdditionalFiltersBar({
                           </button>
                         );
                       })}
+                    </div>
+
+                    <div className="p-2 border-t border-zinc-100 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/50 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setOpenSubmenu(null)}
+                        className="px-3 py-1 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-colors shadow-xs cursor-pointer"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Subdivision Type Filter */}
+        {showTypes && onToggleAdminType && onSelectAllAdminTypes && selectedAdminTypes && (() => {
+          const isDropdownOpen = openSubmenu === '__types__';
+          const typeOptions = [...ALL_ADMIN_TYPES, 'unspecified' as const];
+
+          const handleTypeMainClick = () => {
+            if (hasActiveTypes) {
+              onSelectAllAdminTypes();
+            } else {
+              setOpenSubmenu(isDropdownOpen ? null : '__types__');
+            }
+          };
+
+          return (
+            <div className={`relative inline-flex items-center ${isDropdownOpen ? 'z-30' : ''}`}>
+              <div
+                className={`flex border transition-all rounded-xl ${
+                  hasActiveTypes
+                    ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={handleTypeMainClick}
+                  title={hasActiveTypes ? 'Click to deselect all types' : 'Configure subdivision type filter'}
+                  className={`px-3 py-1.5 rounded-l-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    hasActiveTypes ? 'hover:bg-black/10 dark:hover:bg-black/20' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  <span>Type</span>
+                  {hasActiveTypes && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-700 text-indigo-100 font-bold">
+                      {activeTypeCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenSubmenu(isDropdownOpen ? null : '__types__');
+                  }}
+                  title="Open subdivision type menu"
+                  className={`px-2 py-1.5 rounded-r-xl border-l flex items-center justify-center transition-colors cursor-pointer ${
+                    hasActiveTypes
+                      ? 'border-indigo-500/50 hover:bg-black/10 dark:hover:bg-black/20 text-white'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+                  }`}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Type Dropdown */}
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-[40]" onClick={() => setOpenSubmenu(null)} />
+                  <div className="absolute top-[calc(100%+4px)] left-0 min-w-[280px] max-w-[360px] bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xl z-[50] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                    <div className="p-2.5 border-b border-zinc-100 dark:border-zinc-700/60">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                        Filter by subdivision type
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 flex flex-wrap gap-1.5 max-h-64 overflow-y-auto">
+                      {typeOptions.map((t) => {
+                        const isSelected = !selectedAdminTypes.includes('All') && selectedAdminTypes.includes(t);
+                        const countInPool = typeCounts.get(t) || 0;
+                        return (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => onToggleAdminType(t)}
+                            className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 capitalize cursor-pointer ${
+                              isSelected
+                                ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                                : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
+                            }`}
+                          >
+                            {isSelected && <Check className="w-3 h-3" />}
+                            <span>{t}</span>
+                            <span className={`text-[10px] px-1 py-0.2 rounded-full font-bold ${isSelected ? 'bg-indigo-700 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'}`}>
+                              {countInPool}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="p-2 border-t border-zinc-100 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/50 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setOpenSubmenu(null)}
+                        className="px-3 py-1 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-colors shadow-xs cursor-pointer"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Parent Region Filter */}
+        {showParents && onToggleParent && onClearParents && selectedParents && (() => {
+          const isDropdownOpen = openSubmenu === '__parents__';
+
+          const handleParentMainClick = () => {
+            if (hasActiveParents) {
+              onClearParents();
+              return;
+            }
+            if (!parentEnabled) return;
+            setOpenSubmenu(isDropdownOpen ? null : '__parents__');
+          };
+
+          return (
+            <div className={`relative inline-flex items-center ${isDropdownOpen ? 'z-30' : ''}`}>
+              <div
+                className={`flex border transition-all rounded-xl ${
+                  hasActiveParents
+                    ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300'
+                } ${!parentEnabled && !hasActiveParents ? 'opacity-60' : ''}`}
+              >
+                <button
+                  type="button"
+                  disabled={!parentEnabled && !hasActiveParents}
+                  onClick={handleParentMainClick}
+                  title={!parentEnabled && !hasActiveParents ? 'Select a country first' : hasActiveParents ? 'Click to deselect all parents' : 'Configure parent region filter'}
+                  className={`px-3 py-1.5 rounded-l-xl text-xs font-medium flex items-center gap-1.5 transition-colors ${
+                    !parentEnabled && !hasActiveParents
+                      ? 'cursor-not-allowed'
+                      : hasActiveParents
+                        ? 'cursor-pointer hover:bg-black/10 dark:hover:bg-black/20'
+                        : 'cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  <span>Parent region</span>
+                  {hasActiveParents && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-700 text-indigo-100 font-bold">
+                      {selectedParents.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!parentEnabled}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenSubmenu(isDropdownOpen ? null : '__parents__');
+                  }}
+                  title={!parentEnabled ? 'Select a country first' : 'Open parent region menu'}
+                  className={`px-2 py-1.5 rounded-r-xl border-l flex items-center justify-center transition-colors ${
+                    !parentEnabled
+                      ? 'cursor-not-allowed'
+                      : 'cursor-pointer'
+                  } ${
+                    hasActiveParents
+                      ? 'border-indigo-500/50 hover:bg-black/10 dark:hover:bg-black/20 text-white'
+                      : parentEnabled
+                        ? 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-400'
+                  }`}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Parent Dropdown */}
+              {isDropdownOpen && parentEnabled && (
+                <>
+                  <div className="fixed inset-0 z-[40]" onClick={() => setOpenSubmenu(null)} />
+                  <div className="absolute top-[calc(100%+4px)] left-0 min-w-[300px] max-w-[400px] bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xl z-[50] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                    <div className="p-2.5 border-b border-zinc-100 dark:border-zinc-700/60">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                        Filter by parent region
+                      </span>
+                      <div className="relative mt-1.5">
+                        <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Search parents..."
+                          value={parentSearch}
+                          onChange={(e) => setParentSearch(e.target.value)}
+                          className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/40 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 flex flex-col gap-3 max-h-72 overflow-y-auto">
+                      {parentData.noneCount > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleParent(NO_PARENT_VALUE)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer self-start ${
+                            selectedParents.includes(NO_PARENT_VALUE)
+                              ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                              : 'border-dashed border-zinc-300 dark:border-zinc-600 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-400'
+                          }`}
+                        >
+                          {selectedParents.includes(NO_PARENT_VALUE) && <Check className="w-3 h-3" />}
+                          <span>No parent specified ({parentData.noneCount})</span>
+                        </button>
+                      )}
+                      {parentGroups.length === 0 && parentData.noneCount === 0 && (
+                        <div className="py-4 text-center text-xs text-zinc-400">
+                          No subdivisions in the selected countries yet.
+                        </div>
+                      )}
+                      {parentGroups.map(([country, opts]) => (
+                        <div key={country} className="flex flex-col gap-1.5">
+                          <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-700/60 pb-1">
+                            {country}
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {opts.map((o) => {
+                              const isSelected = selectedParents.includes(o.parent);
+                              return (
+                                <button
+                                  key={`${o.country}|||${o.parent}`}
+                                  type="button"
+                                  onClick={() => onToggleParent(o.parent)}
+                                  className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
+                                    isSelected
+                                      ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                                      : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
+                                  }`}
+                                >
+                                  {isSelected && <Check className="w-3 h-3" />}
+                                  <span>{o.parent}</span>
+                                  <span className={`text-[10px] px-1 py-0.2 rounded-full font-bold ${isSelected ? 'bg-indigo-700 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'}`}>
+                                    {o.count}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="p-2 border-t border-zinc-100 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/50 flex justify-end">
@@ -854,6 +1165,69 @@ export function AdditionalFiltersBar({
                           onClick={() => onToggleStatus(st)}
                           className="p-0.5 hover:bg-orange-200 dark:hover:bg-orange-500/40 rounded-md transition-colors cursor-pointer"
                           title={`Remove ${st}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Subdivision types */}
+            {hasActiveTypes && selectedAdminTypes && (
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mr-1">Type:</span>
+                {(selectedAdminTypes as string[]).filter((t) => t !== 'All').map((t) => {
+                  const count = flagsPool.filter((f) => getAdminTypeKey(f) === t).length;
+                  return (
+                    <span
+                      key={t}
+                      className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-lg text-xs font-medium capitalize bg-sky-100/50 dark:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-500/30"
+                    >
+                      <span>
+                        {t} ({count})
+                      </span>
+                      {onToggleAdminType && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleAdminType(t as AdminType | 'unspecified')}
+                          className="p-0.5 hover:bg-sky-200 dark:hover:bg-sky-500/40 rounded-md transition-colors cursor-pointer"
+                          title={`Remove ${t}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Parent regions */}
+            {hasActiveParents && selectedParents && (
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mr-1">Parent region:</span>
+                {selectedParents.map((p) => {
+                  const count =
+                    p === NO_PARENT_VALUE
+                      ? flagsPool.filter((f) => !getParentKey(f)).length
+                      : flagsPool.filter((f) => getParentKey(f) === p).length;
+                  return (
+                    <span
+                      key={p}
+                      className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-lg text-xs font-medium bg-lime-100/50 dark:bg-lime-500/20 text-lime-700 dark:text-lime-300 border border-lime-200 dark:border-lime-500/30"
+                    >
+                      <span>
+                        {p === NO_PARENT_VALUE ? 'No parent specified' : p} ({count})
+                      </span>
+                      {onToggleParent && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleParent(p)}
+                          className="p-0.5 hover:bg-lime-200 dark:hover:bg-lime-500/40 rounded-md transition-colors cursor-pointer"
+                          title={`Remove ${p}`}
                         >
                           <X className="w-3 h-3" />
                         </button>

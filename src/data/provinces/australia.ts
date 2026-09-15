@@ -47,6 +47,7 @@ export const AUSTRALIA_PROVINCES = createProvinceFlags('Australia', [
   },
   {
     name: 'Australian Capital Territory',
+    adminType: 'territory',
     code: 'au-act',
     image: 'Flag_of_the_Australian_Capital_Territory.svg',
     tags: [],
@@ -54,6 +55,7 @@ export const AUSTRALIA_PROVINCES = createProvinceFlags('Australia', [
   },
   {
     name: 'Northern Territory',
+    adminType: 'territory',
     code: 'au-nt',
     image: 'Flag_of_the_Northern_Territory.svg',
     tags: [],

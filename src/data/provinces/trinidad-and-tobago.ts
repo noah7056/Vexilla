@@ -5,6 +5,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
 
   {
     name: 'Chaguanas (Municipality)',
+    adminType: 'municipality',
     code: 'tt-cha',
     image: 'Flag_of_Chaguanas_Borough.png',
     tags: [],
@@ -12,6 +13,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
   },
   {
     name: 'Arima (Municipality)',
+    adminType: 'municipality',
     code: 'tt-ari',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b8/Flag_of_Arima_Borough.png/revision/latest?cb=20230413072309',
     tags: [],
@@ -19,6 +21,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
   },
   {
     name: 'Point Fortin (Municipality)',
+    adminType: 'municipality',
     code: 'tt-pfo',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/6f/Point_Fortin.gif/revision/latest?cb=20240212140323',
     tags: [],
@@ -26,6 +29,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
   },
   {
     name: 'Port of Spain (Municipality, Capital)',
+    adminType: 'municipality',
     code: 'tt-psp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/83/Flag_of_Port_of_Spain.png/revision/latest?cb=20221210003719',
     tags: [],
@@ -33,6 +37,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
   },
   {
     name: 'San Fernando (Municipality)',
+    adminType: 'municipality',
     code: 'tt-sfe',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/f9/Flag_of_San_Fernando.gif/revision/latest?cb=20230413072339',
     tags: [],
@@ -68,6 +73,7 @@ export const TRINIDAD_AND_TOBAGO_PROVINCES = createProvinceFlags('Trinidad and T
   },
   {
     name: 'Princes Town',
+    adminType: 'town',
     code: 'tt-prt',
     image: 'https://static.wikia.nocookie.net/vexillology/images/2/26/Princes_Town.gif/revision/latest?cb=20240212140338',
     tags: [],

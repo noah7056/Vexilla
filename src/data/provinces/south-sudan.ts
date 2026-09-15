@@ -33,6 +33,7 @@ export const SOUTH_SUDAN_PROVINCES = createProvinceFlags('South Sudan', [
   },
   {
     name: 'Lakes State',
+    adminType: 'state',
     code: 'ss-lk',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Lakes.png',
     tags: [],
@@ -47,6 +48,7 @@ export const SOUTH_SUDAN_PROVINCES = createProvinceFlags('South Sudan', [
   },
   {
     name: 'Unity State',
+    adminType: 'state',
     code: 'ss-uy',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Unity.png',
     tags: [],

@@ -12,6 +12,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Central Bohemian Region',
+    adminType: 'region',
     code: 'cz-st',
     image: 'Flag_of_Central_Bohemian_Region.svg',
     tags: [],
@@ -19,6 +20,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'South Bohemian Region',
+    adminType: 'region',
     code: 'cz-jc',
     image: 'Flag_of_South_Bohemian_Region.svg',
     tags: [],
@@ -26,6 +28,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Plzeň Region',
+    adminType: 'region',
     code: 'cz-pl',
     image: 'Flag_of_Plzen_Region.svg',
     tags: [],
@@ -33,6 +36,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Karlovy Vary Region',
+    adminType: 'region',
     code: 'cz-kv',
     image: 'Flag_of_Karlovy_Vary_Region.svg',
     tags: [],
@@ -40,6 +44,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Ústí nad Labem Region',
+    adminType: 'region',
     code: 'cz-us',
     image: 'Flag_of_Usti_nad_Labem_Region.svg',
     tags: [],
@@ -47,6 +52,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Liberec Region',
+    adminType: 'region',
     code: 'cz-li',
     image: 'Flag_of_Liberec_Region.svg',
     tags: [],
@@ -54,6 +60,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Hradec Králové Region',
+    adminType: 'region',
     code: 'cz-hk',
     image: 'Flag_of_Hradec_Kralove_Region.svg',
     tags: [],
@@ -61,6 +68,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Pardubice Region',
+    adminType: 'region',
     code: 'cz-pa',
     image: 'Flag_of_Pardubice_Region.svg',
     tags: [],
@@ -68,6 +76,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Vysočina Region',
+    adminType: 'region',
     code: 'cz-vy',
     image: 'Flag_of_Vysocina_Region.svg',
     tags: [],
@@ -75,6 +84,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'South Moravian Region',
+    adminType: 'region',
     code: 'cz-jm',
     image: 'Flag_of_South_Moravian_Region.svg',
     tags: [],
@@ -82,6 +92,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Olomouc Region',
+    adminType: 'region',
     code: 'cz-ol',
     image: 'Flag_of_Olomouc_Region.svg',
     tags: [],
@@ -89,6 +100,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Zlín Region',
+    adminType: 'region',
     code: 'cz-zl',
     image: 'Flag_of_Zlin_Region.svg',
     tags: [],
@@ -96,6 +108,7 @@ export const CZECH_REPUBLIC_PROVINCES = createProvinceFlags('Czech Republic', [
   },
   {
     name: 'Moravian-Silesian Region',
+    adminType: 'region',
     code: 'cz-ms',
     image: 'Flag_of_Moravian-Silesian_Region.svg',
     tags: [],

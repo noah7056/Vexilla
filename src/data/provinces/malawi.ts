@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const MALAWI_PROVINCES = createProvinceFlags('Malawi', [
   {
     name: 'Northern Region',
+    adminType: 'region',
     code: 'mw-n',
     aliases: ['Chakumpoto'],
     tags: [],
@@ -10,6 +11,7 @@ export const MALAWI_PROVINCES = createProvinceFlags('Malawi', [
   },
   {
     name: 'Central Region',
+    adminType: 'region',
     code: 'mw-c',
     aliases: ['Chapakati'],
     tags: [],
@@ -17,6 +19,7 @@ export const MALAWI_PROVINCES = createProvinceFlags('Malawi', [
   },
   {
     name: 'Southern Region',
+    adminType: 'region',
     code: 'mw-s',
     aliases: ['Chakumwera'],
     tags: [],

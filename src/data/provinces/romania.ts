@@ -5,6 +5,7 @@ export const ROMANIA_PROVINCES = createProvinceFlags('Romania', [
 
   {
     name: 'Bucharest (City Flag)',
+    adminType: 'city',
     code: 'ro-b',
     image: 'Flag_of_Bucharest.svg',
     tags: [],

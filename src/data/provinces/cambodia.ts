@@ -19,6 +19,7 @@ export const CAMBODIA_PROVINCES = createProvinceFlags('Cambodia', [
   },
   {
     name: 'State of Cambodia (1989–1992)',
+    adminType: 'state',
     code: 'kh-soc',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/17/Flag_of_the_State_of_Cambodia_%281989%E2%80%931992%29.svg',
     tags: [],

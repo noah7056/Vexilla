@@ -96,6 +96,7 @@ export const GERMANY_PROVINCES = createProvinceFlags('Germany', [
   },
   {
     name: 'Saxony-Anhalt',
+    adminType: 'state',
     code: 'de-st',
     image: 'Flag_of_Saxony-Anhalt_(state).svg',
     tags: [],

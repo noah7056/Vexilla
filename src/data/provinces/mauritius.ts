@@ -80,6 +80,7 @@ export const MAURITIUS_PROVINCES = createProvinceFlags('Mauritius', [
   },
   {
     name: 'Port Louis (Capital City Flag)',
+    adminType: 'city',
     code: 'mu-pl-f',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Port_Louis,_Mauritius.svg',
     tags: [],

@@ -68,6 +68,7 @@ export const ANTIGUA_AND_BARBUDA_PROVINCES = createProvinceFlags('Antigua and Ba
   },
   {
     name: 'St. John’s (City Flag)',
+    adminType: 'city',
     code: 'ag-stj',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/62/Flag_of_St._John%27s.svg/revision/latest?cb=20221029021656',
     tags: [],

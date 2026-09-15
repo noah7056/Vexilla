@@ -5,6 +5,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
 
   {
     name: 'Castries (City Flag)',
+    adminType: 'city',
     code: 'lc-cas',
     image: 'Flag_of_Castries.svg',
     tags: [],
@@ -26,6 +27,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Castries District',
+    adminType: 'district',
     code: 'lc-cad',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/fe/Flag_of_Castries_District.svg/revision/latest?cb=20230519083926',
     tags: [],
@@ -33,6 +35,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Choiseul',
+    adminType: 'district',
     code: 'lc-cho',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/39/Flag_of_Choiseul_District.svg/revision/latest?cb=20230519084459',
     tags: [],
@@ -40,6 +43,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Dennery',
+    adminType: 'district',
     code: 'lc-den',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/3f/Flag_of_Dennery_District.svg/revision/latest?cb=20230519084545',
     tags: [],
@@ -47,6 +51,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Gros Islet',
+    adminType: 'district',
     code: 'lc-gri',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/84/Flag_of_Gros_Islet_District.svg/revision/latest?cb=20230519084625',
     tags: [],
@@ -54,6 +59,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Laborie',
+    adminType: 'district',
     code: 'lc-lab',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/73/Flag_of_Laborie_District.svg/revision/latest?cb=20230519085033',
     tags: [],
@@ -61,6 +67,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Micoud',
+    adminType: 'district',
     code: 'lc-mic',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/7e/Flag_of_Micoud_District.svg/revision/latest?cb=20230519085509',
     tags: [],
@@ -68,6 +75,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Soufrière',
+    adminType: 'district',
     code: 'lc-sou',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/09/Flag_of_Soufri%C3%A8re_District.svg/revision/latest?cb=20230519085618',
     tags: [],
@@ -75,6 +83,7 @@ export const SAINT_LUCIA_PROVINCES = createProvinceFlags('Saint Lucia', [
   },
   {
     name: 'Vieux Fort',
+    adminType: 'district',
     code: 'lc-vif',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/6b/Flag_of_Vieux_Fort_District.svg/revision/latest?cb=20230519085639',
     tags: [],

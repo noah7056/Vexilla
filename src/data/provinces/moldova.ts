@@ -12,6 +12,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Transnistria (Pridnestrovie)',
+    adminType: 'state',
     code: 'md-tra',
     image: 'Flag_of_Transnistria_(state).svg',
     tags: [],
@@ -19,6 +20,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Chișinău (City Flag)',
+    adminType: 'city',
     code: 'md-chi',
     image: 'Flag_of_Chișinău.svg',
     tags: [],
@@ -26,6 +28,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Bălți (City Flag)',
+    adminType: 'city',
     code: 'md-bal',
     image: 'Flag_of_Bălți.png',
     tags: [],
@@ -33,6 +36,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Anenii Noi',
+    adminType: 'district',
     code: 'md-ane',
     image: 'Flag_of_Anenii_Noi_District.gif',
     tags: [],
@@ -40,6 +44,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Basarabeasca',
+    adminType: 'district',
     code: 'md-bas',
     image: 'Flag_of_Basarabeasca_District.png',
     tags: [],
@@ -47,6 +52,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Cahul',
+    adminType: 'district',
     code: 'md-cah',
     image: 'Flag_of_District_Cahul.svg',
     tags: [],
@@ -61,6 +67,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Căușeni',
+    adminType: 'district',
     code: 'md-cau',
     image: 'Flag_of_Căușeni_District.jpg',
     tags: [],
@@ -82,6 +89,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Dondușeni',
+    adminType: 'district',
     code: 'md-don',
     image: 'Flag_of_Dondușeni_District.svg',
     tags: [],
@@ -96,6 +104,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Dubăsari',
+    adminType: 'district',
     code: 'md-dub',
     image: 'Dubăsari_District_flag.svg',
     tags: [],
@@ -117,6 +126,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Goldeni',
+    adminType: 'district',
     code: 'md-gol',
     image: 'Flag_of_Glodeni_District.gif',
     tags: [],
@@ -131,6 +141,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Ialoveni',
+    adminType: 'district',
     code: 'md-ial',
     image: 'Flag_of_Ialoveni_District.gif',
     tags: [],
@@ -173,6 +184,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Rezina',
+    adminType: 'district',
     code: 'md-rez',
     image: 'Flag_of_District_Rezina.svg',
     tags: [],
@@ -208,6 +220,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Taraclia',
+    adminType: 'county',
     code: 'md-tar',
     image: 'Flag_of_Taraclia_County.gif',
     tags: [],
@@ -222,6 +235,7 @@ export const MOLDOVA_PROVINCES = createProvinceFlags('Moldova', [
   },
   {
     name: 'Ungheni',
+    adminType: 'district',
     code: 'md-ung',
     image: 'Flag_of_District_Ungheni.svg',
     tags: [],

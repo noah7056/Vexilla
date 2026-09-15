@@ -5,6 +5,7 @@ export const HAWAII_PROVINCES = createProvinceFlags('Hawaii', [
 
   {
     name: 'Hawaii County (Big Island)',
+    adminType: 'county',
     code: 'us-hi-haw',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_Hawai%27i_County%2C_Hawaii.png',
     tags: [],
@@ -19,6 +20,7 @@ export const HAWAII_PROVINCES = createProvinceFlags('Hawaii', [
   },
   {
     name: 'Maui County',
+    adminType: 'county',
     code: 'us-hi-mau',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Flag_of_Maui_County%2C_Hawaii.svg',
     tags: [],
@@ -26,6 +28,7 @@ export const HAWAII_PROVINCES = createProvinceFlags('Hawaii', [
   },
   {
     name: 'Kauai County',
+    adminType: 'county',
     code: 'us-hi-kau',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Flag_of_Kaua%27i_County%2C_Hawaii.png',
     tags: [],

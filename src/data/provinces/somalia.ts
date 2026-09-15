@@ -5,6 +5,7 @@ export const SOMALIA_PROVINCES = createProvinceFlags('Somalia', [
 
   {
     name: 'Somaliland (Self-Declared State)',
+    adminType: 'state',
     code: 'so-sml',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Somaliland.svg',
     tags: [],
@@ -33,6 +34,7 @@ export const SOMALIA_PROVINCES = createProvinceFlags('Somalia', [
   },
   {
     name: 'South West State of Somalia',
+    adminType: 'state',
     code: 'so-sw',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_South_West_State_of_Somalia.svg',
     tags: [],
@@ -47,6 +49,7 @@ export const SOMALIA_PROVINCES = createProvinceFlags('Somalia', [
   },
   {
     name: 'Khatumo State',
+    adminType: 'state',
     code: 'so-kh',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Khatumo_State.svg',
     tags: [],
@@ -61,6 +64,7 @@ export const SOMALIA_PROVINCES = createProvinceFlags('Somalia', [
   },
   {
     name: 'Maakhir (Historic Autonomous State)',
+    adminType: 'state',
     code: 'so-mak',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Maakhir.svg',
     tags: [],
@@ -68,6 +72,7 @@ export const SOMALIA_PROVINCES = createProvinceFlags('Somalia', [
   },
   {
     name: 'Azania (Historic Autonomous State)',
+    adminType: 'state',
     code: 'so-aza',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Azania.svg',
     tags: [],

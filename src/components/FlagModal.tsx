@@ -192,19 +192,27 @@ export function FlagModal({
     };
   }, [isDragging]);
 
-  // Mouse wheel zoom
-  const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    if (e.deltaY < 0) {
-      setScale((prev) => Math.min(prev + 0.35, 6));
-    } else {
-      setScale((prev) => {
-        const next = Math.max(prev - 0.35, 1);
-        if (next === 1) setPosition({ x: 0, y: 0 });
-        return next;
-      });
-    }
-  };
+  // Mouse wheel zoom (native non-passive listener: React attaches onWheel as
+  // passive at the root, so preventDefault() inside it warns and fails to
+  // stop the page behind the modal from scrolling).
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: globalThis.WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        setScale((prev) => Math.min(prev + 0.35, 6));
+      } else {
+        setScale((prev) => {
+          const next = Math.max(prev - 0.35, 1);
+          if (next === 1) setPosition({ x: 0, y: 0 });
+          return next;
+        });
+      }
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   // Mouse Pan Start
   const handleMouseDown = (e: MouseEvent) => {
@@ -482,7 +490,6 @@ export function FlagModal({
             {/* Canvas Area with Drag & Scale */}
             <div
               ref={containerRef}
-              onWheel={handleWheel}
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
               onDoubleClick={handleDoubleClick}
@@ -736,6 +743,23 @@ export function FlagModal({
                     <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                   )}
                   <span>{flag.country}</span>
+                </div>
+              )}
+              {(flag.parentRegion || '').trim() && (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-dashed border-amber-300 dark:border-amber-700/60"
+                  title={`Parent region in ${flag.country || 'country'}`}
+                >
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span>{(flag.parentRegion || '').trim()}</span>
+                </div>
+              )}
+              {flag.adminType && (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-semibold capitalize bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700"
+                  title="Subdivision type"
+                >
+                  <span>{flag.adminType}</span>
                 </div>
               )}
               {flag.aliases && flag.aliases.length > 0 && (

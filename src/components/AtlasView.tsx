@@ -11,11 +11,13 @@ import {
   Category,
   Continent,
   FlagStatus,
+  AdminType,
   MasteryLevel,
   ALL_CONTINENTS,
   ALL_STATUSES,
   getFlagMasteryLevel,
 } from '../types';
+import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
 import { getFlagImageUrl } from '../data/flags';
 import { useFlags } from '../contexts/FlagsContext';
 import { useAdmin } from '../contexts/AdminContext';
@@ -321,6 +323,8 @@ export function AtlasView({ progress }: AtlasViewProps) {
   const [selectedContinents, setSelectedContinents] = useState<string[]>(['All']);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(['All']);
   const [selectedSubOptions, setSelectedSubOptions] = useState<Record<string, string[]>>({});
+  const [selectedAdminTypes, setSelectedAdminTypes] = useState<AdminTypeFilter[]>(['All']);
+  const [selectedParents, setSelectedParents] = useState<string[]>([]);
   const [selectedMastery, setSelectedMastery] = useState<(MasteryLevel | 'all')[]>(['all']);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [selected, setSelected] = useState<Flag | null>(null);
@@ -471,6 +475,8 @@ export function AtlasView({ progress }: AtlasViewProps) {
     setSelectedSubOptions({});
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSearchTags([]);
     setSelectedMastery(['all']);
   };
@@ -527,8 +533,37 @@ export function AtlasView({ progress }: AtlasViewProps) {
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
     setSelectedSubOptions({});
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSelectedMastery(['all']);
     setShowFavoritesOnly(false);
+  };
+
+  const subnationalContextActive =
+    selectedCategories.includes('All') ||
+    selectedCategories.some((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+  const provinceCountries = useMemo(
+    () => selectedSubOptions['Provinces & Territories'] || [],
+    [selectedSubOptions]
+  );
+  const usStatesActive =
+    !selectedCategories.includes('All') && selectedCategories.includes('US States');
+  const parentScopeCountries = useMemo(() => {
+    if (provinceCountries.length > 0) return provinceCountries;
+    if (usStatesActive) return ['United States'];
+    return [];
+  }, [provinceCountries, usStatesActive]);
+
+  const toggleAdminType = (t: AdminType | 'unspecified') => {
+    setSelectedAdminTypes((prev) => {
+      if (prev.includes('All')) return [t];
+      const exists = prev.includes(t);
+      if (exists) {
+        const next = prev.filter((s) => s !== t);
+        return next.length === 0 ? (['All'] as AdminTypeFilter[]) : (next as AdminTypeFilter[]);
+      }
+      return [...prev, t] as AdminTypeFilter[];
+    });
   };
 
   const isMasteryCustom = !selectedMastery.includes('all') && selectedMastery.length > 0 && selectedMastery.length < 4;
@@ -540,6 +575,8 @@ export function AtlasView({ progress }: AtlasViewProps) {
     !selectedContinents.includes('All') ||
     !selectedStatuses.includes('All') ||
     isMasteryCustom ||
+    (!selectedAdminTypes.includes('All') && selectedAdminTypes.length > 0) ||
+    selectedParents.length > 0 ||
     Object.values(selectedSubOptions as Record<string, string[]>).some((arr) => arr.length > 0) ||
     showFavoritesOnly;
 
@@ -619,6 +656,8 @@ export function AtlasView({ progress }: AtlasViewProps) {
             (flag.continent && flag.continent.toLowerCase().includes(q)) ||
             (flag.category && flag.category.toLowerCase().includes(q)) ||
             (flag.status && flag.status.toLowerCase().includes(q)) ||
+            (flag.adminType && flag.adminType.toLowerCase().includes(q)) ||
+            (flag.parentRegion && flag.parentRegion.toLowerCase().includes(q)) ||
             (flag.country && flag.country.toLowerCase().includes(q)) ||
             (flag.creator && flag.creator.toLowerCase().includes(q)) ||
             (flag.aliases && flag.aliases.some((alias) => alias && alias.toLowerCase().includes(q))) ||
@@ -652,9 +691,14 @@ export function AtlasView({ progress }: AtlasViewProps) {
         }
       }
 
+      if (subnationalContextActive) {
+        if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
+        if (!matchesParents(flag, selectedParents)) return false;
+      }
+
       return matchesSearch && matchesCat && matchesCont && matchesStatus;
     });
-  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, showFavoritesOnly, favoritesSet, progress, FLAGS]);
 
   const buckets = useGeoBuckets(filteredFlags);
   const { points, unmapped } = useMemo(() => {
@@ -812,6 +856,16 @@ export function AtlasView({ progress }: AtlasViewProps) {
             });
           }}
           onClearAllSubmenuFilters={clearAllSubmenuFilters}
+          subnationalActive={subnationalContextActive}
+          scopeCountries={parentScopeCountries}
+          selectedAdminTypes={selectedAdminTypes}
+          onToggleAdminType={toggleAdminType}
+          onSelectAllAdminTypes={() => setSelectedAdminTypes(['All'])}
+          selectedParents={selectedParents}
+          onToggleParent={(p) => {
+            setSelectedParents((prev) => prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]);
+          }}
+          onClearParents={() => setSelectedParents([])}
         />
       </div>
 

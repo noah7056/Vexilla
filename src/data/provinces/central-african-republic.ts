@@ -33,6 +33,7 @@ export const CENTRAL_AFRICAN_REPUBLIC_PROVINCES = createProvinceFlags('Central A
   },
   {
     name: 'Bangui Prefecture',
+    adminType: 'prefecture',
     code: 'cf-bap',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/56/Flag_of_Bangui.png/revision/latest/scale-to-width-down/1000?cb=20221212064153',
     tags: ["red", "white", "stars", "chevron", "stripe"],
@@ -82,6 +83,7 @@ export const CENTRAL_AFRICAN_REPUBLIC_PROVINCES = createProvinceFlags('Central A
   },
   {
     name: 'Mambéré',
+    adminType: 'prefecture',
     code: 'cf-mam',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/d/df/Mamber%C3%A9_Prefecture.png/revision/latest/scale-to-width-down/1000?cb=20240930045155',
     tags: ["quartered", "black", "yellow", "blue", "white", "red", "cross"],
@@ -103,6 +105,7 @@ export const CENTRAL_AFRICAN_REPUBLIC_PROVINCES = createProvinceFlags('Central A
   },
   {
     name: 'Nana-Grébizi',
+    adminType: 'prefecture',
     code: 'cf-nag',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/a1/Nana-Grebizi_Prefecture.png/revision/latest/scale-to-width-down/1000?cb=20240930002203',
     tags: ["green", "white", "stars", "stripe", "vertical"],
@@ -124,6 +127,7 @@ export const CENTRAL_AFRICAN_REPUBLIC_PROVINCES = createProvinceFlags('Central A
   },
   {
     name: 'Ouaka',
+    adminType: 'prefecture',
     code: 'cf-oua',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/d/d5/Ouaka_Prefecture.png/revision/latest/scale-to-width-down/1000?cb=20240930000508',
     tags: ["red", "white", "blue", "diagonal", "stripes", "black"],
@@ -131,6 +135,7 @@ export const CENTRAL_AFRICAN_REPUBLIC_PROVINCES = createProvinceFlags('Central A
   },
   {
     name: 'Ouham',
+    adminType: 'prefecture',
     code: 'cf-ouh',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/6/61/Ouham_Prefecture.png/revision/latest/scale-to-width-down/1000?cb=20240930115729',
     tags: ["blue", "white", "black", "waves", "star"],

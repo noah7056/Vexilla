@@ -157,6 +157,7 @@ export const LIBYA_PROVINCES = createProvinceFlags('Libya', [
   },
   {
     name: 'Cyrenaica (Historic Emirate / Region)',
+    adminType: 'region',
     code: 'ly-cyr',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Cyrenaica.svg',
     tags: [],

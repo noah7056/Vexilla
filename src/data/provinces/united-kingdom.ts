@@ -163,6 +163,7 @@ export const UNITED_KINGDOM_PROVINCES = createProvinceFlags('United Kingdom', [
   },
   {
     name: 'Comhairle nan Eilean Siar (Council of the Western Isles)',
+    adminType: 'council',
     code: 'wi',
     continent: 'Europe',
     image: 'Western_Isles_Council_Flag.svg',
@@ -235,6 +236,7 @@ export const UNITED_KINGDOM_PROVINCES = createProvinceFlags('United Kingdom', [
   },
   {
     name: 'British Antarctic Territory',
+    adminType: 'territory',
     code: 'at',
     continent: 'Europe',
     image: 'Government_Ensign_of_the_British_Antarctic_Territory.svg',

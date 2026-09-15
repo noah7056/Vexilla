@@ -3,30 +3,35 @@ import { createProvinceFlags } from './utils';
 export const TOGO_PROVINCES = createProvinceFlags('Togo', [
   {
     name: 'Centrale Region',
+    adminType: 'region',
     code: 'tg-c',
     tags: [],
     status: ""
   },
   {
     name: 'Kara Region',
+    adminType: 'region',
     code: 'tg-k',
     tags: [],
     status: ""
   },
   {
     name: 'Maritime Region',
+    adminType: 'region',
     code: 'tg-m',
     tags: [],
     status: ""
   },
   {
     name: 'Plateaux Region',
+    adminType: 'region',
     code: 'tg-p',
     tags: [],
     status: ""
   },
   {
     name: 'Savanes Region',
+    adminType: 'region',
     code: 'tg-s',
     tags: [],
     status: ""

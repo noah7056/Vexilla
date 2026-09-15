@@ -5,6 +5,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
 
   {
     name: 'Zurich',
+    adminType: 'canton',
     code: 'ch-zh',
     image: 'Flag_of_Canton_of_Zürich.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Bern',
+    adminType: 'canton',
     code: 'ch-be',
     image: 'Flag_of_Canton_of_Bern.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Lucerne',
+    adminType: 'canton',
     code: 'ch-lu',
     image: 'Flag_of_Canton_of_Lucerne.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Uri',
+    adminType: 'canton',
     code: 'ch-ur',
     image: 'Flag_of_Canton_of_Uri.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Schwyz',
+    adminType: 'canton',
     code: 'ch-sz',
     image: 'Flag_of_Canton_of_Schwyz.svg',
     tags: [],
@@ -40,6 +45,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Obwalden',
+    adminType: 'canton',
     code: 'ch-ow',
     image: 'Flag_of_Canton_of_Obwalden.svg',
     tags: [],
@@ -47,6 +53,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Nidwalden',
+    adminType: 'canton',
     code: 'ch-nw',
     image: 'Flag_of_Canton_of_Nidwalden.svg',
     tags: [],
@@ -54,6 +61,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Glarus',
+    adminType: 'canton',
     code: 'ch-gl',
     image: 'Flag_of_Canton_of_Glarus.svg',
     tags: [],
@@ -61,6 +69,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Zug',
+    adminType: 'canton',
     code: 'ch-zg',
     image: 'Flag_of_Canton_of_Zug.svg',
     tags: [],
@@ -68,6 +77,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Fribourg',
+    adminType: 'canton',
     code: 'ch-fr',
     image: 'Flag_of_Canton_of_Fribourg.svg',
     tags: [],
@@ -75,6 +85,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Solothurn',
+    adminType: 'canton',
     code: 'ch-so',
     image: 'Flag_of_Canton_of_Solothurn.svg',
     tags: [],
@@ -82,6 +93,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Basel-Stadt',
+    adminType: 'canton',
     code: 'ch-bs',
     image: 'https://static.wikia.nocookie.net/vexillology/images/a/a3/Flag_of_Canton_of_Basel.svg/revision/latest?cb=20230326080851',
     tags: [],
@@ -89,6 +101,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Basel-Landschaft',
+    adminType: 'canton',
     code: 'ch-bl',
     image: 'Flag_of_Canton_of_Basel-Landschaft.svg',
     tags: [],
@@ -96,6 +109,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Schaffhausen',
+    adminType: 'canton',
     code: 'ch-sh',
     image: 'Flag_of_Canton_of_Schaffhausen.svg',
     tags: [],
@@ -103,6 +117,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Appenzell Ausserrhoden',
+    adminType: 'canton',
     code: 'ch-ar',
     image: 'Flag_of_Canton_of_Appenzell_Ausserrhoden.svg',
     tags: [],
@@ -110,6 +125,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Appenzell Innerrhoden',
+    adminType: 'canton',
     code: 'ch-ai',
     image: 'Flag_of_Canton_of_Appenzell_Innerrhoden.svg',
     tags: [],
@@ -117,6 +133,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'St. Gallen',
+    adminType: 'canton',
     code: 'ch-sg',
     image: 'https://static.wikia.nocookie.net/vexillology/images/a/a1/Flag_of_Canton_of_Sankt_Gallen.svg/revision/latest?cb=20230404124528',
     tags: [],
@@ -124,6 +141,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Graubünden',
+    adminType: 'canton',
     code: 'ch-gr',
     image: 'Flag_of_Canton_of_Graubünden.svg',
     tags: [],
@@ -131,6 +149,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Aargau',
+    adminType: 'canton',
     code: 'ch-ag',
     image: 'Flag_of_Canton_of_Aargau.svg',
     tags: [],
@@ -138,6 +157,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Thurgau',
+    adminType: 'canton',
     code: 'ch-tg',
     image: 'Flag_of_Canton_of_Thurgau.svg',
     tags: [],
@@ -145,6 +165,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Ticino',
+    adminType: 'canton',
     code: 'ch-ti',
     image: 'Flag_of_Canton_of_Ticino.svg',
     tags: [],
@@ -152,6 +173,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Vaud',
+    adminType: 'canton',
     code: 'ch-vd',
     image: 'Flag_of_Canton_of_Vaud.svg',
     tags: [],
@@ -159,6 +181,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Valais',
+    adminType: 'canton',
     code: 'ch-vs',
     image: 'Flag_of_Canton_of_Valais.svg',
     tags: [],
@@ -166,6 +189,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Neuchâtel',
+    adminType: 'canton',
     code: 'ch-ne',
     image: 'Flag_of_Canton_of_Neuchâtel.svg',
     tags: [],
@@ -173,6 +197,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Geneva',
+    adminType: 'canton',
     code: 'ch-ge',
     image: 'Flag_of_Canton_of_Geneva.svg',
     tags: [],
@@ -180,6 +205,7 @@ export const SWITZERLAND_PROVINCES = createProvinceFlags('Switzerland', [
   },
   {
     name: 'Jura',
+    adminType: 'canton',
     code: 'ch-ju',
     image: 'Flag_of_Canton_of_Jura.svg',
     tags: [],

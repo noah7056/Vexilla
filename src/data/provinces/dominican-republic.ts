@@ -5,6 +5,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
 
   {
     name: 'Santo Domingo (City Flag)',
+    adminType: 'city',
     code: 'do-sad',
     image: 'Flag_of_Santo_Domingo_de_Guzman.png',
     tags: [],
@@ -12,6 +13,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Azua',
+    adminType: 'province',
     code: 'do-azu',
     image: 'https://static.wikia.nocookie.net/vexillology/images/d/dc/Flag_of_Azua_Province.png/revision/latest?cb=20260821192057',
     tags: [],
@@ -19,6 +21,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Baoruco',
+    adminType: 'province',
     code: 'do-bao',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/bd/Flag_of_Baoruco_Province.png/revision/latest?cb=20260821192138',
     tags: [],
@@ -26,6 +29,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Barahona',
+    adminType: 'province',
     code: 'do-bar',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/19/Flag_of_Barahona_Province.png/revision/latest?cb=20260821192143',
     tags: [],
@@ -33,6 +37,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Dajabón',
+    adminType: 'province',
     code: 'do-daj',
     image: 'https://static.wikia.nocookie.net/vexillology/images/c/c8/Flag_of_Dajabon_Province.png/revision/latest?cb=20260821192148',
     tags: [],
@@ -40,6 +45,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Duarte',
+    adminType: 'province',
     code: 'do-dua',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/44/Flag_of_Duarte_Province.png/revision/latest?cb=20260821192154',
     tags: [],
@@ -47,6 +53,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'El Seibo',
+    adminType: 'province',
     code: 'do-sei',
     image: 'https://static.wikia.nocookie.net/vexillology/images/d/d7/Flag_of_El_Seibo_Province%2CDominican_Republic.png/revision/latest?cb=20260821192200',
     tags: [],
@@ -54,6 +61,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Elías Piña',
+    adminType: 'province',
     code: 'do-eli',
     image: 'https://static.wikia.nocookie.net/vexillology/images/5/5e/Flag_of_El%C3%ADas_Pi%C3%B1a_Province_%2CDominican_Republic.png/revision/latest?cb=20260821192203',
     tags: [],
@@ -61,6 +69,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Espaillat',
+    adminType: 'province',
     code: 'do-esp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/a/ac/Flag_of_Espaillat_Province_%2CDominican_Republic.png/revision/latest?cb=20260821192213',
     tags: [],
@@ -68,6 +77,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Hato Mayor',
+    adminType: 'province',
     code: 'do-hat',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/08/Flag_of_Hato_Mayor_Province%2CDominican_Republic.png/revision/latest?cb=20260821192324',
     tags: [],
@@ -75,6 +85,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Hermanas Mirabal',
+    adminType: 'province',
     code: 'do-her',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/8f/Flag_of_Hermanas_Mirabal_Province%2CDominican_Republic.png/revision/latest?cb=20260821192331',
     tags: [],
@@ -82,6 +93,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Independencia',
+    adminType: 'province',
     code: 'do-ind',
     image: 'https://static.wikia.nocookie.net/vexillology/images/e/e2/Flag_of_the_Independencia_Province_%2CDominican_Republic.png/revision/latest?cb=20260821193205',
     tags: [],
@@ -96,6 +108,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'La Romana',
+    adminType: 'province',
     code: 'do-rom',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/42/Flag_of_La_Romana_Province%2CDominican_Republic.png/revision/latest?cb=20260821192345',
     tags: [],
@@ -110,6 +123,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'María Trinidad Sánchez',
+    adminType: 'province',
     code: 'do-mts',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/11/Flag_of_Mar%C3%ADa_Trinidad_S%C3%A1nchez_Province%2CDominican_Republic.png/revision/latest?cb=20260821192352',
     tags: [],
@@ -124,6 +138,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Monte Cristi',
+    adminType: 'province',
     code: 'do-mcr',
     image: 'https://static.wikia.nocookie.net/vexillology/images/d/d1/Flag_of_Monte_Cristi_Province%2CDominican_Republic.png/revision/latest?cb=20260821192402',
     tags: [],
@@ -131,6 +146,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Monte Plata',
+    adminType: 'province',
     code: 'do-mpl',
     image: 'https://static.wikia.nocookie.net/vexillology/images/9/96/Flag_of_Monte_Plata_Province%2CDominican_Republic.png/revision/latest?cb=20260821192408',
     tags: [],
@@ -138,6 +154,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Pedernales',
+    adminType: 'province',
     code: 'do-ped',
     image: 'https://static.wikia.nocookie.net/vexillology/images/d/d1/Flag_of_Pedernales_Province%2CDominican_Republic.png/revision/latest?cb=20260821192413',
     tags: [],
@@ -145,6 +162,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Peravia',
+    adminType: 'province',
     code: 'do-per',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/16/Flag_of_Peravia_Province%2CDominican_Republic.png/revision/latest?cb=20260821192419',
     tags: [],
@@ -152,6 +170,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Puerto Plata',
+    adminType: 'province',
     code: 'do-ppl',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/0d/Flag_of_Puerto_Plata_Province.svg/revision/latest?cb=20221102033525',
     tags: [],
@@ -159,6 +178,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Samaná',
+    adminType: 'province',
     code: 'do-sam',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b0/Flag_of_Saman%C3%A1_Province%2CDominican_Republic.png/revision/latest?cb=20260821192936',
     tags: [],
@@ -166,6 +186,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'San Cristobál',
+    adminType: 'province',
     code: 'do-scr',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/44/Flag_of_San_Crist%C3%B3bal_Province%2CDominican_Republic.png/revision/latest?cb=20260821192943',
     tags: [],
@@ -173,6 +194,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'San José de Ocoa',
+    adminType: 'province',
     code: 'do-sjo',
     image: 'https://static.wikia.nocookie.net/vexillology/images/9/95/Flag_of_Sabana_San_Jos%C3%A9_de_Ocoa_Province_%2CDominican_Republic.png/revision/latest?cb=20260821192930',
     tags: [],
@@ -180,6 +202,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'San Juan Province',
+    adminType: 'province',
     code: 'do-sju',
     image: 'https://static.wikia.nocookie.net/vexillology/images/5/51/Flag_of_San_Juan_Province%2CDominican_Republic.png/revision/latest?cb=20260821193121',
     tags: [],
@@ -187,6 +210,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'San Pedro de Macorís',
+    adminType: 'province',
     code: 'do-spe',
     image: 'https://static.wikia.nocookie.net/vexillology/images/5/5b/Flag_of_San_Pedro_de_Macor%C3%ADs_Province%2CDominican_Republic.png/revision/latest?cb=20260821193141',
     tags: [],
@@ -194,6 +218,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Sánchez Ramírez',
+    adminType: 'province',
     code: 'do-sra',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/65/Flag_of_S%C3%A1nchez_Ram%C3%ADrez_Province%2CDominican_Republic.png/revision/latest?cb=20260821193147',
     tags: [],
@@ -208,6 +233,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Santiago Rodríguez',
+    adminType: 'province',
     code: 'do-sro',
     image: 'https://static.wikia.nocookie.net/vexillology/images/5/56/Flag_of_Santiago_Rodr%C3%ADguez_Province%2CDominican_Republic.png/revision/latest?cb=20260821193159',
     tags: [],
@@ -215,6 +241,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Santo Domingo Province',
+    adminType: 'province',
     code: 'do-sdp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/6d/Flag_of_Santo_Domingo_Province.jpg/revision/latest/scale-to-width-down/1000?cb=20230324031006',
     tags: [],
@@ -222,6 +249,7 @@ export const DOMINICAN_REPUBLIC_PROVINCES = createProvinceFlags('Dominican Repub
   },
   {
     name: 'Valverde',
+    adminType: 'province',
     code: 'do-val',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/67/Flag_of_Valverde_Province%2CDominican_Republic.png/revision/latest?cb=20260821193219',
     tags: [],

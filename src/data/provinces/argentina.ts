@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const ARGENTINA_PROVINCES = createProvinceFlags('Argentina', [
   {
     name: 'Autonomous City of Buenos Aires (CABA)',
+    adminType: 'city',
     code: 'ar-c',
     image: 'Bandera_de_la_Ciudad_de_Buenos_Aires.svg',
     aliases: ['Buenos Aires City', 'CABA', 'Ciudad de Buenos Aires', 'Capital Federal'],
@@ -11,6 +12,7 @@ export const ARGENTINA_PROVINCES = createProvinceFlags('Argentina', [
   },
   {
     name: 'Buenos Aires Province',
+    adminType: 'province',
     code: 'ar-b',
     image: 'Bandera_de_la_Provincia_de_Buenos_Aires.svg',
     aliases: ['Buenos Aires', 'Provincia de Buenos Aires', 'PBA'],
@@ -139,6 +141,7 @@ export const ARGENTINA_PROVINCES = createProvinceFlags('Argentina', [
   },
   {
     name: 'San Juan',
+    adminType: 'province',
     code: 'ar-j',
     image: 'Flag_of_the_San_Juan_Province.svg',
     aliases: ['Provincia de San Juan'],

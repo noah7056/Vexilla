@@ -5,6 +5,7 @@ export const MICRONESIA_PROVINCES = createProvinceFlags('Micronesia', [
 
   {
     name: 'Chuuk State',
+    adminType: 'state',
     code: 'fm-chk',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/55/Flag_of_Chuuk.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const MICRONESIA_PROVINCES = createProvinceFlags('Micronesia', [
   },
   {
     name: 'Kosrae State',
+    adminType: 'state',
     code: 'fm-ksa',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Flag_of_Kosrae.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const MICRONESIA_PROVINCES = createProvinceFlags('Micronesia', [
   },
   {
     name: 'Pohnpei State',
+    adminType: 'state',
     code: 'fm-pni',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Flag_of_Pohnpei.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const MICRONESIA_PROVINCES = createProvinceFlags('Micronesia', [
   },
   {
     name: 'Yap State',
+    adminType: 'state',
     code: 'fm-yap',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Yap.svg',
     tags: [],

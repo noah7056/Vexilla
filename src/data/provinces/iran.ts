@@ -12,6 +12,7 @@ export const IRAN_PROVINCES = createProvinceFlags('Iran', [
   },
   {
     name: 'State Flag of Iran (Lion and Sun 1964–1980)',
+    adminType: 'state',
     code: 'ir-lion',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/State_flag_of_Iran_%281964%E2%80%931980%29.svg',
     tags: [],

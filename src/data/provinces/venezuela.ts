@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   {
     name: 'Zulia',
+    adminType: 'state',
     code: 've-zul',
     image: 'Flag_of_Zulia_State.svg',
     aliases: ['Estado Zulia', 'Maracaibo'],
@@ -11,6 +12,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Miranda',
+    adminType: 'state',
     code: 've-mir',
     image: 'Flag_of_Miranda_state.svg',
     aliases: ['Estado Miranda', 'Los Teques'],
@@ -19,6 +21,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Carabobo',
+    adminType: 'state',
     code: 've-car',
     image: 'Flag_of_Carabobo_State.svg',
     aliases: ['Estado Carabobo', 'Valencia'],
@@ -27,6 +30,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Lara',
+    adminType: 'state',
     code: 've-lar',
     image: 'Flag_of_Lara_State.svg',
     aliases: ['Estado Lara', 'Barquisimeto'],
@@ -35,6 +39,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Aragua',
+    adminType: 'state',
     code: 've-ara',
     image: 'Flag_of_Aragua_State.svg',
     aliases: ['Estado Aragua', 'Maracay'],
@@ -43,6 +48,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Bolívar',
+    adminType: 'state',
     code: 've-bol',
     image: 'Flag_of_Bol%C3%ADvar_State.svg',
     aliases: ['Bolivar', 'Estado Bolivar', 'Estado Bolívar', 'Ciudad Guayana', 'Ciudad Bolivar'],
@@ -59,6 +65,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Anzoátegui',
+    adminType: 'state',
     code: 've-anz',
     image: 'Flag_of_Anzo%C3%A1tegui_State_%28original_version%29.svg',
     aliases: ['Anzoategui', 'Estado Anzoategui', 'Estado Anzoátegui', 'Barcelona', 'Puerto La Cruz'],
@@ -75,6 +82,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Mérida',
+    adminType: 'state',
     code: 've-mer',
     image: 'Flag_of_M%C3%A9rida_State.svg',
     aliases: ['Merida', 'Estado Merida', 'Estado Mérida'],
@@ -83,6 +91,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Amazonas (Venezuela)',
+    adminType: 'state',
     code: 've-z',
     image: 'Flag_of_Amazonas_Indigenous_State.svg',
     aliases: ['Estado Amazonas', 'Puerto Ayacucho'],
@@ -91,6 +100,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Apure',
+    adminType: 'state',
     code: 've-c',
     image: 'Flag_of_Apure_State.svg',
     aliases: ['Estado Apure', 'San Fernando de Apure'],
@@ -99,6 +109,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Barinas',
+    adminType: 'state',
     code: 've-e',
     image: 'Flag_of_Barinas_State.svg',
     aliases: ['Estado Barinas'],
@@ -107,6 +118,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Cojedes',
+    adminType: 'state',
     code: 've-h',
     image: 'Flag_of_Cojedes_State.svg',
     aliases: ['Estado Cojedes', 'San Carlos'],
@@ -115,6 +127,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Delta Amacuro',
+    adminType: 'state',
     code: 've-y',
     image: 'Flag_of_Delta_Amacuro_State.svg',
     aliases: ['Estado Delta Amacuro', 'Tucupita', 'Orinoco Delta'],
@@ -131,6 +144,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Guárico',
+    adminType: 'state',
     code: 've-j',
     image: 'Flag_of_Gu%C3%A1rico_State.svg',
     aliases: ['Guarico', 'Estado Guarico', 'Estado Guárico', 'San Juan de los Morros'],
@@ -139,6 +153,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Monagas',
+    adminType: 'state',
     code: 've-n',
     image: 'Flag_of_Monagas_State.svg',
     aliases: ['Estado Monagas', 'Maturin'],
@@ -155,6 +170,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Sucre (Venezuela)',
+    adminType: 'state',
     code: 've-r',
     image: 'Flag_of_Sucre_State.svg',
     aliases: ['Estado Sucre', 'Cumana', 'Cumaná'],
@@ -163,6 +179,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Trujillo',
+    adminType: 'state',
     code: 've-t',
     image: 'Flag_of_Trujillo_State.svg',
     aliases: ['Estado Trujillo'],
@@ -171,6 +188,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'La Guaira (Vargas)',
+    adminType: 'state',
     code: 've-x',
     image: 'Flag_of_La_Guaira_State.svg',
     aliases: ['Estado La Guaira', 'Estado Vargas', 'Vargas', 'La Guaira'],
@@ -179,6 +197,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Yaracuy',
+    adminType: 'state',
     code: 've-u',
     image: 'Flag_of_Yaracuy_State.svg',
     aliases: ['Estado Yaracuy', 'San Felipe'],
@@ -195,6 +214,7 @@ export const VENEZUELA_PROVINCES = createProvinceFlags('Venezuela', [
   },
   {
     name: 'Guyana Esequiba (disputed)',
+    adminType: 'state',
     code: 've-ge',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/3f/Flag_of_Guayana_Esequiba_State.svg/revision/latest?cb=20260513222109',
     aliases: ['Guayana Esequiba', 'Territorio Esequibo', 'Zona en Reclamacion'],

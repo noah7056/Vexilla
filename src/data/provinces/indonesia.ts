@@ -12,6 +12,7 @@ export const INDONESIA_PROVINCES = createProvinceFlags('Indonesia', [
   },
   {
     name: 'Special Region of Yogyakarta',
+    adminType: 'region',
     code: 'id-yo',
     image: 'Flag_of_Yogyakarta.svg',
     tags: [],
@@ -19,6 +20,7 @@ export const INDONESIA_PROVINCES = createProvinceFlags('Indonesia', [
   },
   {
     name: 'Jakarta Special Capital Region',
+    adminType: 'region',
     code: 'id-jk',
     image: 'Flag_of_Jakarta_(vectorised).svg',
     tags: [],

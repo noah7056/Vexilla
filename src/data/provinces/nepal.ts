@@ -12,6 +12,7 @@ export const NEPAL_PROVINCES = createProvinceFlags('Nepal', [
   },
   {
     name: 'Kathmandu (Capital City)',
+    adminType: 'city',
     code: 'np-ktm',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Flag_of_Kathmandu%2C_Nepal.svg',
     tags: [],

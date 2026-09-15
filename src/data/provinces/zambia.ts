@@ -3,60 +3,70 @@ import { createProvinceFlags } from './utils';
 export const ZAMBIA_PROVINCES = createProvinceFlags('Zambia', [
   {
     name: 'Central Province',
+    adminType: 'province',
     code: 'zm-02',
     tags: [],
     status: ""
   },
   {
     name: 'Copperbelt Province',
+    adminType: 'province',
     code: 'zm-08',
     tags: [],
     status: ""
   },
   {
     name: 'Eastern Province',
+    adminType: 'province',
     code: 'zm-03',
     tags: [],
     status: ""
   },
   {
     name: 'Luapula Province',
+    adminType: 'province',
     code: 'zm-04',
     tags: [],
     status: ""
   },
   {
     name: 'Lusaka Province',
+    adminType: 'province',
     code: 'zm-09',
     tags: [],
     status: ""
   },
   {
     name: 'Muchinga Province',
+    adminType: 'province',
     code: 'zm-10',
     tags: [],
     status: ""
   },
   {
     name: 'Northern Province',
+    adminType: 'province',
     code: 'zm-05',
     tags: [],
     status: ""
   },
   {
     name: 'North-Western Province',
+    adminType: 'province',
     code: 'zm-06',
     tags: [],
     status: ""
   },
   {
     name: 'Southern Province',
+    adminType: 'province',
     code: 'zm-07',
     tags: [],
     status: ""
   },
   {
     name: 'Western Province',
+    adminType: 'province',
     code: 'zm-01',
     tags: [],
     status: ""

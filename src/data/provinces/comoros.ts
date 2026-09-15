@@ -27,6 +27,7 @@ export const COMOROS_PROVINCES = createProvinceFlags('Comoros', [
   },
   {
     name: 'State of Comoros (Historic 1975–1978)',
+    adminType: 'state',
     code: 'km-75',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_State_of_Comoros_(1975–1978).svg',
     tags: [],

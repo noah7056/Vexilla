@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const COLOMBIA_PROVINCES = createProvinceFlags('Colombia', [
   {
     name: 'Antioquia',
+    adminType: 'department',
     code: 'co-ant',
     image: 'Flag_of_Antioquia_Department.svg',
     aliases: ['Departamento de Antioquia'],
@@ -43,6 +44,7 @@ export const COLOMBIA_PROVINCES = createProvinceFlags('Colombia', [
   },
   {
     name: 'Boyacá',
+    adminType: 'department',
     code: 'co-boy',
     image: 'Flag_of_Boyac%C3%A1_Department.svg',
     aliases: ['Boyaca', 'Departamento de Boyaca', 'Departamento de Boyacá'],

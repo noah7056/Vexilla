@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   {
     name: 'Nickerie',
+    adminType: 'district',
     code: 'sr-nic',
     image: 'Flag_of_Nickerie_District.svg',
     aliases: ['District Nickerie', 'Nieuw Nickerie'],
@@ -11,6 +12,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Brokopondo',
+    adminType: 'district',
     code: 'sr-bro',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/1a/Suriname_Brokopondo_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729095758',
     aliases: ['District Brokopondo'],
@@ -19,6 +21,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Commewijne',
+    adminType: 'district',
     code: 'sr-com',
     image: 'https://static.wikia.nocookie.net/vexillology/images/2/2e/Flag_of_Commewijne_District.svg/revision/latest?cb=20240119092302',
     aliases: ['District Commewijne', 'Nieuw Amsterdam'],
@@ -35,6 +38,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Marowijne',
+    adminType: 'district',
     code: 'sr-mar',
     image: 'https://static.wikia.nocookie.net/vexillology/images/a/a1/Suriname_Marowijne_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729100542',
     aliases: ['District Marowijne', 'Albina'],
@@ -43,6 +47,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Para',
+    adminType: 'district',
     code: 'sr-par',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/fe/Flag_of_Para_District.jpg/revision/latest?cb=20230319064050',
     aliases: ['District Para', 'Onverwacht'],
@@ -51,6 +56,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Paramaribo District',
+    adminType: 'district',
     code: 'sr-pad',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/3f/Suriname_Paramaribo_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729101559',
     aliases: ['Paramaribo District', 'District Paramaribo'],
@@ -59,6 +65,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Saramacca',
+    adminType: 'district',
     code: 'sr-sar',
     image: 'https://static.wikia.nocookie.net/vexillology/images/1/11/Suriname_Saramacca_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729101918',
     aliases: ['District Saramacca', 'Groningen'],
@@ -67,6 +74,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Sipaliwini',
+    adminType: 'district',
     code: 'sr-sip',
     image: 'https://static.wikia.nocookie.net/vexillology/images/6/66/Suriname_Sipaliwini_District_Flag_Proposal_Coliop-Mapping.svg/revision/latest?cb=20260729102206',
     aliases: ['District Sipaliwini'],
@@ -75,6 +83,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Wanica',
+    adminType: 'district',
     code: 'sr-wan',
     image: 'https://static.wikia.nocookie.net/vexillology/images/f/f2/Flag_of_Wanica_District.gif/revision/latest?cb=20230319064058',
     aliases: ['District Wanica', 'Lelydorp'],
@@ -83,6 +92,7 @@ export const SURINAME_PROVINCES = createProvinceFlags('Suriname', [
   },
   {
     name: 'Paramaribo (City Flag)',
+    adminType: 'city',
     code: 'sr-pmb',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/7b/Flag_of_Paramaribo_%282011-2023%29.svg/revision/latest?cb=20220615041117',
     aliases: ['Paramaribo', 'Paramaribo City', 'Capital of Suriname'],

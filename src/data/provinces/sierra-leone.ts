@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const SIERRA_LEONE_PROVINCES = createProvinceFlags('Sierra Leone', [
   {
     name: 'Eastern Province',
+    adminType: 'province',
     code: 'sl-e',
     aliases: [],
     tags: [],
@@ -10,6 +11,7 @@ export const SIERRA_LEONE_PROVINCES = createProvinceFlags('Sierra Leone', [
   },
   {
     name: 'North Western Province',
+    adminType: 'province',
     code: 'sl-nw',
     aliases: ['North Western'],
     tags: [],
@@ -17,6 +19,7 @@ export const SIERRA_LEONE_PROVINCES = createProvinceFlags('Sierra Leone', [
   },
   {
     name: 'Northern Province',
+    adminType: 'province',
     code: 'sl-n',
     aliases: [],
     tags: [],
@@ -24,6 +27,7 @@ export const SIERRA_LEONE_PROVINCES = createProvinceFlags('Sierra Leone', [
   },
   {
     name: 'Southern Province',
+    adminType: 'province',
     code: 'sl-s',
     aliases: [],
     tags: [],

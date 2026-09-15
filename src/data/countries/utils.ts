@@ -1,4 +1,4 @@
-import { Flag, Continent, Category, FlagStatus } from '../../types';
+import { Flag, Continent, Category, FlagStatus, AdminType } from '../../types';
 
 export type SovereignTuple =
   | [code: string, name: string, continent: Continent]
@@ -74,6 +74,8 @@ export interface CountryFlagInput {
   aliases?: string[] | string;
   tags?: string[] | string;
   status?: FlagStatus | '';
+  adminType?: AdminType | '';
+  parentRegion?: string;
 }
 
 export function createCountryFlags(
@@ -105,6 +107,8 @@ export function createCountryFlags(
     }
 
     const status = flag.status || defaultStatus;
+    const adminType = flag.adminType ? flag.adminType : undefined;
+    const parentRegion = flag.parentRegion?.trim() ? flag.parentRegion.trim() : undefined;
 
     return {
       id,
@@ -116,6 +120,8 @@ export function createCountryFlags(
       ...(flag.imageUrl ? { imageUrl: flag.imageUrl } : {}),
       ...(finalAliases && finalAliases.length > 0 ? { aliases: finalAliases } : {}),
       ...(status ? { status } : {}),
+      ...(adminType ? { adminType } : {}),
+      ...(parentRegion ? { parentRegion } : {}),
       tags: finalTags
     };
   });

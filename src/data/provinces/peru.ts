@@ -11,6 +11,7 @@ export const PERU_PROVINCES = createProvinceFlags('Peru', [
   },
   {
     name: 'Lima (City Flag)',
+    adminType: 'city',
     code: 'pe-lic',
     image: 'https://static.wikia.nocookie.net/vexillology/images/c/c7/Flag_of_Lima_%28City%29.svg/revision/latest?cb=20210503025046',
     aliases: ['Lima', 'Ciudad de Lima', 'Municipalidad Metropolitana de Lima', 'Capital of Peru'],
@@ -83,6 +84,7 @@ export const PERU_PROVINCES = createProvinceFlags('Peru', [
   },
   {
     name: 'Lambayeque',
+    adminType: 'department',
     code: 'pe-lam',
     image: 'Flag_of_Lambayeque_Department.svg',
     aliases: ['Region Lambayeque', 'Departamento de Lambayeque', 'Chiclayo'],
@@ -163,6 +165,7 @@ export const PERU_PROVINCES = createProvinceFlags('Peru', [
   },
   {
     name: 'Madre de Dios',
+    adminType: 'department',
     code: 'pe-mdd',
     image: 'Flag_of_Madre_de_Dios_Department.svg',
     aliases: ['Region Madre de Dios', 'Departamento de Madre de Dios', 'Puerto Maldonado'],
@@ -179,6 +182,7 @@ export const PERU_PROVINCES = createProvinceFlags('Peru', [
   },
   {
     name: 'Pasco',
+    adminType: 'department',
     code: 'pe-pas',
     image: 'Flag_of_Pasco_Department.svg',
     aliases: ['Region Pasco', 'Departamento de Pasco', 'Cerro de Pasco'],

@@ -5,6 +5,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
 
   {
     name: 'Autonomous Region of Bougainville',
+    adminType: 'region',
     code: 'pg-bou',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Flag_of_Bougainville.svg',
     tags: [],
@@ -12,6 +13,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Central Province',
+    adminType: 'province',
     code: 'pg-cpm',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Central_Province%2C_Papua_New_Guinea.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Chimbu Province (Simbu)',
+    adminType: 'province',
     code: 'pg-chm',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Flag_of_Chimbu.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Eastern Highlands Province',
+    adminType: 'province',
     code: 'pg-ehp',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Eastern_Highlands.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'East New Britain Province',
+    adminType: 'province',
     code: 'pg-enb',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_East_New_Britain.svg',
     tags: [],
@@ -40,6 +45,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'East Sepik Province',
+    adminType: 'province',
     code: 'pg-esp',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Flag_of_East_Sepik.png',
     tags: [],
@@ -47,6 +53,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Enga Province',
+    adminType: 'province',
     code: 'pg-eng',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/52/Flag_of_Enga.png',
     tags: [],
@@ -54,6 +61,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Gulf Province',
+    adminType: 'province',
     code: 'pg-guf',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Flag_of_Gulf_Province.png',
     tags: [],
@@ -61,6 +69,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Hela Province',
+    adminType: 'province',
     code: 'pg-hla',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Hela.svg',
     tags: [],
@@ -68,6 +77,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Jiwaka Province',
+    adminType: 'province',
     code: 'pg-jwk',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Flag_of_Jiwaka.svg',
     tags: [],
@@ -75,6 +85,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Madang Province',
+    adminType: 'province',
     code: 'pg-mad',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Madang.svg',
     tags: [],
@@ -82,6 +93,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Manus Province',
+    adminType: 'province',
     code: 'pg-man',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7d/Flag_of_Manus.svg',
     tags: [],
@@ -89,6 +101,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Milne Bay Province',
+    adminType: 'province',
     code: 'pg-mba',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Milne_Bay.svg',
     tags: [],
@@ -96,6 +109,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Morobe Province',
+    adminType: 'province',
     code: 'pg-mro',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Flag_of_Morobe.svg',
     tags: [],
@@ -103,6 +117,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'National Capital District (Port Moresby)',
+    adminType: 'district',
     code: 'pg-ncd',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Flag_of_NCD.svg',
     tags: [],
@@ -110,6 +125,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'New Ireland Province',
+    adminType: 'province',
     code: 'pg-nik',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Flag_of_New_Ireland.svg',
     tags: [],
@@ -117,6 +133,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Northern Province (Oro)',
+    adminType: 'province',
     code: 'pg-oro',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Flag_of_Flag_Oro_new.png',
     tags: [],
@@ -124,6 +141,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Sandaun Province (West Sepik)',
+    adminType: 'province',
     code: 'pg-san',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Flag_of_Sandaun.svg',
     tags: [],
@@ -131,6 +149,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Southern Highlands Province',
+    adminType: 'province',
     code: 'pg-shp',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Flag_of_Southern_Highlands_Province_%28Papua_New_Guinea%29.svg',
     tags: [],
@@ -138,6 +157,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Western Province (Fly River)',
+    adminType: 'province',
     code: 'pg-wpm',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Western_Province.svg',
     tags: [],
@@ -145,6 +165,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'Western Highlands Province',
+    adminType: 'province',
     code: 'pg-whp',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_Western_Highlands.svg',
     tags: [],
@@ -152,6 +173,7 @@ export const PAPUA_NEW_GUINEA_PROVINCES = createProvinceFlags('Papua New Guinea'
   },
   {
     name: 'West New Britain Province',
+    adminType: 'province',
     code: 'pg-wnb',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Flag_of_West_New_Britain.svg',
     tags: [],

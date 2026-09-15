@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const RWANDA_PROVINCES = createProvinceFlags('Rwanda', [
   {
     name: 'City of Kigali',
+    adminType: 'city',
     code: 'rw-01',
     aliases: ['Kigali', 'Umujyi wa Kigali'],
     tags: [],
@@ -10,6 +11,7 @@ export const RWANDA_PROVINCES = createProvinceFlags('Rwanda', [
   },
   {
     name: 'Eastern Province',
+    adminType: 'province',
     code: 'rw-02',
     aliases: ['Est', 'Iburasirazuba'],
     tags: [],
@@ -17,6 +19,7 @@ export const RWANDA_PROVINCES = createProvinceFlags('Rwanda', [
   },
   {
     name: 'Northern Province',
+    adminType: 'province',
     code: 'rw-03',
     aliases: ['Nord', 'Amajyaruguru'],
     tags: [],
@@ -24,6 +27,7 @@ export const RWANDA_PROVINCES = createProvinceFlags('Rwanda', [
   },
   {
     name: 'Western Province',
+    adminType: 'province',
     code: 'rw-04',
     aliases: ['Ouest', 'Iburengerazuba'],
     tags: [],
@@ -31,6 +35,7 @@ export const RWANDA_PROVINCES = createProvinceFlags('Rwanda', [
   },
   {
     name: 'Southern Province',
+    adminType: 'province',
     code: 'rw-05',
     aliases: ['Sud', 'Amajyepfo'],
     tags: [],

@@ -70,6 +70,7 @@ export const CANADA_PROVINCES = createProvinceFlags(
     },
     {
       name: 'Northwest Territories',
+      adminType: 'territory',
       image: 'Flag_of_the_Northwest_Territories.svg',
       aliases: ['NWT', 'Northwestern Territories', 'NW Territories'],
       tags: [],

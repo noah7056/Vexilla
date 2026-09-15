@@ -54,6 +54,7 @@ export const NORWAY_PROVINCES = createProvinceFlags('Norway', [
   },
   {
     name: 'Troms og Finnmark',
+    adminType: 'county',
     code: 'no-trf',
     image: 'Flag_of_Troms_og_Finnmark_County.svg',
     tags: [],
@@ -103,6 +104,7 @@ export const NORWAY_PROVINCES = createProvinceFlags('Norway', [
   },
   {
     name: 'Vestfold',
+    adminType: 'county',
     code: 'no-vef',
     image: 'Flag_of_Vestfold_County_2024.svg',
     tags: [],

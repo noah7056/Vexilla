@@ -5,6 +5,7 @@ export const JORDAN_PROVINCES = createProvinceFlags('Jordan', [
 
   {
     name: 'Amman (Greater Amman Municipality)',
+    adminType: 'municipality',
     code: 'jo-am',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/17/Flag_of_Amman.svg',
     tags: [],

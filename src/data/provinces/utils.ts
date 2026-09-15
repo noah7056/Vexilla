@@ -1,4 +1,4 @@
-import { Flag, Continent, Category, FlagStatus } from '../../types';
+import { Flag, Continent, Category, FlagStatus, AdminType } from '../../types';
 
 /**
  * Province and Territory Flag Input.
@@ -25,6 +25,8 @@ export interface CreateProvinceFlagInput {
   aliases?: string[] | string;
   tags?: string[] | string;
   status?: FlagStatus | '';
+  adminType?: AdminType | '';
+  parentRegion?: string;
 }
 
 // Backward compatibility alias
@@ -75,6 +77,8 @@ export function createProvinceFlags(
     }
 
     const status = flag.status || defaultStatus;
+    const adminType = flag.adminType ? flag.adminType : undefined;
+    const parentRegion = flag.parentRegion?.trim() ? flag.parentRegion.trim() : undefined;
 
     return {
       id: finalId,
@@ -85,6 +89,8 @@ export function createProvinceFlags(
       category: 'Provinces & Territories' as Category,
       imageUrl: finalImageUrl,
       ...(status ? { status } : {}),
+      ...(adminType ? { adminType } : {}),
+      ...(parentRegion ? { parentRegion } : {}),
       ...(finalAliases && finalAliases.length > 0 ? { aliases: finalAliases } : {}),
       tags: finalTags
     };

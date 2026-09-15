@@ -5,6 +5,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
 
   {
     name: 'Alibori',
+    adminType: 'department',
     code: 'bj-ali',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/3/39/Flag_of_Alibori_Department.svg/revision/latest?cb=20241005031605',
     tags: [],
@@ -12,6 +13,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Atacora',
+    adminType: 'department',
     code: 'bj-ata',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/5/54/Flag_of_Atakora_Department.svg/revision/latest?cb=20241005031607',
     tags: [],
@@ -19,6 +21,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Atlantique',
+    adminType: 'department',
     code: 'bj-atl',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/c/ce/Flag_of_Atlantique_Department.svg/revision/latest?cb=20241005052358',
     tags: [],
@@ -26,6 +29,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Borgou',
+    adminType: 'department',
     code: 'bj-bor',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/b/b3/Flag_of_Borgou_Department.svg/revision/latest?cb=20241005031608',
     tags: [],
@@ -33,6 +37,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Collines',
+    adminType: 'department',
     code: 'bj-col',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/1/1d/Flag_of_Collines_Department.svg/revision/latest?cb=20241005045054',
     tags: [],
@@ -40,6 +45,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Couffo',
+    adminType: 'department',
     code: 'bj-cou',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/3/36/Flag_of_Kouffo_Department.svg/revision/latest?cb=20241007094250',
     tags: [],
@@ -47,6 +53,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Donga',
+    adminType: 'department',
     code: 'bj-don',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/4/4a/Flag_of_Donga_Department.svg/revision/latest?cb=20241005184135',
     tags: [],
@@ -61,6 +68,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Mono',
+    adminType: 'department',
     code: 'bj-mon',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/ae/Flag_of_Mono_Department.svg/revision/latest?cb=20241005031411',
     tags: [],
@@ -68,6 +76,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Ouémé',
+    adminType: 'department',
     code: 'bj-oue',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/e/ee/Flag_of_Ou%C3%A9m%C3%A9_Department.svg/revision/latest?cb=20241005052626',
     tags: [],
@@ -75,6 +84,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Plateau',
+    adminType: 'department',
     code: 'bj-pla',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/a/ab/Flag_of_Plateau_Department.svg/revision/latest?cb=20241007105209',
     tags: [],
@@ -82,6 +92,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Zou',
+    adminType: 'department',
     code: 'bj-zou',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/9/90/Flag_of_Zou_Department.svg/revision/latest?cb=20241007105208',
     tags: [],
@@ -89,6 +100,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Cotonou (City Flag)',
+    adminType: 'city',
     code: 'bj-cot',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/7/7a/Flag_of_Cotonou.svg/revision/latest?cb=20231023055434',
     tags: [],
@@ -96,6 +108,7 @@ export const BENIN_PROVINCES = createProvinceFlags('Benin', [
   },
   {
     name: 'Porto-Novo (City Flag)',
+    adminType: 'city',
     code: 'bj-pon',
     imageUrl: 'https://static.wikia.nocookie.net/vexillology/images/4/4a/Flag_of_Porto-Novo.svg/revision/latest?cb=20251121061500',
     tags: [],

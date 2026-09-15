@@ -31,7 +31,8 @@ import {
 } from 'lucide-react';
 import { PROVINCE_COUNTRIES  } from '../data/flags';
 import { useFlags } from '../contexts/FlagsContext';
-import { Flag, Category, Continent, FlagStatus, FlagProgress, MasteryLevel, QuizConfig, QuizMode, QuizPreset, QuizQuestionResult, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES, getFlagMasteryLevel } from '../types';
+import { Flag, Category, Continent, FlagStatus, AdminType, FlagProgress, MasteryLevel, QuizConfig, QuizMode, QuizPreset, QuizQuestionResult, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES, getFlagMasteryLevel } from '../types';
+import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
 import { FlagImage } from './FlagImage';
 import { FlagModal } from './FlagModal';
 import { CategoryFilterChips } from './CategoryFilterChips';
@@ -52,6 +53,12 @@ const OPTION_COUNT_CHOICES: (2 | 4 | 6)[] = [2, 4, 6];
 
 const MAP_MODES: QuizMode[] = ['flag-to-map', 'name-to-map', 'map-to-flag'];
 const CHOICE_MODES: QuizMode[] = ['flag-to-name', 'name-to-flag', 'map-to-flag', 'flag-to-origin'];
+
+/** Origin suffix for question/result labels: " • Country • Parent" (parent omitted when empty). */
+function quizOriginSuffix(flag: Flag, prefix = ' • '): string {
+  const bits = [flag.country, (flag.parentRegion || '').trim()].filter(Boolean) as string[];
+  return bits.length > 0 ? `${prefix}${bits.join(' • ')}` : '';
+}
 
 export const MODE_LABEL: Record<QuizMode, string> = {
   'flag-to-name': 'Flag → Name',
@@ -107,6 +114,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     categories: [...ALL_CATEGORIES],
     continents: [...ALL_CONTINENTS],
     selectedSubOptions: {},
+    adminTypes: ['All'],
+    parentRegions: [],
     statuses: ['All'],
     tags: [],
     mastery: ['all'],
@@ -145,9 +154,22 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
   // Origin mode (continent or parent country): answer + string options
   const [originQ, setOriginQ] = useState<{ answer: string; options: string[]; kind: 'continent' | 'country' } | null>(null);
 
+  // Subnational context: facets apply only while Provinces/US States are in play.
+  // (Declared before the pool memos below, which reference these.)
+  const quizSubnationalActive =
+    config.categories.length === ALL_CATEGORIES.length ||
+    config.categories.some((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+  const quizParentScope = useMemo(() => {
+    const provinceCountries = (config.selectedSubOptions || {})['Provinces & Territories'] || [];
+    const usActive =
+      config.categories.length !== ALL_CATEGORIES.length && config.categories.includes('US States');
+    if (provinceCountries.length > 0) return provinceCountries;
+    if (usActive) return ['United States'];
+    return [];
+  }, [config.selectedSubOptions, config.categories]);
+
   // Calculate category matching pool based on current config categories & sub-options
-  const categoryFlagsPool = useMemo(() => {
-    return FLAGS.filter((flag) => {
+  const categoryFlagsPool = useMemo(() => {    return FLAGS.filter((flag) => {
       const isAllCat = config.categories.includes('All' as any) || config.categories.length === ALL_CATEGORIES.length;
       if (!isAllCat && !config.categories.includes(flag.category)) {
         return false;
@@ -238,9 +260,20 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
         }
       }
 
+      // 8. Subnational facets (skipped outside subnational context so stale
+      // selections can't trap the pool when other categories are picked).
+      if (quizSubnationalActive) {
+        if (!matchesAdminTypes(flag, (config.adminTypes || ['All']) as AdminTypeFilter[])) {
+          return false;
+        }
+        if (!matchesParents(flag, config.parentRegions || [])) {
+          return false;
+        }
+      }
+
       return true;
     });
-  }, [config.categories, config.continents, config.selectedSubOptions, config.statuses, config.tags, config.mode, config.mastery, progress, FLAGS]);
+  }, [config.categories, config.continents, config.selectedSubOptions, config.adminTypes, config.parentRegions, config.statuses, config.tags, config.mode, config.mastery, progress, FLAGS]);
 
   // Handle Preset configurations
   const applyPreset = (presetName: string) => {
@@ -526,6 +559,38 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     setConfig((prev) => ({ ...prev, statuses: ['All'] }));
   };
 
+  // Toggle admin type (Type facet)
+  const toggleAdminType = (t: AdminType | 'unspecified') => {
+    setConfig((prev) => {
+      const current = (prev.adminTypes || ['All']) as AdminTypeFilter[];
+      if (current.includes('All')) return { ...prev, adminTypes: [t] };
+      const exists = current.includes(t);
+      if (exists) {
+        const next = current.filter((s) => s !== t);
+        return { ...prev, adminTypes: next.length === 0 ? (['All'] as AdminTypeFilter[]) : (next as AdminTypeFilter[]) };
+      }
+      return { ...prev, adminTypes: [...current, t] as AdminTypeFilter[] };
+    });
+  };
+
+  const selectAllAdminTypes = () => {
+    setConfig((prev) => ({ ...prev, adminTypes: ['All'] as AdminTypeFilter[] }));
+  };
+
+  const toggleParentRegion = (p: string) => {
+    setConfig((prev) => {
+      const current = prev.parentRegions || [];
+      return {
+        ...prev,
+        parentRegions: current.includes(p) ? current.filter((x) => x !== p) : [...current, p],
+      };
+    });
+  };
+
+  const clearParentRegions = () => {
+    setConfig((prev) => ({ ...prev, parentRegions: [] }));
+  };
+
   // Toggle Mastery (mirrors Atlas/Dictionary multi-select)
   const toggleMastery = (level: MasteryLevel) => {
     setConfig((prev) => {
@@ -573,6 +638,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
       statuses: ['All'],
       tags: [],
       mastery: ['all'],
+      adminTypes: ['All'],
+      parentRegions: [],
     }));
   };
 
@@ -588,6 +655,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
     config.continents.length !== ALL_CONTINENTS.length ||
     (config.statuses && !config.statuses.includes('All')) ||
     (config.tags && config.tags.length > 0) ||
+    (config.adminTypes && !config.adminTypes.includes('All' as any) && config.adminTypes.length > 0) ||
+    (config.parentRegions && config.parentRegions.length > 0) ||
     isMasteryCustom;
 
   const resetAllFilters = () => {
@@ -599,6 +668,8 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
       statuses: ['All'],
       tags: [],
       mastery: ['all'],
+      adminTypes: ['All'],
+      parentRegions: [],
     }));
   };
 
@@ -1164,6 +1235,14 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                 selectedSubOptions={config.selectedSubOptions || {}}
                 onRemoveSubOption={toggleSubOption}
                 onClearAllSubmenuFilters={clearAllSubmenuFilters}
+                subnationalActive={quizSubnationalActive}
+                scopeCountries={quizParentScope}
+                selectedAdminTypes={(config.adminTypes || ['All']) as AdminTypeFilter[]}
+                onToggleAdminType={toggleAdminType}
+                onSelectAllAdminTypes={selectAllAdminTypes}
+                selectedParents={config.parentRegions || []}
+                onToggleParent={toggleParentRegion}
+                onClearParents={clearParentRegions}
               />
             </div>
 
@@ -1551,7 +1630,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700">
                       {[currentFlag.continent, currentFlag.category].filter(Boolean).join(' • ')}
-                      {config.showCountryInQuestion && ['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(currentFlag.category) && currentFlag.country && ` • ${currentFlag.country}`}
+                      {config.showCountryInQuestion && ['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(currentFlag.category) && currentFlag.country && quizOriginSuffix(currentFlag)}
                     </span>
                   </div>
                 </div>
@@ -2155,7 +2234,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                       </div>
                       <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
                         {[item.flag.continent, item.flag.category].filter(Boolean).join(' • ')}
-                        {['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(item.flag.category) && item.flag.country && ` • ${item.flag.country}`}
+                        {['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(item.flag.category) && item.flag.country && quizOriginSuffix(item.flag)}
                       </div>
                     </div>
                   </button>
@@ -2197,7 +2276,7 @@ export function Quiz({ onAnswer, progress }: QuizProps) {
                             title="Click to view the flag you chose"
                           >
                             Chose: {selectedFlag.name}
-                            {['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(selectedFlag.category) && selectedFlag.country ? `, ${selectedFlag.country}` : ''}
+                            {['Provinces & Territories', 'Fictional', 'Indigenous & Cultural Populations'].includes(selectedFlag.category) && selectedFlag.country ? quizOriginSuffix(selectedFlag, ', ') : ''}
                           </button>
                         )}
                         {!selectedFlag && item.originAnswer && (

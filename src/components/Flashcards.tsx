@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Globe2, RotateCcw } from 'lucide-react';
 import { useFlags } from '../contexts/FlagsContext';
-import { Category, Continent, FlagStatus, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { Category, Continent, FlagStatus, AdminType, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES } from '../types';
+import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
 import { FlagImage } from './FlagImage';
 import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
@@ -14,6 +15,8 @@ export function Flashcards() {
   const [selectedContinents, setSelectedContinents] = useState<(Continent | 'All')[]>(['All']);
   const [selectedStatuses, setSelectedStatuses] = useState<(FlagStatus | 'unspecified' | 'All')[]>(['All']);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedAdminTypes, setSelectedAdminTypes] = useState<AdminTypeFilter[]>(['All']);
+  const [selectedParents, setSelectedParents] = useState<string[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -145,6 +148,8 @@ export function Flashcards() {
     setSelectedSubOptions({});
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSelectedTags([]);
     setCurrentIndex(0);
     setIsFlipped(false);
@@ -155,6 +160,8 @@ export function Flashcards() {
     Object.values(selectedSubOptions).some((arr: string[]) => arr && arr.length > 0) ||
     !selectedContinents.includes('All') ||
     !selectedStatuses.includes('All') ||
+    (!selectedAdminTypes.includes('All') && selectedAdminTypes.length > 0) ||
+    selectedParents.length > 0 ||
     selectedTags.length > 0;
 
   const handleResetFilters = () => {
@@ -162,7 +169,38 @@ export function Flashcards() {
     setSelectedSubOptions({});
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSelectedTags([]);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+  };
+
+  const subnationalContextActive =
+    selectedCategories.includes('All') ||
+    selectedCategories.some((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+  const provinceCountries = useMemo(
+    () => selectedSubOptions['Provinces & Territories'] || [],
+    [selectedSubOptions]
+  );
+  const usStatesActive =
+    !selectedCategories.includes('All') && selectedCategories.includes('US States');
+  const parentScopeCountries = useMemo(() => {
+    if (provinceCountries.length > 0) return provinceCountries;
+    if (usStatesActive) return ['United States'];
+    return [];
+  }, [provinceCountries, usStatesActive]);
+
+  const toggleAdminType = (t: AdminType | 'unspecified') => {
+    setSelectedAdminTypes((prev) => {
+      if (prev.includes('All')) return [t];
+      const exists = prev.includes(t);
+      if (exists) {
+        const next = prev.filter((s) => s !== t);
+        return next.length === 0 ? (['All'] as AdminTypeFilter[]) : (next as AdminTypeFilter[]);
+      }
+      return [...prev, t] as AdminTypeFilter[];
+    });
     setCurrentIndex(0);
     setIsFlipped(false);
   };
@@ -229,9 +267,15 @@ export function Flashcards() {
         if (!hasTag) return false;
       }
 
+      // 6. Subnational facets (skipped outside subnational context)
+      if (subnationalContextActive) {
+        if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
+        if (!matchesParents(flag, selectedParents)) return false;
+      }
+
       return true;
     });
-  }, [selectedCategories, selectedSubOptions, selectedContinents, selectedStatuses, selectedTags, FLAGS]);
+  }, [selectedCategories, selectedSubOptions, selectedContinents, selectedStatuses, selectedTags, selectedAdminTypes, selectedParents, subnationalContextActive, FLAGS]);
 
   useEffect(() => {
     if (currentIndex >= filteredFlags.length) {
@@ -304,6 +348,18 @@ export function Flashcards() {
           selectedSubOptions={selectedSubOptions}
           onRemoveSubOption={toggleSubOption}
           onClearAllSubmenuFilters={clearAllSubmenuFilters}
+          subnationalActive={subnationalContextActive}
+          scopeCountries={parentScopeCountries}
+          selectedAdminTypes={selectedAdminTypes}
+          onToggleAdminType={toggleAdminType}
+          onSelectAllAdminTypes={() => { setSelectedAdminTypes(['All']); setCurrentIndex(0); setIsFlipped(false); }}
+          selectedParents={selectedParents}
+          onToggleParent={(p) => {
+            setSelectedParents((prev) => prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]);
+            setCurrentIndex(0);
+            setIsFlipped(false);
+          }}
+          onClearParents={() => { setSelectedParents([]); setCurrentIndex(0); setIsFlipped(false); }}
         />
       </div>
 
@@ -372,6 +428,16 @@ export function Flashcards() {
                   {currentFlag.country && (
                     <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-medium text-xs">
                       {currentFlag.country}
+                    </span>
+                  )}
+                  {(currentFlag.parentRegion || '').trim() && (
+                    <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-dashed border-amber-300 dark:border-amber-700/60 font-medium text-xs">
+                      {(currentFlag.parentRegion || '').trim()}
+                    </span>
+                  )}
+                  {currentFlag.adminType && (
+                    <span className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 font-medium text-xs capitalize">
+                      {currentFlag.adminType}
                     </span>
                   )}
                 </div>

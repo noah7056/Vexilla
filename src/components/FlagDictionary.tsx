@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Fragment } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search,
@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Trash2,
   FileJson,
+  Wand2,
   Cloud
 } from 'lucide-react';
 import { PROVINCE_COUNTRIES  } from '../data/flags';
@@ -33,9 +34,17 @@ import {
   FlagStatus,
   MasteryFilter,
   MasteryLevel,
+  AdminType,
+  ALL_ADMIN_TYPES,
   ALL_STATUSES,
   getFlagMasteryLevel
 } from '../types';
+import {
+  AdminTypeFilter,
+  SUBNATIONAL_CATEGORIES,
+  matchesAdminTypes,
+  matchesParents,
+} from '../lib/subnational';
 import { FlagImage } from './FlagImage';
 import { requestShowOnMap } from '../lib/atlasBus';
 import { FlagModal } from './FlagModal';
@@ -46,6 +55,7 @@ import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
 import { SyncLocalFlagsBanner } from './SyncLocalFlagsBanner';
 import { ImportExportModal } from './ImportExportModal';
+import { SubnationalClassifyModal } from './SubnationalClassifyModal';
 import { useFavorites } from '../hooks/useFavorites';
 
 interface FlagDictionaryProps {
@@ -75,7 +85,7 @@ const ALL_CONTINENTS: Continent[] = [
   'Antarctica'
 ];
 
-type SortOption = 'name-asc' | 'name-desc' | 'continent' | 'category';
+type SortOption = 'name-asc' | 'name-desc' | 'continent' | 'category' | 'parent';
 type ItemsPerPage = 12 | 25 | 50 | 100 | 'All';
 
 export function FlagDictionary({ progress }: FlagDictionaryProps) {
@@ -103,6 +113,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const [selectedContinents, setSelectedContinents] = useState<string[]>(['All']);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(['All']);
   const [selectedSubOptions, setSelectedSubOptions] = useState<Record<string, string[]>>({});
+  const [selectedAdminTypes, setSelectedAdminTypes] = useState<AdminTypeFilter[]>(['All']);
+  const [selectedParents, setSelectedParents] = useState<string[]>([]);
   const [selectedMastery, setSelectedMastery] = useState<(MasteryLevel | 'all')[]>(['all']);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [submenuSearch, setSubmenuSearch] = useState('');
@@ -114,6 +126,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const [editorInitialTab, setEditorInitialTab] = useState<'flag' | 'categories'>('flag');
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
+  const [isClassifyOpen, setIsClassifyOpen] = useState(false);
   
   const [itemsPerPage, setItemsPerPage] = useState<ItemsPerPage>(12);
   const [displayedCount, setDisplayedCount] = useState<number>(12);
@@ -137,7 +150,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   // Reset displayedCount when filters or itemsPerPage changes
   useEffect(() => {
     setDisplayedCount(itemsPerPage === 'All' ? FLAGS.length : itemsPerPage);
-  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, itemsPerPage]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, selectedMastery, sortBy, showFavoritesOnly, itemsPerPage]);
 
   // Flag Comparison State
   const [compareFlags, setCompareFlags] = useState<Flag[]>([]);
@@ -174,8 +187,19 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     if (cat === 'All') {
       setSelectedCategories(['All']);
       setSelectedSubOptions({});
+      setSelectedAdminTypes(['All']);
+      setSelectedParents([]);
       return;
     }
+    const resetSubnationalIfIrrelevant = (next: string[]) => {
+      const stillRelevant =
+        next.includes('All') ||
+        next.some((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+      if (!stillRelevant) {
+        setSelectedAdminTypes(['All']);
+        setSelectedParents([]);
+      }
+    };
     setSelectedCategories((prev) => {
       if (prev.includes('All')) return [cat];
       const exists = prev.includes(cat);
@@ -186,13 +210,16 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           delete newSub[cat];
           return newSub;
         });
-        return next.length === 0 ? ['All'] : next;
+        const finalNext = next.length === 0 ? ['All'] : next;
+        resetSubnationalIfIrrelevant(finalNext);
+        return finalNext;
       } else {
         const next = [...prev, cat];
         if (next.length === dynamicCatCount) {
           setSelectedSubOptions({});
           return ['All'];
         }
+        resetSubnationalIfIrrelevant(next);
         return next;
       }
     });
@@ -250,6 +277,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     setSelectedSubOptions({});
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSearchTags([]);
     setSelectedMastery(['all']);
   };
@@ -301,6 +330,51 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const selectAllContinents = () => setSelectedContinents(['All']);
   const selectAllStatuses = () => setSelectedStatuses(['All']);
 
+  // --- Subnational facets (Type + Parent region) ---
+  const subnationalContextActive =
+    selectedCategories.includes('All') ||
+    selectedCategories.some((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+
+  const provinceCountries = useMemo(
+    () => selectedSubOptions['Provinces & Territories'] || [],
+    [selectedSubOptions]
+  );
+  const usStatesActive =
+    !selectedCategories.includes('All') && selectedCategories.includes('US States');
+  // Parent facet is scoped to explicitly selected countries. It stays disabled
+  // until >=1 country is picked (or US States is the active context, which
+  // implies United States).
+  const parentScopeCountries = useMemo(() => {
+    if (provinceCountries.length > 0) return provinceCountries;
+    if (usStatesActive) return ['United States'];
+    return [];
+  }, [provinceCountries, usStatesActive]);
+
+  const hasActiveAdminTypes =
+    !selectedAdminTypes.includes('All') && selectedAdminTypes.length > 0;
+  const hasActiveParents = selectedParents.length > 0;
+
+  const toggleAdminType = (t: AdminType | 'unspecified') => {
+    setSelectedAdminTypes((prev) => {
+      if (prev.includes('All')) return [t];
+      const exists = prev.includes(t);
+      if (exists) {
+        const next = prev.filter((s) => s !== t);
+        return next.length === 0 ? (['All'] as AdminTypeFilter[]) : (next as AdminTypeFilter[]);
+      }
+      const next = [...prev, t] as AdminTypeFilter[];
+      if (next.length === ALL_ADMIN_TYPES.length + 1) return ['All'];
+      return next;
+    });
+  };
+  const selectAllAdminTypes = () => setSelectedAdminTypes(['All']);
+  const toggleParent = (p: string) => {
+    setSelectedParents((prev) =>
+      prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
+    );
+  };
+  const clearParents = () => setSelectedParents([]);
+
   const clearAllFilters = () => {
     setSearch('');
     setSearchTags([]);
@@ -308,6 +382,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     setSelectedContinents(['All']);
     setSelectedStatuses(['All']);
     setSelectedSubOptions({});
+    setSelectedAdminTypes(['All']);
+    setSelectedParents([]);
     setSelectedMastery(['all']);
     setSortBy('name-asc');
     setShowFavoritesOnly(false);
@@ -322,6 +398,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     !selectedContinents.includes('All') ||
     !selectedStatuses.includes('All') ||
     isMasteryCustom ||
+    hasActiveAdminTypes ||
+    hasActiveParents ||
     Object.values(selectedSubOptions as Record<string, string[]>).some(arr => arr.length > 0) ||
     showFavoritesOnly;
 
@@ -368,6 +446,8 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             (flag.continent && flag.continent.toLowerCase().includes(q)) ||
             (flag.category && flag.category.toLowerCase().includes(q)) ||
             (flag.status && flag.status.toLowerCase().includes(q)) ||
+            (flag.adminType && flag.adminType.toLowerCase().includes(q)) ||
+            (flag.parentRegion && flag.parentRegion.toLowerCase().includes(q)) ||
             (flag.country && flag.country.toLowerCase().includes(q)) ||
             (flag.creator && flag.creator.toLowerCase().includes(q)) ||
             (flag.aliases && flag.aliases.some((alias) => alias && alias.toLowerCase().includes(q))) ||
@@ -404,6 +484,13 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         }
       }
 
+      // Subnational facets (Type + Parent). Skipped when the bar is hidden
+      // (non-subnational categories only) so stale selections can't trap the grid.
+      if (subnationalContextActive) {
+        if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
+        if (!matchesParents(flag, selectedParents)) return false;
+      }
+
       return matchesSearch && matchesCat && matchesCont && matchesStatus;
     });
 
@@ -416,12 +503,66 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           return (a.continent || '').localeCompare(b.continent || '') || a.name.localeCompare(b.name);
         case 'category':
           return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+        case 'parent':
+          return (a.parentRegion || '~~~').localeCompare(b.parentRegion || '~~~') || a.name.localeCompare(b.name);
         case 'name-asc':
         default:
           return a.name.localeCompare(b.name);
       }
     });
-  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+
+  // Visible slice + optional grouping by parent region. Grouped sections appear
+  // only for focused subnational browsing (Provinces/US States categories with a
+  // single country in scope, or an active Parent filter) so multi-country
+  // overviews stay a flat grid.
+  const visibleFlags = useMemo(
+    () => filteredFlags.slice(0, displayedCount),
+    [filteredFlags, displayedCount]
+  );
+
+  const groupedSections = useMemo(() => {
+    const subOnly =
+      !selectedCategories.includes('All') &&
+      selectedCategories.length > 0 &&
+      selectedCategories.every((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
+    if (!subOnly) return null;
+    if (!(parentScopeCountries.length === 1 || hasActiveParents)) return null;
+    const multiCountry = new Set(visibleFlags.map((f) => f.country || 'Unknown')).size > 1;
+    const groups = new Map<string, { key: string; title: string; country: string; parent: string; flags: Flag[] }>();
+    visibleFlags.forEach((f) => {
+      const country = f.country || 'Unknown';
+      const parent = (f.parentRegion || '').trim();
+      const key = `${country}|||${parent}`;
+      let g = groups.get(key);
+      if (!g) {
+        const title = parent
+          ? multiCountry ? `${parent} · ${country}` : parent
+          : multiCountry ? `No parent specified · ${country}` : 'No parent specified';
+        g = { key, title, country, parent, flags: [] };
+        groups.set(key, g);
+      }
+      g.flags.push(f);
+    });
+    return Array.from(groups.values()).sort((a, b) => {
+      if (a.country !== b.country) return a.country.localeCompare(b.country);
+      if (!a.parent && b.parent) return 1;
+      if (a.parent && !b.parent) return -1;
+      return a.parent.localeCompare(b.parent);
+    });
+  }, [visibleFlags, selectedCategories, parentScopeCountries, hasActiveParents]);
+
+  // First-card-id -> section header (rendered as col-span-full rows in the grid).
+  const groupHeaderByFlagId = useMemo(() => {
+    const m = new Map<string, { title: string; count: number }>();
+    groupedSections?.forEach((s) => {
+      s.flags.forEach((f, i) => {
+        if (i === 0) m.set(f.id, { title: s.title, count: s.flags.length });
+      });
+    });
+    return m;
+  }, [groupedSections]);
+
 
   return (
     <div className="w-full max-w-7xl mx-auto py-6 px-4">
@@ -481,6 +622,16 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Add / Manage</span>
+          </button>
+          )}
+          {isAdmin && (
+          <button
+            onClick={() => setIsClassifyOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+            title="Auto-tag obvious subdivision types (cities, municipalities, …) in cloud flags"
+          >
+            <Wand2 className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+            <span className="hidden sm:inline">Classify</span>
           </button>
           )}
           {isAdmin && (
@@ -581,6 +732,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
               <option value="name-desc">Name (Z → A)</option>
               <option value="continent">Group by Continent</option>
               <option value="category">Group by Category</option>
+              <option value="parent">Group by Parent region</option>
             </select>
           </div>
 
@@ -669,6 +821,14 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
             });
           }}
           onClearAllSubmenuFilters={clearAllSubmenuFilters}
+          subnationalActive={subnationalContextActive}
+          scopeCountries={parentScopeCountries}
+          selectedAdminTypes={selectedAdminTypes}
+          onToggleAdminType={toggleAdminType}
+          onSelectAllAdminTypes={selectAllAdminTypes}
+          selectedParents={selectedParents}
+          onToggleParent={toggleParent}
+          onClearParents={clearParents}
         />
       </div>
 
@@ -676,7 +836,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       {filteredFlags.length > 0 ? (
         <div className="pb-20">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
-            {filteredFlags.slice(0, displayedCount).map((flag) => {
+            {visibleFlags.map((flag) => {
               const flagProg = progress[flag.id];
               const attempts = flagProg?.attempts || 0;
               const correct = flagProg?.correct || 0;
@@ -686,8 +846,17 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
 
             const compareIndex = compareFlags.findIndex((f) => f.id === flag.id);
             const isSelectedForCompare = compareIndex >= 0;
+            const sectionHeader = groupHeaderByFlagId.get(flag.id);
 
             return (
+              <Fragment key={flag.id}>
+              {sectionHeader && (
+                <div className="col-span-full mt-2 first:mt-0 flex items-center gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{sectionHeader.title}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 font-bold">{sectionHeader.count}</span>
+                  <span className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
+                </div>
+              )}
               <button
                 key={flag.id}
                 id={`flag-card-${flag.id}`}
@@ -810,7 +979,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
                     </h3>
                     <div
                       className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate mt-0.5 flex items-center gap-1"
-                      title={flag.country ? `${flag.continent || flag.category} • ${flag.country}` : (flag.continent || flag.category)}
+                      title={flag.country ? `${flag.continent || flag.category} • ${flag.country}${(flag.parentRegion || '').trim() ? ` • ${(flag.parentRegion || '').trim()}` : ''}` : (flag.continent || flag.category)}
                     >
                       <span className="truncate">{flag.continent || flag.category}</span>
                       {flag.country && (
@@ -819,10 +988,17 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
                           <span className="truncate font-medium text-amber-600 dark:text-amber-400">{flag.country}</span>
                         </>
                       )}
+                      {(flag.parentRegion || '').trim() && (
+                        <>
+                          <span className="text-zinc-300 dark:text-zinc-600">•</span>
+                          <span className="truncate font-medium text-amber-600 dark:text-amber-400">{(flag.parentRegion || '').trim()}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
               </button>
+              </Fragment>
             );
           })}
         </div>
@@ -1011,6 +1187,12 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       <ImportExportModal
         isOpen={isImportExportOpen}
         onClose={() => setIsImportExportOpen(false)}
+      />
+
+      {/* Subnational auto-classify Modal (admin) */}
+      <SubnationalClassifyModal
+        isOpen={isClassifyOpen}
+        onClose={() => setIsClassifyOpen(false)}
       />
     </div>
   );

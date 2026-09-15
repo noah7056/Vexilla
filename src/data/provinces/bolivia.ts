@@ -59,6 +59,7 @@ export const BOLIVIA_PROVINCES = createProvinceFlags('Bolivia', [
   },
   {
     name: 'Beni',
+    adminType: 'department',
     code: 'bo-ben',
     image: 'Flag_of_Beni_Department%2C_Bolivia.svg',
     aliases: ['Departamento del Beni', 'El Beni'],

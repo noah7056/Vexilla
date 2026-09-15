@@ -3,6 +3,7 @@ import { createProvinceFlags } from './utils';
 export const ZIMBABWE_PROVINCES = createProvinceFlags('Zimbabwe', [
   {
     name: 'Bulawayo Province',
+    adminType: 'province',
     code: 'zw-bu',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bulawayo.svg',
     tags: [],
@@ -10,6 +11,7 @@ export const ZIMBABWE_PROVINCES = createProvinceFlags('Zimbabwe', [
   },
   {
     name: 'Harare Province',
+    adminType: 'province',
     code: 'zw-ha',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Harare.svg',
     tags: [],
@@ -17,54 +19,63 @@ export const ZIMBABWE_PROVINCES = createProvinceFlags('Zimbabwe', [
   },
   {
     name: 'Manicaland Province',
+    adminType: 'province',
     code: 'zw-ma',
     tags: [],
     status: ""
   },
   {
     name: 'Mashonaland Central Province',
+    adminType: 'province',
     code: 'zw-mc',
     tags: [],
     status: ""
   },
   {
     name: 'Mashonaland East Province',
+    adminType: 'province',
     code: 'zw-me',
     tags: [],
     status: ""
   },
   {
     name: 'Mashonaland West Province',
+    adminType: 'province',
     code: 'zw-mw',
     tags: [],
     status: ""
   },
   {
     name: 'Masvingo Province',
+    adminType: 'province',
     code: 'zw-mv',
     tags: [],
     status: ""
   },
   {
     name: 'Matabeleland North Province',
+    adminType: 'province',
     code: 'zw-mn',
     tags: [],
     status: ""
   },
   {
     name: 'Matabeleland South Province',
+    adminType: 'province',
     code: 'zw-ms',
     tags: [],
     status: ""
   },
   {
     name: 'Midlands Province',
+    adminType: 'province',
     code: 'zw-mi',
     tags: [],
     status: ""
   },
   {
     name: 'Chitungwiza (City Flag)',
+    adminType: 'city',
     code: 'zw-ch',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Chitungwiza_flag.gif',
     tags: [],

@@ -5,6 +5,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
 
   {
     name: 'Latgale (Region)',
+    adminType: 'region',
     code: 'lv-lat',
     image: 'Flag_of_Latgale_(with_CoA).svg',
     tags: [],
@@ -12,6 +13,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Semigallia (Zemgale, Region)',
+    adminType: 'region',
     code: 'lv-zem',
     image: 'Official_flag_of_Zemgale.svg',
     tags: [],
@@ -19,6 +21,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Selonia (Sēlija, Region)',
+    adminType: 'region',
     code: 'lv-sel',
     image: 'Sēlijas_karogs.svg',
     tags: [],
@@ -26,6 +29,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Riga (City Flag)',
+    adminType: 'city',
     code: 'lv-rix',
     image: 'Flag_of_Riga.svg',
     tags: [],
@@ -33,6 +37,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Courland (Kurzeme, Region)',
+    adminType: 'region',
     code: 'lv-cou',
     image: 'https://static.wikia.nocookie.net/vexillology/images/4/4d/Flag_of_Courland.svg/revision/latest?cb=20240725235616',
     tags: [],
@@ -40,6 +45,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Vidzeme (Region)',
+    adminType: 'region',
     code: 'lv-vid',
     image: 'https://static.wikia.nocookie.net/vexillology/images/e/e0/Flag_of_Vidzeme_%28A._Kuzmins_proposal%29.svg/revision/latest/scale-to-width-down/1000?cb=20260828194746',
     tags: [],
@@ -68,6 +74,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Augšdaugava',
+    adminType: 'municipality',
     code: 'lv-aug',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b0/Augsdaugava_municipality_flag.svg/revision/latest/scale-to-width-down/1000?cb=20260824192359',
     tags: [],
@@ -215,6 +222,7 @@ export const LATVIA_PROVINCES = createProvinceFlags('Latvia', [
   },
   {
     name: 'Salaspils',
+    adminType: 'municipality',
     code: 'lv-sal',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b5/Flag_of_Salaspils_Municipality.jpg/revision/latest?cb=20260824192656',
     tags: [],

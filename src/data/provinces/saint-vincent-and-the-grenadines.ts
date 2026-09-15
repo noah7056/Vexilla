@@ -12,6 +12,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Kingstown (Saint Vincent, City Flag)',
+    adminType: 'city',
     code: 'vc-kin',
     image: 'https://static.wikia.nocookie.net/vexillology/images/9/99/Flag_of_Kingstown%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest?cb=20221025055434',
     tags: [],
@@ -19,6 +20,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Charlotte Parish',
+    adminType: 'parish',
     code: 'vc-chp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/7/7e/Flag_of_Charlotte_Parish%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest/scale-to-width-down/1000?cb=20230525003410',
     tags: [],
@@ -26,6 +28,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Grenadines Parish',
+    adminType: 'parish',
     code: 'vc-grp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/b/b0/Flag_of_Grenadines_Parish.svg/revision/latest/scale-to-width-down/1000?cb=20230604082637',
     tags: [],
@@ -33,6 +36,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Saint Andrew Parish',
+    adminType: 'parish',
     code: 'vc-sap',
     image: 'https://static.wikia.nocookie.net/vexillology/images/0/08/Flag_of_Saint_Andrew_Parish%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest?cb=20230525003437',
     tags: [],
@@ -40,6 +44,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Saint David Parish',
+    adminType: 'parish',
     code: 'vc-sdp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/8/85/Flag_of_Saint_David_Parish%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest?cb=20230525003504',
     tags: [],
@@ -47,6 +52,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Saint George Parish',
+    adminType: 'parish',
     code: 'vc-sgp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/3/34/Flag_of_Saint_George_Parish%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest?cb=20221025055524',
     tags: [],
@@ -54,6 +60,7 @@ export const SAINT_VINCENT_AND_THE_GRENADINES_PROVINCES = createProvinceFlags('S
   },
   {
     name: 'Saint Patrick Parish',
+    adminType: 'parish',
     code: 'vc-spp',
     image: 'https://static.wikia.nocookie.net/vexillology/images/c/c2/Flag_of_Saint_Patrick_Parish%2C_Saint_Vincent_and_the_Grenadines.svg/revision/latest?cb=20230604082711',
     tags: [],

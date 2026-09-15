@@ -5,6 +5,7 @@ export const GHANA_PROVINCES = createProvinceFlags('Ghana', [
 
   {
     name: 'Ashanti Kingdom / Ashanti Region',
+    adminType: 'region',
     code: 'gh-ash',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Ashanti.svg',
     tags: [],
