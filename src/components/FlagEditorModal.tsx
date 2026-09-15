@@ -89,6 +89,7 @@ interface LastAddedSelections {
   country?: string;
   status?: FlagStatus | '';
   adminType?: AdminType | '';
+  parentRegion?: string;
   creator?: string;
   sourceUrl?: string;
 }
@@ -194,7 +195,8 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
 
   const [parentRegion, setParentRegion] = useState(() => {
     if (liveFlag) return liveFlag.parentRegion || '';
-    return '';
+    const last = getLastAddedSelections();
+    return last?.parentRegion ?? '';
   });
 
   // Suggestions: every other subdivision name in the same country (regions and
@@ -439,6 +441,7 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
         country: country.trim(),
         status,
         adminType: isSubnationalCategory ? adminType : '',
+        parentRegion: isSubnationalCategory ? parentRegion.trim() : '',
         creator: creator.trim() || undefined,
         sourceUrl: sourceUrl.trim() || undefined,
       });
