@@ -668,16 +668,10 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     saveTrash([]);
   };
 
+  // Permanent deletion = complete erasure. Removes the flag from the trash
+  // bin, from custom overrides, and from the deleted-IDs tombstone store
+  // (local + Firestore) so no trace of the deletion is retained in the cloud.
   const permanentlyDeleteFlag = (id: string) => {
-    const item = trash.find(t => t.flag.id === id);
-
-    if (item && !item.isCustom) {
-      if (!permanentlyDeletedIds.includes(id)) {
-        savePermanentlyDeleted([...permanentlyDeletedIds, id]);
-        setDoc(doc(db, 'deleted_flag_ids', id), { id, deletedAt: Date.now() }).catch(() => {});
-      }
-    }
-
     saveTrash(trash.filter(t => t.flag.id !== id));
     deleteDoc(doc(db, 'trash_flags', id)).catch(() => {});
 
@@ -685,30 +679,33 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       saveCustom(customFlags.filter(f => f.id !== id));
       deleteDoc(doc(db, 'custom_flags', id)).catch(() => {});
     }
+
+    if (permanentlyDeletedIds.includes(id)) {
+      savePermanentlyDeleted(permanentlyDeletedIds.filter(d => d !== id));
+      deleteDoc(doc(db, 'deleted_flag_ids', id)).catch(() => {});
+    } else {
+      // Ensure no stale tombstone lingers in the cloud even if local state
+      // is already clean (e.g. deleted on another client).
+      deleteDoc(doc(db, 'deleted_flag_ids', id)).catch(() => {});
+    }
   };
 
   const emptyTrash = () => {
-    const builtInIdsToHide = trash
-      .filter(t => !t.isCustom)
-      .map(t => t.flag.id)
-      .filter(id => !permanentlyDeletedIds.includes(id));
-
-    if (builtInIdsToHide.length > 0) {
-      savePermanentlyDeleted([...permanentlyDeletedIds, ...builtInIdsToHide]);
-      builtInIdsToHide.forEach(id => {
-        setDoc(doc(db, 'deleted_flag_ids', id), { id, deletedAt: Date.now() }).catch(() => {});
-      });
-    }
-
     const trashedIds = new Set(trash.map(t => t.flag.id));
     trash.forEach(item => {
       deleteDoc(doc(db, 'trash_flags', item.flag.id)).catch(() => {});
       // Drop any lingering custom override for the trashed flag as well, so a
       // hardcoded flag can't conflict with a stale override if it reappears.
       deleteDoc(doc(db, 'custom_flags', item.flag.id)).catch(() => {});
+      // Remove any tombstone for the trashed flag so deletions leave no
+      // retained "deleted" record in the cloud — the flag is fully erased.
+      deleteDoc(doc(db, 'deleted_flag_ids', item.flag.id)).catch(() => {});
     });
     if (customFlags.some(f => trashedIds.has(f.id))) {
       saveCustom(customFlags.filter(f => !trashedIds.has(f.id)));
+    }
+    if (permanentlyDeletedIds.some(id => trashedIds.has(id))) {
+      savePermanentlyDeleted(permanentlyDeletedIds.filter(id => !trashedIds.has(id)));
     }
 
     saveTrash([]);
@@ -769,14 +766,11 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getSubCategories = (category: string): string[] => {
+    // Derive only from visible flags (merged overrides minus trash/hidden)
+    // plus explicitly registered empty entries. Scanning raw built-in or
+    // custom-override lists would resurrect sub-categories whose flags were
+    // just moved away or trashed.
     const derived = new Set<string>();
-    effectiveBuiltInFlags.forEach(f => {
-      if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
-    });
-    customFlags.forEach(f => {
-      if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
-    });
-    // Visible flags already include overrides, but also scan merged flags for safety
     flags.forEach(f => {
       if (f.category === category && f.country?.trim()) derived.add(f.country.trim());
     });
@@ -932,9 +926,10 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     const seen = new Set<string>();
     (ALL_CATEGORIES as string[]).forEach(c => seen.add(c));
     customCategories.forEach(c => { const t = c.trim(); if (t) seen.add(t); });
-    // Robustness: include any category actually used by flags (e.g. after import)
+    // Robustness: include any category actually used by visible flags (e.g. after import).
+    // Do NOT scan raw built-in lists here — they would resurrect custom/baked
+    // categories whose flags were just moved away or trashed.
     flags.forEach(f => { if (f.category?.trim()) seen.add(f.category.trim()); });
-    effectiveBuiltInFlags.forEach(f => { if (f.category?.trim()) seen.add(f.category.trim()); });
     const builtInOrder = ALL_CATEGORIES as string[];
     const builtIn = builtInOrder.filter(c => seen.has(c));
     const extra = Array.from(seen).filter(c => !(builtInOrder as string[]).includes(c)).sort((a, b) => a.localeCompare(b));
@@ -989,6 +984,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       nextSubs[to] = merged;
       delete nextSubs[from];
       saveSubCategories(nextSubs);
+      // Remove the stale Firestore doc so the old key isn't merged back by listeners.
+      deleteDoc(doc(db, 'custom_subcategories', from)).catch(() => {});
     }
     if (customSections[from]) {
       const nextSecs = { ...customSections };
@@ -996,6 +993,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       nextSecs[to] = merged;
       delete nextSecs[from];
       saveCustomSections(nextSecs);
+      deleteDoc(doc(db, 'custom_sections', from)).catch(() => {});
     }
     saveCustomCategories([...customCategories.filter(c => c !== from), to]);
 
@@ -1047,16 +1045,24 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Clean registries
+    // Clean registries (and their Firestore docs so deletions propagate
+    // instead of being merged back by the taxonomy listeners).
     if (customSubCategories[target]) {
       const nextSubs = { ...customSubCategories };
       delete nextSubs[target];
       saveSubCategories(nextSubs);
+      deleteDoc(doc(db, 'custom_subcategories', target)).catch(() => {});
+    } else {
+      // No local registry entry — still ensure no stale cloud doc resurrects it.
+      deleteDoc(doc(db, 'custom_subcategories', target)).catch(() => {});
     }
     if (customSections[target]) {
       const nextSecs = { ...customSections };
       delete nextSecs[target];
       saveCustomSections(nextSecs);
+      deleteDoc(doc(db, 'custom_sections', target)).catch(() => {});
+    } else {
+      deleteDoc(doc(db, 'custom_sections', target)).catch(() => {});
     }
     saveCustomCategories(customCategories.filter(c => c !== target));
 
@@ -1078,6 +1084,18 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     return category === 'LGBTQI+' || category === 'Pirate Flags';
   };
 
+  // Built-in sections are fixed geographic groupings — they always appear and
+  // cannot be renamed or deleted (same as built-in categories).
+  const getBaseSections = (category: string): string[] => {
+    if (category === 'Fictional' || isSectionlessCategory(category)) return [];
+    if (category === 'Concepts') {
+      return [...(CONCEPT_SECTIONS as unknown as string[])];
+    } else if (category === 'Organizations') {
+      return ['Global', ...(ALL_CONTINENTS as string[])];
+    }
+    return [...(ALL_CONTINENTS as string[])];
+  };
+
   const getSections = (category: string): string[] => {
     if (category === 'Fictional') {
       return [...FICTIONAL_SECTION_NAMES];
@@ -1094,16 +1112,15 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       base.push(...(ALL_CONTINENTS as string[]));
     }
     const derived = new Set<string>(base);
-    const scan = (f: Flag) => {
+    // Scan only visible flags so moved/trashed sections disappear instead of
+    // being resurrected from raw built-in/override lists.
+    flags.forEach(f => {
       if (f.category === category) {
         // continent holds the section for sectioned categories
         const cont = (f as Flag).continent;
         if (typeof cont === 'string' && cont.trim()) derived.add(cont.trim());
       }
-    };
-    effectiveBuiltInFlags.forEach(scan);
-    customFlags.forEach(scan);
-    flags.forEach(scan);
+    });
     (customSections[category] || []).forEach(v => { const t = v.trim(); if (t) derived.add(t); });
     // Keep geographic/continent order stable, extras sorted at end
     const order = [...base];
@@ -1155,6 +1172,9 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     if (existing.some(e => e.toLowerCase() === to.toLowerCase())) {
       return { success: false, error: `Sub-section "${to}" already exists.` };
     }
+    if (getBaseSections(category).includes(from)) {
+      return { success: false, error: `Built-in sub-section "${from}" cannot be renamed. Create a new sub-section and move flags instead.` };
+    }
     const affected = flags.filter(f => f.category === category && f.continent === from);
     const customMap = new Map<string, Flag>(customFlags.map(f => [f.id, f]));
     affected.forEach(orig => {
@@ -1191,6 +1211,9 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     }
     const existing = getSections(category);
     if (!existing.includes(target)) return { success: false, error: `Sub-section "${target}" not found.` };
+    if (getBaseSections(category).includes(target)) {
+      return { success: false, error: `Built-in sub-section "${target}" cannot be deleted. Move its flags to another sub-section instead.` };
+    }
     const affected = flags.filter(f => f.category === category && f.continent === target);
 
     if (action.mode === 'move-flags') {

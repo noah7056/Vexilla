@@ -170,7 +170,7 @@ import { TAJIKISTAN_PROVINCES } from './tajikistan';
 import { TANZANIA_PROVINCES } from './tanzania';
 import { THAILAND_PROVINCES } from './thailand';
 import { THE_GAMBIA_PROVINCES } from './the-gambia';
-import { TIMOR_LESTE_PROVINCES } from './timor-leste';
+
 import { TOGO_PROVINCES } from './togo';
 import { TONGA_PROVINCES } from './tonga';
 import { TRINIDAD_AND_TOBAGO_PROVINCES } from './trinidad-and-tobago';
@@ -363,7 +363,7 @@ export { TAJIKISTAN_PROVINCES };
 export { TANZANIA_PROVINCES };
 export { THAILAND_PROVINCES };
 export { THE_GAMBIA_PROVINCES };
-export { TIMOR_LESTE_PROVINCES };
+
 export { TOGO_PROVINCES };
 export { TONGA_PROVINCES };
 export { TRINIDAD_AND_TOBAGO_PROVINCES };
@@ -557,7 +557,7 @@ export const PROVINCES_AND_TERRITORIES_FLAGS = [
   ...TANZANIA_PROVINCES,
   ...THAILAND_PROVINCES,
   ...THE_GAMBIA_PROVINCES,
-  ...TIMOR_LESTE_PROVINCES,
+
   ...TOGO_PROVINCES,
   ...TONGA_PROVINCES,
   ...TRINIDAD_AND_TOBAGO_PROVINCES,
