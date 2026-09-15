@@ -120,6 +120,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const [submenuSearch, setSubmenuSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [groupByParent, setGroupByParent] = useState(true);
   const [focusedFlag, setFocusedFlag] = useState<Flag | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [flagToEdit, setFlagToEdit] = useState<Flag | null>(null);
@@ -387,6 +388,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     setSelectedMastery(['all']);
     setSortBy('name-asc');
     setShowFavoritesOnly(false);
+    setGroupByParent(true);
   };
 
   const isMasteryCustom = !selectedMastery.includes('all') && selectedMastery.length > 0 && selectedMastery.length < 4;
@@ -504,7 +506,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
         case 'category':
           return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
         case 'parent':
-          return (a.parentRegion || '~~~').localeCompare(b.parentRegion || '~~~') || a.name.localeCompare(b.name);
+          return (a.parentRegion || '').localeCompare(b.parentRegion || '') || a.name.localeCompare(b.name);
         case 'name-asc':
         default:
           return a.name.localeCompare(b.name);
@@ -521,13 +523,18 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     [filteredFlags, displayedCount]
   );
 
-  const groupedSections = useMemo(() => {
+  const canGroupByParent = useMemo(() => {
     const subOnly =
       !selectedCategories.includes('All') &&
       selectedCategories.length > 0 &&
       selectedCategories.every((c) => (SUBNATIONAL_CATEGORIES as readonly string[]).includes(c));
-    if (!subOnly) return null;
-    if (!(parentScopeCountries.length === 1 || hasActiveParents)) return null;
+    if (!subOnly) return false;
+    return parentScopeCountries.length === 1 || hasActiveParents;
+  }, [selectedCategories, parentScopeCountries, hasActiveParents]);
+
+  const groupedSections = useMemo(() => {
+    if (!groupByParent) return null;
+    if (!canGroupByParent) return null;
     const multiCountry = new Set(visibleFlags.map((f) => f.country || 'Unknown')).size > 1;
     const groups = new Map<string, { key: string; title: string; country: string; parent: string; flags: Flag[] }>();
     visibleFlags.forEach((f) => {
@@ -546,11 +553,11 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     });
     return Array.from(groups.values()).sort((a, b) => {
       if (a.country !== b.country) return a.country.localeCompare(b.country);
-      if (!a.parent && b.parent) return 1;
-      if (a.parent && !b.parent) return -1;
+      if (!a.parent && b.parent) return -1;
+      if (a.parent && !b.parent) return 1;
       return a.parent.localeCompare(b.parent);
     });
-  }, [visibleFlags, selectedCategories, parentScopeCountries, hasActiveParents]);
+  }, [visibleFlags, groupByParent, canGroupByParent]);
 
   // First-card-id -> section header (rendered as col-span-full rows in the grid).
   const groupHeaderByFlagId = useMemo(() => {
@@ -745,6 +752,23 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
               <option value="parent">Group by Parent region</option>
             </select>
           </div>
+
+          {/* Group dividers toggle (subnational single-country view only) */}
+          {canGroupByParent && (
+            <button
+              onClick={() => setGroupByParent((v) => !v)}
+              title={groupByParent ? 'Hide parent-region dividers (flat alphabetical list)' : 'Show parent-region dividers'}
+              aria-pressed={groupByParent}
+              className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all flex-shrink-0 cursor-pointer ${
+                groupByParent
+                  ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-700/50 dark:text-indigo-300'
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              {groupByParent ? 'Grouped' : 'Flat list'}
+            </button>
+          )}
 
           {/* Items Per Page Selector */}
           <div className="flex items-center gap-2 min-w-[130px]">
