@@ -42,6 +42,7 @@ import {
 import {
   AdminTypeFilter,
   SUBNATIONAL_CATEGORIES,
+  getSubnationalCountry,
   matchesAdminTypes,
   matchesParents,
 } from '../lib/subnational';
@@ -535,10 +536,10 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
   const groupedSections = useMemo(() => {
     if (!groupByParent) return null;
     if (!canGroupByParent) return null;
-    const multiCountry = new Set(visibleFlags.map((f) => f.country || 'Unknown')).size > 1;
+    const multiCountry = new Set(visibleFlags.map((f) => getSubnationalCountry(f))).size > 1;
     const groups = new Map<string, { key: string; title: string; country: string; parent: string; flags: Flag[] }>();
     visibleFlags.forEach((f) => {
-      const country = f.country || 'Unknown';
+      const country = getSubnationalCountry(f);
       const parent = (f.parentRegion || '').trim();
       const key = `${country}|||${parent}`;
       let g = groups.get(key);

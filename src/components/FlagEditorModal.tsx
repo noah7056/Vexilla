@@ -17,6 +17,7 @@ const MapPicker = lazy(() => import('./MapPicker').then((m) => ({ default: m.Map
 // Bottom-left field (underneath the category dropdown) always shows sub-categories.
 const CATEGORY_SUB_LABELS: Partial<Record<Category, string>> = {
   'Provinces & Territories': 'Country',
+  'US States': 'Country',
   'Indigenous & Cultural Populations': 'Country / Region',
   'Fictional': 'Universe / Franchise',
   'LGBTQI+': 'Subcategory',
@@ -45,6 +46,7 @@ type FictionalSection = (typeof FICTIONAL_SECTIONS)[number] | '';
 
 const CATEGORIES_WITH_SUBS: Category[] = [
   'Provinces & Territories',
+  'US States',
   'Indigenous & Cultural Populations',
   'Fictional',
   'LGBTQI+',
@@ -165,8 +167,12 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
   });
 
   const [country, setCountry] = useState(() => {
-    if (liveFlag) return liveFlag.country || '';
+    if (liveFlag) {
+      if (liveFlag.category === 'US States' && !(liveFlag.country || '').trim()) return 'United States';
+      return liveFlag.country || '';
+    }
     const last = getLastAddedSelections();
+    if ((last?.category as string) === 'US States' && !(last?.country || '').trim()) return 'United States';
     return last?.country !== undefined ? last.country : '';
   });
 
@@ -259,8 +265,10 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
       setParentRegion('');
     }
     // Sub-categories live underneath the category dropdown; clear them unless the
-    // new category supports them.
-    if (!CATEGORIES_WITH_SUBS.includes(newCat)) {
+    // new category supports them. US States is always United States.
+    if (newCat === 'US States') {
+      setCountry('United States');
+    } else if (!CATEGORIES_WITH_SUBS.includes(newCat)) {
       setCountry('');
     } else if (newCat !== category) {
       // Switching between two sub-category categories still resets the stale value.
@@ -345,7 +353,15 @@ export function FlagEditorModal({ flagToEdit, onClose, initialTab = 'flag' }: Fl
 
   const effectiveContinent: Continent | undefined =
     category === 'Fictional' ? 'Fictional Universes' : (hasSection ? (continent || undefined) : undefined);
-  const effectiveCountry: string | undefined = hasSub ? (country.trim() || undefined) : undefined;
+  // US States flags always belong to United States (older custom flags may have
+  // an empty country because the editor used to drop it — subnational helpers
+  // normalize those too, but new saves store it explicitly).
+  const effectiveCountry: string | undefined =
+    category === 'US States'
+      ? 'United States'
+      : hasSub
+        ? country.trim() || undefined
+        : undefined;
 
   const handleDetect = async () => {
     if (detecting || !name.trim()) return;

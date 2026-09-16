@@ -34,6 +34,7 @@ export const CATEGORIES_WITH_SECTIONS = [
 
 export const CATEGORIES_WITH_SUBCATEGORIES = [
   'Provinces & Territories',
+  'US States',
   'Indigenous & Cultural Populations',
   'Fictional',
   'LGBTQI+',
@@ -740,11 +741,19 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
   const flags = useMemo(() => {
     const combined = [...effectiveBuiltInFlags];
     customFlags.forEach(cf => {
-      const idx = combined.findIndex(f => f.id === cf.id);
+      // Repair older custom US States flags saved without a country (the
+      // editor used to drop it for that category). They implicitly belong to
+      // the United States — without this, parent counts miss them and
+      // grouping shows them under an "Unknown" country.
+      const repaired =
+        cf.category === 'US States' && !(cf.country || '').trim()
+          ? { ...cf, country: 'United States' }
+          : cf;
+      const idx = combined.findIndex(f => f.id === repaired.id);
       if (idx !== -1) {
-        combined[idx] = cf;
+        combined[idx] = repaired;
       } else {
-        combined.push(cf);
+        combined.push(repaired);
       }
     });
 

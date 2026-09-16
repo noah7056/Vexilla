@@ -17,6 +17,20 @@ export function getParentKey(flag: Flag): string {
   return (flag.parentRegion || '').trim();
 }
 
+/**
+ * Display/scope country for subnational flags.
+ * US States flags implicitly belong to "United States" — the editor used to
+ * drop `country` for that category, so older custom county/city flags may have
+ * it empty. Normalizing here (instead of only on save) repairs counts,
+ * grouping, and scope matching for those existing flags.
+ */
+export function getSubnationalCountry(flag: Flag): string {
+  const raw = (flag.country || '').trim();
+  if (raw) return raw;
+  if (flag.category === 'US States') return 'United States';
+  return 'Unknown';
+}
+
 export function isSubnationalFlag(flag: Flag): boolean {
   return (SUBNATIONAL_CATEGORIES as readonly string[]).includes(flag.category);
 }
@@ -169,8 +183,8 @@ export function getParentOptionsDetailed(
   const names = new Set<string>();
   flags.forEach((f) => {
     if (!isSubnationalFlag(f)) return;
-    const country = (f.country || '').trim() || 'Unknown';
-    if (scope.size > 0 && !scope.has((f.country || '').trim())) return;
+    const country = getSubnationalCountry(f);
+    if (scope.size > 0 && !scope.has(country)) return;
     const key = getParentKey(f);
     if (key) {
       const k = `${country}|||${key}`;
@@ -203,7 +217,7 @@ export function getAdminTypeCounts(
   const counts = new Map<AdminType | 'unspecified', number>();
   flags.forEach((f) => {
     if (!isSubnationalFlag(f)) return;
-    if (scope.size > 0 && !(f.country && scope.has(f.country))) return;
+    if (scope.size > 0 && !scope.has(getSubnationalCountry(f))) return;
     const k = getAdminTypeKey(f);
     counts.set(k, (counts.get(k) || 0) + 1);
   });
