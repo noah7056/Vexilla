@@ -17,7 +17,7 @@ import {
   ALL_STATUSES,
   getFlagMasteryLevel,
 } from '../types';
-import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
+import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParentsHierarchical } from '../lib/subnational';
 import { getFlagImageUrl } from '../data/flags';
 import { parseFandomFileUrl, getCachedFandomFileUrl, resolveFandomFileUrl, subscribeFandomCache } from '../lib/fandomFiles';
 import { useFlags } from '../contexts/FlagsContext';
@@ -325,7 +325,7 @@ function ResizeFix({ dep }: { dep: boolean }) {
 }
 
 export function AtlasView({ progress }: AtlasViewProps) {
-  const { flags: FLAGS, getCategories } = useFlags();
+  const { flags: FLAGS, getCategories, parentLinks } = useFlags();
   const { isAdmin } = useAdmin();
   const { favoritesSet } = useFavorites();
   // Dictionary-identical filter state so Atlas filters behave exactly like
@@ -712,12 +712,12 @@ export function AtlasView({ progress }: AtlasViewProps) {
 
       if (subnationalContextActive) {
         if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
-        if (!matchesParents(flag, selectedParents)) return false;
+        if (!matchesParentsHierarchical(flag, selectedParents, FLAGS, parentLinks)) return false;
       }
 
       return matchesSearch && matchesCat && matchesCont && matchesStatus;
     });
-  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, showFavoritesOnly, favoritesSet, progress, FLAGS, parentLinks]);
 
   const buckets = useGeoBuckets(filteredFlags);
   const { points, unmapped } = useMemo(() => {

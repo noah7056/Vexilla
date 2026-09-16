@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Filter, Settings, Search, X, XCircle, Check, CheckCircle2, Sparkles, AlertCircle, HelpCircle, Trophy } from 'lucide-react';
+import { Filter, Settings, Search, X, XCircle, Check, CheckCircle2, Sparkles, AlertCircle, HelpCircle, Trophy, ChevronDown, ChevronRight, Move } from 'lucide-react';
 import { useFlags } from '../contexts/FlagsContext';
 import {
   Continent,
@@ -18,10 +18,17 @@ import {
 import {
   AdminTypeFilter,
   NO_PARENT_VALUE,
+  ParentTreeNode,
   getAdminTypeCounts,
   getAdminTypeKey,
   getParentKey,
   getParentOptionsDetailed,
+  getParentTree,
+  getPhantomPlacement,
+  getSubnationalCountry,
+  getTopLevelLabel,
+  isSubnationalFlag,
+  matchesParentsHierarchical,
 } from '../lib/subnational';
 
 interface AdditionalFiltersBarProps {
@@ -97,11 +104,15 @@ export function AdditionalFiltersBar({
   onClearAllSubmenuFilters,
   title = 'Additional Filters',
 }: AdditionalFiltersBarProps) {
-  const { flags: FLAGS } = useFlags();
+  const { flags: FLAGS, parentLinks, setParentLink, editCustomFlag } = useFlags();
   const flagsPool = initialFlagsPool || FLAGS;
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [tagSearch, setTagSearch] = useState('');
   const [parentSearch, setParentSearch] = useState('');
+  // Expanded root nodes in the nested parent tree, keyed `country|||name`.
+  const [expandedParents, setExpandedParents] = useState<Set<string>>(new Set());
+  // Node (`country|||name`) whose move picker is currently open.
+  const [movePickerFor, setMovePickerFor] = useState<string | null>(null);
 
   // Collect all unique tags from FLAGS
   const allAvailableTags = useMemo(() => {
@@ -193,6 +204,29 @@ export function AdditionalFiltersBar({
     () => getParentOptionsDetailed(flagsPool, parentScope),
     [flagsPool, parentScope]
   );
+  // Nested region → sub-region tree (states → counties, regions → provinces,
+  // …). Counts are subtree totals so a chip reads as "flags selected by this".
+  // Manual phantom placements (parentLinks) nest flagless regions under their
+  // assigned state.
+  const parentTree = useMemo(
+    () => getParentTree(flagsPool, parentScope, parentLinks),
+    [flagsPool, parentScope, parentLinks]
+  );
+  // Real-flag counts per `country|||name`: moving a real region edits every
+  // same-named flag, so duplicated names (e.g. Harris County in TX and GA)
+  // can't be moved from here — the flag editor handles those.
+  const realNameCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    flagsPool.forEach((f) => {
+      if (!isSubnationalFlag(f)) return;
+      const nm = (f.name || '').trim();
+      if (!nm) return;
+      const k = `${getSubnationalCountry(f)}|||${nm}`;
+      m.set(k, (m.get(k) || 0) + 1);
+    });
+    return m;
+  }, [flagsPool]);
+  const parentSearching = parentSearch.trim().length > 0;
   const parentGroups = useMemo(() => {
     const q = parentSearch.trim().toLowerCase();
     const groups = new Map<string, typeof parentData.opts>();
@@ -608,6 +642,183 @@ export function AdditionalFiltersBar({
             setOpenSubmenu(isDropdownOpen ? null : '__parents__');
           };
 
+          const toggleExpanded = (key: string) => {
+            setExpandedParents((prev) => {
+              const next = new Set(prev);
+              if (next.has(key)) next.delete(key);
+              else next.add(key);
+              return next;
+            });
+          };
+
+          const renderParentChip = (country: string, name: string, count: number, phantom = false) => {
+            const isSelected = (selectedParents as string[]).includes(name);
+            return (
+              <button
+                key={`${country}|||${name}`}
+                type="button"
+                onClick={() => (onToggleParent as (p: string) => void)(name)}
+                title={phantom ? `${name} — no flag for this region yet; its children are grouped here` : name}
+                className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
+                    : phantom
+                      ? 'border-dashed border-zinc-300 dark:border-zinc-600 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-400'
+                      : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
+                }`}
+              >
+                {isSelected && <Check className="w-3 h-3" />}
+                <span>{name}</span>
+                <span className={`text-[10px] px-1 py-0.2 rounded-full font-bold ${isSelected ? 'bg-indigo-700 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          };
+
+          // Applies a move: phantoms get a manual placement, real regions get
+          // their flag's parentRegion rewritten (via the standard edit path,
+          // so it syncs like any flag edit). '' = top level.
+          const applyMove = (node: ParentTreeNode, dest: string) => {
+            if (node.phantom) {
+              setParentLink(node.country, node.name, dest || null);
+            } else {
+              FLAGS.filter(
+                (f) =>
+                  isSubnationalFlag(f) &&
+                  getSubnationalCountry(f) === node.country &&
+                  (f.name || '').trim() === node.name
+              ).forEach((f) => {
+                editCustomFlag({ ...f, parentRegion: dest ? dest : undefined });
+              });
+            }
+            setMovePickerFor(null);
+            if (dest) {
+              setExpandedParents((prev) => new Set(prev).add(`${node.country}|||${dest}`));
+            }
+          };
+
+          const renderTreeNode = (
+            node: ParentTreeNode,
+            placeTargets: string[],
+            treeParent: string,
+            isRoot: boolean
+          ) => {
+            const key = `${node.country}|||${node.name}`;
+            const isExpanded = expandedParents.has(key);
+            const hasKids = node.children.length > 0;
+            const placement = node.phantom
+              ? getPhantomPlacement(node.country, node.name, parentLinks)
+              : '';
+            // Move affordance: every phantom (place it) + every nested region
+            // (re-parent it). Real top-level regions are already at the top.
+            const showMove = node.phantom || !isRoot;
+            // Same-named real flags in one country move as a unit, which is
+            // surprising — those go through the flag editor instead.
+            const nameDup = !node.phantom && (realNameCounts.get(key) || 0) > 1;
+            const pickerOpen = movePickerFor === key;
+            // Picker targets: real regions, minus self and own subtree.
+            const descNames = new Set<string>();
+            const collectDesc = (n: ParentTreeNode): void => {
+              n.children.forEach((c) => {
+                descNames.add(c.name);
+                collectDesc(c);
+              });
+            };
+            collectDesc(node);
+            const targets = placeTargets.filter(
+              (t) => t !== node.name && !descNames.has(t)
+            );
+            const current = node.phantom ? placement : treeParent;
+            return (
+              <div key={key} className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1">
+                  <div className="flex-1 min-w-0">
+                    {renderParentChip(node.country, node.name, node.totalCount, node.phantom)}
+                  </div>
+                  {showMove && (
+                    <button
+                      type="button"
+                      disabled={nameDup}
+                      onClick={() => setMovePickerFor(pickerOpen ? null : key)}
+                      title={
+                        nameDup
+                          ? `"${node.name}" exists more than once in ${node.country} — move it via the flag editor`
+                          : node.phantom
+                            ? placement
+                              ? `${node.name} lives under ${placement} — change placement`
+                              : `Place ${node.name} under a state/region`
+                            : `Move ${node.name} under another state/region (edits its flag)`
+                      }
+                      className={`p-1.5 rounded-lg border transition-colors flex-shrink-0 ${
+                        pickerOpen
+                          ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 cursor-pointer'
+                          : nameDup
+                            ? 'border-zinc-200 dark:border-zinc-700 text-zinc-300 dark:text-zinc-600 cursor-not-allowed'
+                            : 'border-transparent text-zinc-300 dark:text-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-300 hover:border-zinc-200 dark:hover:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer'
+                      }`}
+                    >
+                      <Move className="w-3 h-3" />
+                    </button>
+                  )}
+                  {hasKids && (
+                    <button
+                      type="button"
+                      onClick={() => toggleExpanded(key)}
+                      title={isExpanded ? `Collapse ${node.name}` : `Expand ${node.name} (${node.children.length})`}
+                      className="p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer flex-shrink-0"
+                    >
+                      {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                    </button>
+                  )}
+                </div>
+                {pickerOpen && !nameDup && (
+                  <div className="ml-1 flex flex-col gap-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-1">
+                    <div className="px-1.5 pt-0.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      {node.phantom ? `Place under…` : `Move under…`}
+                    </div>
+                    {[{ value: '', label: 'Top level' }, ...targets.map((t) => ({ value: t, label: t }))].map((opt) => (
+                      <button
+                        key={opt.value || '__top__'}
+                        type="button"
+                        onClick={() => {
+                          if ((opt.value || '') !== (current || '')) applyMove(node, opt.value);
+                          else setMovePickerFor(null);
+                        }}
+                        className={`px-1.5 py-1 rounded-md text-xs text-left flex items-center justify-between gap-2 cursor-pointer transition-colors ${
+                          (opt.value || '') === (current || '')
+                            ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-semibold'
+                            : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                        }`}
+                      >
+                        <span className="truncate">{opt.label}</span>
+                        {(opt.value || '') === (current || '') && <Check className="w-3 h-3 flex-shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {hasKids && isExpanded && (
+                  <div className="ml-3 pl-2.5 border-l-2 border-zinc-100 dark:border-zinc-700/60 flex flex-col gap-1.5">
+                    {node.children.map((child) => renderTreeNode(child, placeTargets, node.name, false))}
+                  </div>
+                )}
+              </div>
+            );
+          };
+
+          // All real regions in a country group, for the phantom assign picker.
+          const collectPlaceTargets = (roots: ParentTreeNode[]): string[] => {
+            const out = new Set<string>();
+            const walk = (nodes: ParentTreeNode[]) => {
+              nodes.forEach((n) => {
+                if (!n.phantom) out.add(n.name);
+                walk(n.children);
+              });
+            };
+            walk(roots);
+            return Array.from(out).sort((a, b) => a.localeCompare(b));
+          };
+
           return (
             <div className={`relative inline-flex items-center ${isDropdownOpen ? 'z-30' : ''}`}>
               <div
@@ -695,7 +906,7 @@ export function AdditionalFiltersBar({
                           }`}
                         >
                           {selectedParents.includes(NO_PARENT_VALUE) && <Check className="w-3 h-3" />}
-                          <span>No parent specified ({parentData.noneCount})</span>
+                          <span>{getTopLevelLabel(flagsPool, parentScope)} ({parentData.noneCount})</span>
                         </button>
                       )}
                       {parentGroups.length === 0 && parentData.noneCount === 0 && (
@@ -703,36 +914,32 @@ export function AdditionalFiltersBar({
                           No subdivisions in the selected countries yet.
                         </div>
                       )}
-                      {parentGroups.map(([country, opts]) => (
-                        <div key={country} className="flex flex-col gap-1.5">
-                          <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-700/60 pb-1">
-                            {country}
+                      {parentSearching ? (
+                        parentGroups.map(([country, opts]) => (
+                          <div key={country} className="flex flex-col gap-1.5">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-700/60 pb-1">
+                              {country}
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {opts.map((o) => renderParentChip(o.country, o.parent, o.count))}
+                            </div>
                           </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {opts.map((o) => {
-                              const isSelected = selectedParents.includes(o.parent);
-                              return (
-                                <button
-                                  key={`${o.country}|||${o.parent}`}
-                                  type="button"
-                                  onClick={() => onToggleParent(o.parent)}
-                                  className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
-                                    isSelected
-                                      ? 'border-indigo-500 bg-indigo-600 text-white font-semibold shadow-xs'
-                                      : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/60 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
-                                  }`}
-                                >
-                                  {isSelected && <Check className="w-3 h-3" />}
-                                  <span>{o.parent}</span>
-                                  <span className={`text-[10px] px-1 py-0.2 rounded-full font-bold ${isSelected ? 'bg-indigo-700 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'}`}>
-                                    {o.count}
-                                  </span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        parentTree.map((group) => {
+                          const placeTargets = collectPlaceTargets(group.roots);
+                          return (
+                            <div key={group.country} className="flex flex-col gap-1.5">
+                              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-700/60 pb-1">
+                                {group.country}
+                              </div>
+                              <div className="flex flex-col gap-1.5">
+                                {group.roots.map((node) => renderTreeNode(node, placeTargets, '', true))}
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
 
                     <div className="p-2 border-t border-zinc-100 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900/50 flex justify-end">
@@ -1210,17 +1417,19 @@ export function AdditionalFiltersBar({
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mr-1">Parent region:</span>
                 {selectedParents.map((p) => {
+                  // Hierarchical count: selecting a region includes its whole
+                  // subtree, so the chip shows what the filter actually yields.
                   const count =
                     p === NO_PARENT_VALUE
                       ? flagsPool.filter((f) => !getParentKey(f)).length
-                      : flagsPool.filter((f) => getParentKey(f) === p).length;
+                      : flagsPool.filter((f) => matchesParentsHierarchical(f, [p], FLAGS, parentLinks)).length;
                   return (
                     <span
                       key={p}
                       className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-lg text-xs font-medium bg-lime-100/50 dark:bg-lime-500/20 text-lime-700 dark:text-lime-300 border border-lime-200 dark:border-lime-500/30"
                     >
                       <span>
-                        {p === NO_PARENT_VALUE ? 'No parent specified' : p} ({count})
+                        {p === NO_PARENT_VALUE ? getTopLevelLabel(flagsPool, parentScope) : p} ({count})
                       </span>
                       {onToggleParent && (
                         <button

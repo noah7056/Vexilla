@@ -16,6 +16,7 @@ const LEGACY_DELETED_KEY = 'vexillo_deleted_flag_ids';
 const SUBCATEGORIES_KEY = 'vexillo_custom_subcategories';
 const CUSTOM_CATEGORIES_KEY = 'vexillo_custom_categories';
 const CUSTOM_SECTIONS_KEY = 'vexillo_custom_sections';
+const PARENT_LINKS_KEY = 'vexillo_parent_links';
 
 export const FICTIONAL_SECTION_NAMES = ['Franchises / Universes', 'Media'] as const;
 
@@ -77,6 +78,11 @@ interface FlagsContextType {
   addSection: (category: string, name: string) => { success: boolean; error?: string };
   renameSection: (category: string, oldName: string, newName: string) => { success: boolean; error?: string; updatedCount?: number };
   deleteSection: (category: string, name: string, action: { mode: DeleteSectionMode; moveTo?: string }) => { success: boolean; error?: string; affectedCount?: number };
+  // Manual phantom-parent placements (`country|||phantom` → grandparent name),
+  // so flagless counties/provinces nest under their state/region in the
+  // parent filter. Synced localStorage + Firestore like other taxonomy.
+  parentLinks: Record<string, string>;
+  setParentLink: (country: string, phantom: string, grandparent: string | null) => void;
   addCustomFlag: (flag: Flag) => void;
   editCustomFlag: (flag: Flag) => void;
   deleteFlag: (id: string) => void;
@@ -219,6 +225,26 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
+  const [parentLinks, setParentLinks] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem(PARENT_LINKS_KEY);
+      if (!saved) return {};
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const cleaned: Record<string, string> = {};
+        Object.entries(parsed).forEach(([k, v]) => {
+          if (typeof k === 'string' && typeof v === 'string' && k.trim() && v.trim()) {
+            cleaned[k.trim()] = v.trim();
+          }
+        });
+        return cleaned;
+      }
+      return {};
+    } catch {
+      return {};
+    }
+  });
+
   // Test connection on boot
   useEffect(() => {
     testFirestoreConnection();
@@ -232,6 +258,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     let unsubSubs: (() => void) | null = null;
     let unsubCats: (() => void) | null = null;
     let unsubSections: (() => void) | null = null;
+    let unsubLinks: (() => void) | null = null;
     let cancelled = false;
 
     try {
@@ -461,6 +488,44 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
           console.warn('Firestore custom_sections snapshot error:', error);
         }
       );
+
+      // 7. Phantom parent placements (single doc 'all': { links }). Merges
+      // server values over local on conflict (last writer wins across clients).
+      const linksCol = collection(db, 'custom_parent_links');
+      unsubLinks = onSnapshot(
+        linksCol,
+        (snapshot) => {
+          if (snapshot.empty) return;
+          const server: Record<string, string> = {};
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data() as { links?: Record<string, string> };
+            if (data.links && typeof data.links === 'object' && !Array.isArray(data.links)) {
+              Object.entries(data.links).forEach(([k, v]) => {
+                if (typeof k === 'string' && typeof v === 'string' && k.trim() && v.trim()) {
+                  server[k.trim()] = v.trim();
+                }
+              });
+            }
+          });
+          setParentLinks((prev) => {
+            const merged = { ...prev, ...server };
+            const prevKeys = Object.keys(prev);
+            if (
+              Object.keys(merged).length === prevKeys.length &&
+              prevKeys.every((k) => merged[k] === prev[k])
+            ) {
+              return prev;
+            }
+            try {
+              localStorage.setItem(PARENT_LINKS_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
+        },
+        (error) => {
+          console.warn('Firestore custom_parent_links snapshot error:', error);
+        }
+      );
     } catch (err) {
       console.warn('Failed to attach Firestore listeners:', err);
     }
@@ -472,6 +537,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       if (unsubSubs) unsubSubs();
       if (unsubCats) unsubCats();
       if (unsubSections) unsubSections();
+      if (unsubLinks) unsubLinks();
     };
   }, []);
 
@@ -518,6 +584,13 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         console.warn('Failed to sync section to Firestore:', cat, err)
       );
     });
+
+    // Push local phantom parent placements to Firestore (single doc)
+    if (Object.keys(parentLinks).length > 0) {
+      setDoc(doc(db, 'custom_parent_links', 'all'), { links: parentLinks }).catch((err) =>
+        console.warn('Failed to sync parent links to Firestore:', err)
+      );
+    }
   }, [isFirestoreConnected, initialSyncDone]);
 
   // Effective built-in flags (Base flags + Baked custom flags - Baked deleted flags)
@@ -1267,7 +1340,30 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
     return { success: true, affectedCount: affected.length };
   };
 
-  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0 || (Object.values(customSubCategories) as string[][]).some(a => a.length > 0) || customCategories.length > 0 || (Object.values(customSections) as string[][]).some(a => a.length > 0);
+  // ---- Phantom parent placements (flagless county/province → grandparent) ----
+  const saveParentLinks = (next: Record<string, string>) => {
+    setParentLinks(next);
+    try {
+      localStorage.setItem(PARENT_LINKS_KEY, JSON.stringify(next));
+    } catch {}
+    setDoc(doc(db, 'custom_parent_links', 'all'), { links: next }).catch(() => {});
+  };
+
+  const setParentLink = (country: string, phantom: string, grandparent: string | null) => {
+    const c = country.trim();
+    const p = phantom.trim();
+    if (!c || !p) return;
+    const g = (grandparent || '').trim();
+    const next = { ...parentLinks };
+    if (g && g !== p) {
+      next[`${c}|||${p}`] = g;
+    } else {
+      delete next[`${c}|||${p}`];
+    }
+    saveParentLinks(next);
+  };
+
+  const hasLocalChanges = customFlags.length > 0 || trash.length > 0 || permanentlyDeletedIds.length > 0 || (Object.values(customSubCategories) as string[][]).some(a => a.length > 0) || customCategories.length > 0 || (Object.values(customSections) as string[][]).some(a => a.length > 0) || Object.keys(parentLinks).length > 0;
 
   const clearLocalFlagsStorageOnly = () => {
     try {
@@ -1278,12 +1374,14 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(SUBCATEGORIES_KEY);
       localStorage.removeItem(CUSTOM_CATEGORIES_KEY);
       localStorage.removeItem(CUSTOM_SECTIONS_KEY);
+      localStorage.removeItem(PARENT_LINKS_KEY);
       setCustomFlags([]);
       setTrash([]);
       setPermanentlyDeletedIds([]);
       setCustomSubCategories({});
       setCustomCategories([]);
       setCustomSections({});
+      setParentLinks({});
     } catch (e) {
       console.error('Failed to clear flag storage', e);
     }
@@ -1355,7 +1453,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       permanentlyDeletedIds,
       customSubCategories,
       customCategories,
-      customSections
+      customSections,
+      parentLinks
     };
   };
 
@@ -1371,6 +1470,7 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
       let importedSubs: Record<string, string[]> = {};
       let importedCats: string[] = [];
       let importedSections: Record<string, string[]> = {};
+      let importedLinks: Record<string, string> = {};
 
       if (Array.isArray(data)) {
         importedFlags = data.filter(f => f && typeof f.id === 'string' && typeof f.name === 'string');
@@ -1408,9 +1508,17 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
             }
           });
         }
+
+        if (data.parentLinks && typeof data.parentLinks === 'object' && !Array.isArray(data.parentLinks)) {
+          Object.entries(data.parentLinks).forEach(([k, v]) => {
+            if (typeof k === 'string' && typeof v === 'string' && k.trim() && v.trim()) {
+              importedLinks[k.trim()] = v.trim();
+            }
+          });
+        }
       }
 
-      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0 && Object.keys(importedSubs).length === 0 && importedCats.length === 0 && Object.keys(importedSections).length === 0) {
+      if (importedFlags.length === 0 && importedTrash.length === 0 && importedPermIds.length === 0 && Object.keys(importedSubs).length === 0 && importedCats.length === 0 && Object.keys(importedSections).length === 0 && Object.keys(importedLinks).length === 0) {
         return { success: false, importedCount: 0, error: 'No valid flag data found in JSON' };
       }
 
@@ -1462,6 +1570,10 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         saveCustomSections(mergedSecs);
       }
 
+      if (Object.keys(importedLinks).length > 0) {
+        saveParentLinks({ ...parentLinks, ...importedLinks });
+      }
+
       return {
         success: true,
         importedCount: importedFlags.length
@@ -1498,6 +1610,8 @@ export function FlagsProvider({ children }: { children: React.ReactNode }) {
         addSection,
         renameSection,
         deleteSection,
+        parentLinks,
+        setParentLink,
         addCustomFlag,
         editCustomFlag,
         deleteFlag,

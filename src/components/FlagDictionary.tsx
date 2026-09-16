@@ -42,9 +42,11 @@ import {
 import {
   AdminTypeFilter,
   SUBNATIONAL_CATEGORIES,
+  getParentChainLabel,
   getSubnationalCountry,
+  getTopLevelLabel,
   matchesAdminTypes,
-  matchesParents,
+  matchesParentsHierarchical,
 } from '../lib/subnational';
 import { FlagImage } from './FlagImage';
 import { requestShowOnMap } from '../lib/atlasBus';
@@ -90,7 +92,7 @@ type SortOption = 'name-asc' | 'name-desc' | 'continent' | 'category' | 'parent'
 type ItemsPerPage = 12 | 25 | 50 | 100 | 'All';
 
 export function FlagDictionary({ progress }: FlagDictionaryProps) {
-  const { flags: FLAGS, trash, isFirestoreConnected, getCategories } = useFlags();
+  const { flags: FLAGS, trash, isFirestoreConnected, getCategories, parentLinks } = useFlags();
   const dynamicCatCount = useMemo(() => {
     try {
       return getCategories().length;
@@ -491,7 +493,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
       // (non-subnational categories only) so stale selections can't trap the grid.
       if (subnationalContextActive) {
         if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
-        if (!matchesParents(flag, selectedParents)) return false;
+        if (!matchesParentsHierarchical(flag, selectedParents, FLAGS, parentLinks)) return false;
       }
 
       return matchesSearch && matchesCat && matchesCont && matchesStatus;
@@ -513,7 +515,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
           return a.name.localeCompare(b.name);
       }
     });
-  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS]);
+  }, [debouncedSearch, searchTags, selectedCategories, selectedContinents, selectedStatuses, selectedSubOptions, selectedAdminTypes, selectedParents, subnationalContextActive, selectedMastery, sortBy, showFavoritesOnly, favoritesSet, progress, FLAGS, parentLinks]);
 
   // Visible slice + optional grouping by parent region. Grouped sections appear
   // only for focused subnational browsing (Provinces/US States categories with a
@@ -537,28 +539,32 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
     if (!groupByParent) return null;
     if (!canGroupByParent) return null;
     const multiCountry = new Set(visibleFlags.map((f) => getSubnationalCountry(f))).size > 1;
-    const groups = new Map<string, { key: string; title: string; country: string; parent: string; flags: Flag[] }>();
+    const groups = new Map<string, { key: string; title: string; country: string; parent: string; depth: number; flags: Flag[] }>();
     visibleFlags.forEach((f) => {
       const country = getSubnationalCountry(f);
       const parent = (f.parentRegion || '').trim();
       const key = `${country}|||${parent}`;
       let g = groups.get(key);
       if (!g) {
-        const title = parent
-          ? multiCountry ? `${parent} · ${country}` : parent
-          : multiCountry ? `No parent specified · ${country}` : 'No parent specified';
-        g = { key, title, country, parent, flags: [] };
+        // Section header shows the full chain (e.g. "Harris County • Texas")
+        // so nested cities read in context; depth sorts states before counties.
+        const chain = parent ? getParentChainLabel(f, FLAGS, parentLinks) : '';
+        const label = parent ? (chain || parent) : getTopLevelLabel(filteredFlags, []);
+        const title = multiCountry ? `${label} · ${country}` : label;
+        const depth = parent ? (chain ? chain.split('•').length : 1) : 0;
+        g = { key, title, country, parent, depth, flags: [] };
         groups.set(key, g);
       }
       g.flags.push(f);
     });
     return Array.from(groups.values()).sort((a, b) => {
       if (a.country !== b.country) return a.country.localeCompare(b.country);
+      if (a.depth !== b.depth) return a.depth - b.depth;
       if (!a.parent && b.parent) return -1;
       if (a.parent && !b.parent) return 1;
       return a.parent.localeCompare(b.parent);
     });
-  }, [visibleFlags, groupByParent, canGroupByParent]);
+  }, [visibleFlags, filteredFlags, groupByParent, canGroupByParent, FLAGS, parentLinks]);
 
   // First-card-id -> section header (rendered as col-span-full rows in the grid).
   const groupHeaderByFlagId = useMemo(() => {
@@ -1014,7 +1020,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
                     </h3>
                     <div
                       className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate mt-0.5 flex items-center gap-1"
-                      title={flag.country ? `${flag.continent || flag.category} • ${flag.country}${(flag.parentRegion || '').trim() ? ` • ${(flag.parentRegion || '').trim()}` : ''}` : (flag.continent || flag.category)}
+                      title={flag.country ? `${flag.continent || flag.category} • ${flag.country}${(flag.parentRegion || '').trim() ? ` • ${getParentChainLabel(flag, FLAGS, parentLinks) || (flag.parentRegion || '').trim()}` : ''}` : (flag.continent || flag.category)}
                     >
                       <span className="truncate">{flag.continent || flag.category}</span>
                       {flag.country && (
@@ -1026,7 +1032,7 @@ export function FlagDictionary({ progress }: FlagDictionaryProps) {
                       {(flag.parentRegion || '').trim() && (
                         <>
                           <span className="text-zinc-300 dark:text-zinc-600">•</span>
-                          <span className="truncate font-medium text-amber-600 dark:text-amber-400">{(flag.parentRegion || '').trim()}</span>
+                          <span className="truncate font-medium text-amber-600 dark:text-amber-400">{getParentChainLabel(flag, FLAGS, parentLinks) || (flag.parentRegion || '').trim()}</span>
                         </>
                       )}
                     </div>

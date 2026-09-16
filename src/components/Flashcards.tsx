@@ -3,13 +3,13 @@ import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Globe2, RotateCcw } from 'lucide-react';
 import { useFlags } from '../contexts/FlagsContext';
 import { Category, Continent, FlagStatus, AdminType, ALL_CATEGORIES, ALL_CONTINENTS, ALL_STATUSES } from '../types';
-import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
+import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, getParentChainLabel, matchesAdminTypes, matchesParentsHierarchical } from '../lib/subnational';
 import { FlagImage } from './FlagImage';
 import { CategoryFilterChips } from './CategoryFilterChips';
 import { AdditionalFiltersBar } from './AdditionalFiltersBar';
 
 export function Flashcards() {
-  const { flags: FLAGS } = useFlags();
+  const { flags: FLAGS, parentLinks } = useFlags();
   const [selectedCategories, setSelectedCategories] = useState<(Category | 'All')[]>(['All']);
   const [selectedSubOptions, setSelectedSubOptions] = useState<Record<string, string[]>>({});
   const [selectedContinents, setSelectedContinents] = useState<(Continent | 'All')[]>(['All']);
@@ -270,12 +270,12 @@ export function Flashcards() {
       // 6. Subnational facets (skipped outside subnational context)
       if (subnationalContextActive) {
         if (!matchesAdminTypes(flag, selectedAdminTypes)) return false;
-        if (!matchesParents(flag, selectedParents)) return false;
+        if (!matchesParentsHierarchical(flag, selectedParents, FLAGS, parentLinks)) return false;
       }
 
       return true;
     });
-  }, [selectedCategories, selectedSubOptions, selectedContinents, selectedStatuses, selectedTags, selectedAdminTypes, selectedParents, subnationalContextActive, FLAGS]);
+  }, [selectedCategories, selectedSubOptions, selectedContinents, selectedStatuses, selectedTags, selectedAdminTypes, selectedParents, subnationalContextActive, FLAGS, parentLinks]);
 
   useEffect(() => {
     if (currentIndex >= filteredFlags.length) {
@@ -432,7 +432,7 @@ export function Flashcards() {
                   )}
                   {(currentFlag.parentRegion || '').trim() && (
                     <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-dashed border-amber-300 dark:border-amber-700/60 font-medium text-xs">
-                      {(currentFlag.parentRegion || '').trim()}
+                      {getParentChainLabel(currentFlag, FLAGS, parentLinks) || (currentFlag.parentRegion || '').trim()}
                     </span>
                   )}
                   {currentFlag.adminType && (

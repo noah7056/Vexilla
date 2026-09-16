@@ -74,7 +74,6 @@ function AppInner() {
   const { progress, recordAnswer, resetProgress } = useProgress();
 
   const desktopThemeRef = useRef<HTMLDivElement>(null);
-  const mobileThemeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isThemeMenuOpen) return;
@@ -82,9 +81,8 @@ function AppInner() {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node;
       const isInsideDesktop = desktopThemeRef.current?.contains(target);
-      const isInsideMobile = mobileThemeRef.current?.contains(target);
 
-      if (!isInsideDesktop && !isInsideMobile) {
+      if (!isInsideDesktop) {
         setIsThemeMenuOpen(false);
       }
     };
@@ -208,7 +206,7 @@ function AppInner() {
               ))}
             </nav>
 
-            <div ref={desktopThemeRef} className="hidden sm:block relative">
+            <div ref={desktopThemeRef} className="relative">
               <button
                 id="theme-toggle-btn"
                 onClick={() => setIsThemeMenuOpen(prev => !prev)}
@@ -278,7 +276,6 @@ function AppInner() {
               id={`mobile-nav-${item.id}`}
               onClick={() => {
                 setView(item.id);
-                setIsThemeMenuOpen(false);
               }}
               className={`flex flex-col items-center gap-1 p-2 rounded-lg min-w-[64px] transition-colors ${
                 view === item.id 
@@ -290,40 +287,6 @@ function AppInner() {
               <span className="text-[10px] font-medium">{item.label}</span>
             </button>
           ))}
-          <div ref={mobileThemeRef} className="relative">
-            {isThemeMenuOpen && (
-              <div className="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg z-50 overflow-hidden py-1">
-                {APP_THEMES.map(theme => (
-                  <button
-                    key={theme.id}
-                    onClick={() => {
-                      setCurrentTheme(theme.id);
-                      setIsThemeMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
-                      currentTheme === theme.id 
-                        ? 'bg-zinc-100 dark:bg-zinc-700 text-indigo-600 dark:text-indigo-400 font-semibold' 
-                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50'
-                    }`}
-                  >
-                    <span className={currentTheme === theme.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-500 dark:text-zinc-400'}>
-                      {theme.icon}
-                    </span>
-                    {theme.label}
-                  </button>
-                ))}
-              </div>
-            )}
-            <button
-              id="mobile-theme-toggle-btn"
-              onClick={() => setIsThemeMenuOpen(prev => !prev)}
-              className={`flex flex-col items-center gap-1 p-2 rounded-lg min-w-[64px] transition-colors cursor-pointer ${isThemeMenuOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800'}`}
-              aria-label="Toggle theme menu"
-            >
-              {activeThemeObj.icon}
-              <span className="text-[10px] font-medium">Theme</span>
-            </button>
-          </div>
         </div>
       </nav>
 

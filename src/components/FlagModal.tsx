@@ -30,12 +30,14 @@ import {
 } from 'lucide-react';
 import { Flag, FlagProgress } from '../types';
 import { requestShowOnMap } from '../lib/atlasBus';
+import { getParentChainLabel } from '../lib/subnational';
 import { resolveGeo } from '../lib/geo';
 import { FlagImage } from './FlagImage';
 import { StatusBadge } from './StatusBadge';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCollections } from '../hooks/useCollections';
 import { useAdmin } from '../contexts/AdminContext';
+import { useFlags } from '../contexts/FlagsContext';
 
 import { CreateCollectionModal } from './CreateCollectionModal';
 
@@ -59,6 +61,7 @@ export function FlagModal({
   onEdit
 }: FlagModalProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { parentLinks } = useFlags();
   const { collections, toggleFlagInCollection, createCollection } = useCollections();
   const { isAdmin } = useAdmin();
   const [scale, setScale] = useState(1);
@@ -751,7 +754,7 @@ export function FlagModal({
                   title={`Parent region in ${flag.country || 'country'}`}
                 >
                   <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                  <span>{(flag.parentRegion || '').trim()}</span>
+                  <span>{getParentChainLabel(flag, flagsList, parentLinks) || (flag.parentRegion || '').trim()}</span>
                 </div>
               )}
               {flag.adminType && (
