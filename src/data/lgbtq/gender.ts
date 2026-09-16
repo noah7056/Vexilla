@@ -106,7 +106,7 @@ export const GENDER_FLAGS = createLgbtqFlags('Gender Identities & Trans Spectrum
     name: "Gender Non-Conforming Pride Flag",
     code: "lgbt-gnc",
     country: "Gender Identities & Trans Spectrum",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Gender_non-conforming?file=Gender_Creative.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/b/bd/Gender_Creative.svg/revision/latest?cb=20250310072647",
     aliases: ["Gender Non-Conforming", "GNC", "Gender Creative", "GNC Flag"],
     tags: [],
     status: ""

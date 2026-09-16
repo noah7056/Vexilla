@@ -126,7 +126,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Trigender Pride Flag",
     code: "lgbt-tri",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Trigender?file=Trigender.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/9/96/Trigender.svg/revision/latest?cb=20260413163203",
     aliases: ["Trigender", "Three Genders", "Trigender Flag"],
     tags: [],
     status: ""
@@ -136,7 +136,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Transmasculine Pride Flag",
     code: "lgbt-trm",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Transmasculine?file=Transmasculine_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/9/90/Transmasculine_Flag.svg/revision/latest?cb=20250310080116",
     aliases: ["Transmasculine", "Transmasc", "Transmasc Flag"],
     tags: [],
     status: ""
@@ -146,7 +146,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Transfeminine Pride Flag",
     code: "lgbt-trf",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Transfeminine?file=Transfeminine_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/e/ec/Transfeminine_Flag.svg/revision/latest?cb=20250310075759",
     aliases: ["Transfeminine", "Transfem", "Transfem Flag"],
     tags: [],
     status: ""
@@ -186,7 +186,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Sapphic Pride Flag",
     code: "lgbt-sap",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Sapphic?file=Sapphic_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/a/a8/Sapphic_Flag.svg/revision/latest?cb=20260414014712",
     aliases: ["Sapphic", "WLW", "Women Loving Women", "Sapphic Flag"],
     tags: [],
     status: ""
@@ -206,7 +206,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Diamoric Pride Flag",
     code: "lgbt-dmc",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Diamoric?file=Diamoric_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/9/9e/Diamoric_Flag.svg/revision/latest?cb=20260414015048",
     aliases: ["Diamoric", "Non-Binary Attraction", "Diamoric Flag"],
     tags: [],
     status: ""
@@ -216,7 +216,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Butch Lesbian Pride Flag",
     code: "lgbt-btc",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Butch?file=Butch_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/f/f3/Butch_Flag.svg/revision/latest?cb=20250606054808",
     aliases: ["Butch Lesbian", "Butch Pride", "Butch Flag"],
     tags: [],
     status: ""
@@ -256,7 +256,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Toric Pride Flag",
     code: "lgbt-tor",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Diamoric?file=Toric_flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/f/f6/Toric_flag.svg/revision/latest?cb=20260516214139",
     aliases: ["Toric", "NBLM", "Toric Flag"],
     tags: [],
     status: ""
@@ -266,7 +266,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Trixic Pride Flag",
     code: "lgbt-trx",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Diamoric?file=Trixic_flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/1/15/Trixic_flag.svg/revision/latest?cb=20260516214323",
     aliases: ["Trixic", "NBLW", "Trixic Flag"],
     tags: [],
     status: ""
@@ -276,7 +276,7 @@ export const SUBCULTURE_FLAGS = createLgbtqFlags('Community & Subcultures', [
     name: "Greysexual (Grey-Ace) Pride Flag",
     code: "lgbt-grs",
     country: "Community & Subcultures",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Gray-asexual?file=Gray-Asexual_Flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/e/ea/Gray-Asexual_Flag.svg/revision/latest?cb=20250604012519",
     aliases: ["Greysexual", "Graysexual", "Grey-Ace", "Gray-Ace", "Greysexual Flag"],
     tags: [],
     status: ""

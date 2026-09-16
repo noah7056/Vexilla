@@ -115,14 +115,21 @@ export const getFlagImageUrl = (flag: Flag, highRes: boolean = false) => {
   if (flag.imageUrl) {
     let url = flag.imageUrl.trim();
 
+    // Fandom file-page links (?file= / File: / Special:FilePath) can no longer
+    // be converted to Special:FilePath image URLs: Fandom's CDN answers that
+    // endpoint with 403 for cross-site embeds. They are resolved to direct
+    // static.wikia.nocookie.net URLs at render time (see lib/fandomFiles),
+    // so pass them through untouched here.
+    const isFandomPage = /https?:\/\/[^\/]*\.fandom\.com\/wiki\//i.test(url);
+
     // Handle MediaWiki URLs that point to the wiki HTML page instead of the image file
     // 1. /wiki/...#/media/File:Filename
-    const mediaFileMatch = url.match(/(https?:\/\/[^\/]+)\/wiki\/.*#\/media\/File:(.+)$/);
+    const mediaFileMatch = !isFandomPage && url.match(/(https?:\/\/[^\/]+)\/wiki\/.*#\/media\/File:(.+)$/);
     if (mediaFileMatch) {
       url = `${mediaFileMatch[1]}/wiki/Special:FilePath/${mediaFileMatch[2]}`;
     } 
     // 2. /wiki/...?file=Filename
-    else if (url.includes('?file=')) {
+    else if (!isFandomPage && url.includes('?file=')) {
       const parts = url.split('?file=');
       const domainMatch = parts[0].match(/(https?:\/\/[^\/]+)\/(?:wiki|w)\//);
       if (domainMatch) {
@@ -130,7 +137,7 @@ export const getFlagImageUrl = (flag: Flag, highRes: boolean = false) => {
       }
     }
     // 3. /wiki/File:Filename
-    else {
+    else if (!isFandomPage) {
       const fileMatch = url.match(/(https?:\/\/[^\/]+)\/wiki\/File:(.+)$/);
       if (fileMatch) {
         url = `${fileMatch[1]}/wiki/Special:FilePath/${fileMatch[2]}`;

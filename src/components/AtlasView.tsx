@@ -19,6 +19,7 @@ import {
 } from '../types';
 import { AdminTypeFilter, SUBNATIONAL_CATEGORIES, matchesAdminTypes, matchesParents } from '../lib/subnational';
 import { getFlagImageUrl } from '../data/flags';
+import { parseFandomFileUrl, getCachedFandomFileUrl, resolveFandomFileUrl, subscribeFandomCache } from '../lib/fandomFiles';
 import { useFlags } from '../contexts/FlagsContext';
 import { useAdmin } from '../contexts/AdminContext';
 import { useFavorites } from '../hooks/useFavorites';
@@ -79,6 +80,16 @@ function PlaceRow({ p, active, onPick }: { key?: string | number; p: MapPoint; a
 
 /** Tiny pin thumbnail: downscale CDN/Wikimedia thumbs so clusters stay cheap (no Firebase involved). */
 function pinThumb(flag: Flag): string {
+  if (flag.imageUrl) {
+    const ref = parseFandomFileUrl(flag.imageUrl);
+    if (ref) {
+      const direct = getCachedFandomFileUrl(ref);
+      if (direct) return direct;
+      // Kick off async API resolution; the ClusterLayer subscription below
+      // rebuilds the pin once the direct URL lands in the cache.
+      resolveFandomFileUrl(ref);
+    }
+  }
   const url = getFlagImageUrl(flag);
   return url
     .replace('flagcdn.com/w320', 'flagcdn.com/w80')
@@ -99,7 +110,10 @@ function esc(s: string): string {
  */
 const iconCache = new Map<string, L.DivIcon>();
 function chipIcon(flag: Flag, selected: boolean, approx: boolean, dark: boolean): L.DivIcon {
-  const cacheKey = `${flag.id}|${selected ? 1 : 0}|${approx ? 1 : 0}|${dark ? 1 : 0}`;
+  // Include the resolved thumbnail in the key so pins rebuild once an async
+  // Fandom file resolution lands (the page-style URL would 403 as an <img>).
+  const thumb = pinThumb(flag);
+  const cacheKey = `${flag.id}|${selected ? 1 : 0}|${approx ? 1 : 0}|${dark ? 1 : 0}|${thumb}`;
   const hit = iconCache.get(cacheKey);
   if (hit) return hit;
   // Rectangular 3:2 mini-flag so contents aren't cropped like in a circle.
@@ -114,7 +128,7 @@ function chipIcon(flag: Flag, selected: boolean, approx: boolean, dark: boolean)
     : 'box-shadow:0 1px 4px rgba(0,0,0,.35);';
   const icon = L.divIcon({
     className: 'vexilla-pin',
-    html: `<span title="${esc(flag.name)}" style="display:block;width:36px;height:24px;border-radius:6px;overflow:hidden;border:${selected ? '2px' : '1.5px'} solid ${border};${selected ? '' : approx ? 'border-style:dashed; ' : ''}${shadow}background:${dark ? '#27272a' : '#fff'};cursor:pointer"><img src="${esc(pinThumb(flag))}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none" loading="lazy"/></span>`,
+    html: `<span title="${esc(flag.name)}" style="display:block;width:36px;height:24px;border-radius:6px;overflow:hidden;border:${selected ? '2px' : '1.5px'} solid ${border};${selected ? '' : approx ? 'border-style:dashed; ' : ''}${shadow}background:${dark ? '#27272a' : '#fff'};cursor:pointer"><img src="${esc(thumb)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none" loading="lazy"/></span>`,
     iconSize: [36, 24],
     iconAnchor: [18, 12],
     popupAnchor: [0, -10],
@@ -213,6 +227,11 @@ function ClusterLayer({ points, selectedId, focusNonce, dark, showClusters, onSe
 }) {
   const map = useMap();
   const [viewport, setViewport] = useState<{ bounds: L.LatLngBounds; zoom: number } | null>(null);
+
+  // Rebuild pins when async Fandom file resolutions land in the cache
+  // (chipIcon keys include the resolved thumbnail, so new icons are built).
+  const [, setFandomTick] = useState(0);
+  useEffect(() => subscribeFandomCache(() => setFandomTick((t) => t + 1)), []);
 
   // Stable callback: creating a new closure per render used to resubscribe the
   // tracker on every render and avalanche into an update loop.

@@ -216,7 +216,7 @@ export const ORIENTATION_FLAGS = createLgbtqFlags('Sexualities & Romantic Spectr
     name: "Panromantic Pride Flag",
     code: "lgbt-pnr",
     country: "Sexualities & Romantic Spectrum",
-    imageUrl: "https://lgbtqia.fandom.com/wiki/Panromantic?file=Panromantic_flag.svg",
+    imageUrl: "https://static.wikia.nocookie.net/lgbtqia-sandbox/images/6/64/Panromantic_flag.svg/revision/latest?cb=20260414010303",
     aliases: ["Panromantic", "Panromantic Flag"],
     tags: [],
     status: ""
