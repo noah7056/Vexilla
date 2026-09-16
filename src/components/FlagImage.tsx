@@ -75,7 +75,6 @@ export function FlagImage({ flag, className = '', alt, highRes = false, draggabl
         if (!draggable) e.preventDefault();
       }}
       onError={handleError}
-      referrerPolicy="no-referrer"
     />
   );
 }
